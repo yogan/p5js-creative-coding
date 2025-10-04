@@ -2,7 +2,6 @@ import p5 from "p5";
 
 export const sketch1 = (p: p5) => {
   let angle = 0;
-  let radius = 100;
 
   p.setup = () => {
     p.createCanvas(p.windowWidth, p.windowHeight);
@@ -19,8 +18,8 @@ export const sketch1 = (p: p5) => {
       p.push();
 
       const shapeAngle = (p.TWO_PI / numShapes) * i;
-      const x = p.cos(shapeAngle + angle) * radius * 2.5;
-      const y = p.sin(shapeAngle + angle) * radius * 1.5;
+      const x = p.cos(shapeAngle + angle) * p.width * 0.3;
+      const y = p.sin(shapeAngle + angle) * p.height * 0.3;
 
       p.translate(x, y);
       p.rotate(shapeAngle - angle);
@@ -29,7 +28,8 @@ export const sketch1 = (p: p5) => {
       p.fill(hue, 80, 90, 0.8);
       p.noStroke();
 
-      const size = 30 + p.sin(angle * 3 + i) * 10;
+      const factor = p.min(p.width, p.height) / 450;
+      const size = (30 + p.sin(angle * 3 + i) * 10) * factor;
       p.arc(0, 0, size, size, 0, p.PI + p.HALF_PI + p.QUARTER_PI / 2);
 
       p.pop();
