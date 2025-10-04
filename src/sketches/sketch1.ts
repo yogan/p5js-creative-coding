@@ -19,18 +19,18 @@ export const sketch1 = (p: p5) => {
       p.push();
 
       const shapeAngle = (p.TWO_PI / numShapes) * i;
-      const x = p.cos(shapeAngle + angle) * radius;
-      const y = p.sin(shapeAngle + angle) * radius;
+      const x = p.cos(shapeAngle + angle) * radius * 2.5;
+      const y = p.sin(shapeAngle + angle) * radius * 1.5;
 
       p.translate(x, y);
-      p.rotate(angle * 2 + shapeAngle);
+      p.rotate(shapeAngle - angle);
 
       const hue = (angle * 50 + i * 30) % 360;
       p.fill(hue, 80, 90, 0.8);
       p.noStroke();
 
       const size = 30 + p.sin(angle * 3 + i) * 10;
-      p.ellipse(0, 0, size, size);
+      p.arc(0, 0, size, size, 0, p.PI + p.HALF_PI + p.QUARTER_PI / 2);
 
       p.pop();
     }
@@ -42,4 +42,3 @@ export const sketch1 = (p: p5) => {
     p.resizeCanvas(p.windowWidth, p.windowHeight);
   };
 };
-
