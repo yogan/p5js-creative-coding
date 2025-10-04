@@ -5,7 +5,7 @@ export const sketch1 = (p: p5) => {
   let radius = 100;
 
   p.setup = () => {
-    p.createCanvas(800, 600);
+    p.createCanvas(p.windowWidth, p.windowHeight);
     p.colorMode(p.HSB, 360, 100, 100);
   };
 
