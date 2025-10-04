@@ -1,0 +1,19 @@
+{
+  "name": "creative-coding",
+  "version": "1.0.0",
+  "description": "Creative coding projects with p5.js and TypeScript",
+  "main": "src/main.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "p5": "^1.7.0"
+  },
+  "devDependencies": {
+    "@types/p5": "^1.7.6",
+    "typescript": "^5.2.2",
+    "vite": "^4.4.5"
+  }
+}
