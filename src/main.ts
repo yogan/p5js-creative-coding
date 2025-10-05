@@ -15,6 +15,18 @@ let currentSketch = "sketch1"
 const sketchContainer = document.getElementById("sketch-container")
 const menuButtons = document.querySelectorAll(".sketch-btn")
 
+function getSketchFromURL(): keyof typeof sketches {
+	const urlParams = new URLSearchParams(window.location.search)
+	const sketch = urlParams.get("sketch") as keyof typeof sketches
+	return sketch && sketch in sketches ? sketch : "sketch1"
+}
+
+function updateURL(sketchName: keyof typeof sketches) {
+	const url = new URL(window.location.href)
+	url.searchParams.set("sketch", sketchName)
+	window.history.replaceState({}, "", url)
+}
+
 function loadSketch(sketchName: keyof typeof sketches) {
 	if (currentP5Instance) {
 		currentP5Instance.remove()
@@ -23,6 +35,7 @@ function loadSketch(sketchName: keyof typeof sketches) {
 	if (sketchContainer) {
 		currentP5Instance = new p5(sketches[sketchName], sketchContainer)
 		currentSketch = sketchName
+		updateURL(sketchName)
 
 		menuButtons.forEach((btn) => {
 			btn.classList.toggle(
@@ -44,4 +57,4 @@ menuButtons.forEach((button) => {
 	})
 })
 
-loadSketch("sketch1")
+loadSketch(getSketchFromURL())
