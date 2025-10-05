@@ -1,86 +1,114 @@
 import type p5 from "p5"
 
 export const sketch3 = (p: p5) => {
-	let currentIteration = 0
-	let lastIterationTime = 0
-	const iterationDelay = 2000 // 2 seconds between iterations
 	const maxIterations = 4
+	const totalCycleTime = 10000 // 10 seconds for full cycle
+	let startTime = 0
+
+	function getKochPoints(
+		start: { x: number; y: number },
+		end: { x: number; y: number },
+	) {
+		const dx = end.x - start.x
+		const dy = end.y - start.y
+		const totalLength = Math.sqrt(dx * dx + dy * dy)
+		const segmentLength = totalLength / 4
+
+		const unitX = dx / totalLength
+		const unitY = dy / totalLength
+		const leftX = -unitY
+		const leftY = unitX
+		const rightX = unitY
+		const rightY = -unitX
+
+		let currentX = start.x
+		let currentY = start.y
+		const points = [{ x: currentX, y: currentY }]
+
+		// Build Koch pattern points
+		currentX += unitX * segmentLength
+		currentY += unitY * segmentLength
+		points.push({ x: currentX, y: currentY })
+
+		currentX += leftX * segmentLength
+		currentY += leftY * segmentLength
+		points.push({ x: currentX, y: currentY })
+
+		currentX += unitX * segmentLength
+		currentY += unitY * segmentLength
+		points.push({ x: currentX, y: currentY })
+
+		currentX += rightX * segmentLength
+		currentY += rightY * segmentLength
+		points.push({ x: currentX, y: currentY })
+
+		currentX += rightX * segmentLength
+		currentY += rightY * segmentLength
+		points.push({ x: currentX, y: currentY })
+
+		currentX += unitX * segmentLength
+		currentY += unitY * segmentLength
+		points.push({ x: currentX, y: currentY })
+
+		currentX += leftX * segmentLength
+		currentY += leftY * segmentLength
+		points.push({ x: currentX, y: currentY })
+
+		currentX += unitX * segmentLength
+		currentY += unitY * segmentLength
+		points.push({ x: currentX, y: currentY })
+
+		return points
+	}
 
 	function drawKochLine(
 		start: { x: number; y: number },
 		end: { x: number; y: number },
 		iteration: number,
 	) {
-		if (iteration === 0) {
-			// Base case: draw straight line
-			p.line(start.x, start.y, end.x, end.y)
+		const baseIteration = Math.floor(iteration)
+		const transitionProgress = iteration - baseIteration
+
+		if (baseIteration === 0) {
+			if (transitionProgress === 0) {
+				// Pure straight line
+				p.line(start.x, start.y, end.x, end.y)
+				return
+			}
+
+			// Transitioning from straight line to Koch pattern
+			const straightPoints = [start, end]
+			const kochPoints = getKochPoints(start, end)
+
+			// Interpolate between straight line and Koch pattern
+			const interpolatedPoints = []
+			for (let i = 0; i < kochPoints.length; i++) {
+				const straightIndex = Math.min(i, straightPoints.length - 1)
+				const straightPoint = straightPoints[straightIndex]
+				const kochPoint = kochPoints[i]
+
+				interpolatedPoints.push({
+					x: p.lerp(straightPoint.x, kochPoint.x, transitionProgress),
+					y: p.lerp(straightPoint.y, kochPoint.y, transitionProgress),
+				})
+			}
+
+			// Draw interpolated segments
+			for (let i = 0; i < interpolatedPoints.length - 1; i++) {
+				p.line(
+					interpolatedPoints[i].x,
+					interpolatedPoints[i].y,
+					interpolatedPoints[i + 1].x,
+					interpolatedPoints[i + 1].y,
+				)
+			}
 			return
 		}
 
-		// Calculate the direction and length of the original line
-		const dx = end.x - start.x
-		const dy = end.y - start.y
-		const totalLength = Math.sqrt(dx * dx + dy * dy)
-		const segmentLength = totalLength / 4
-
-		// Unit vector in the direction of the line
-		const unitX = dx / totalLength
-		const unitY = dy / totalLength
-
-		// Perpendicular vectors for 90 degree turns
-		const leftX = -unitY // 90 degrees left
-		const leftY = unitX
-		const rightX = unitY // 90 degrees right
-		const rightY = -unitX
-
-		// Calculate the 8 points for Koch island pattern
-		let currentX = start.x
-		let currentY = start.y
-		const points = [{ x: currentX, y: currentY }]
-
-		// Move 1 segment forward
-		currentX += unitX * segmentLength
-		currentY += unitY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		// Turn 90 deg left, move 1 seg forward
-		currentX += leftX * segmentLength
-		currentY += leftY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		// Turn 90 deg right, move 1 seg forward
-		currentX += unitX * segmentLength
-		currentY += unitY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		// Turn right, move 1 seg forward
-		currentX += rightX * segmentLength
-		currentY += rightY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		// Move 1 more seg forward (continuing in same direction)
-		currentX += rightX * segmentLength
-		currentY += rightY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		// Turn left, move 1 seg forward
-		currentX += unitX * segmentLength
-		currentY += unitY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		// Turn left, move 1 seg forward
-		currentX += leftX * segmentLength
-		currentY += leftY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		// Turn right, move 1 seg forward (should reach end point)
-		currentX += unitX * segmentLength
-		currentY += unitY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		// Draw the 8 line segments
-		for (let i = 0; i < points.length - 1; i++) {
-			drawKochLine(points[i], points[i + 1], iteration - 1)
+		// For higher iterations, use the Koch points and recurse
+		const kochPoints = getKochPoints(start, end)
+		for (let i = 0; i < kochPoints.length - 1; i++) {
+			drawKochLine(kochPoints[i], kochPoints[i + 1], iteration - 1)
 		}
 	}
 
@@ -90,12 +118,11 @@ export const sketch3 = (p: p5) => {
 	}
 
 	p.draw = () => {
-		// Handle animation timing
-		const currentTime = p.millis()
-		if (currentTime - lastIterationTime > iterationDelay) {
-			currentIteration = (currentIteration + 1) % (maxIterations + 1)
-			lastIterationTime = currentTime
-		}
+		// Calculate smooth animation progress
+		if (startTime === 0) startTime = p.millis()
+		const currentTime = p.millis() - startTime
+		const cycleProgress = (currentTime % totalCycleTime) / totalCycleTime
+		const smoothIteration = cycleProgress * maxIterations
 
 		p.background(20)
 
@@ -119,7 +146,7 @@ export const sketch3 = (p: p5) => {
 		for (let i = 0; i < 4; i++) {
 			const start = corners[i]
 			const end = corners[(i + 1) % 4]
-			drawKochLine(start, end, currentIteration)
+			drawKochLine(start, end, smoothIteration)
 		}
 
 		// Display current iteration
@@ -127,7 +154,7 @@ export const sketch3 = (p: p5) => {
 		p.fill(255, 192)
 		p.textFont("monospace", 24)
 		p.textAlign(p.LEFT, p.BOTTOM)
-		p.text(`Iteration: ${currentIteration}`, 20, p.height - 20)
+		p.text(`Iteration: ${smoothIteration.toFixed(2)}`, 20, p.height - 20)
 	}
 
 	p.windowResized = () => {
