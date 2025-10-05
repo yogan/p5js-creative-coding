@@ -8,11 +8,18 @@
 	</head>
 	<body>
 		<nav class="sketch-menu">
-			<button class="sketch-btn active" data-sketch="sketch1">
-				Orbital Crescents
+			<button class="hamburger-btn" id="hamburger-btn" aria-label="Open menu">
+				<span class="hamburger-line"></span>
+				<span class="hamburger-line"></span>
+				<span class="hamburger-line"></span>
 			</button>
-			<button class="sketch-btn" data-sketch="sketch2">Particle Wave</button>
-			<button class="sketch-btn" data-sketch="sketch3">Koch Island</button>
+			<div class="menu-dropdown" id="menu-dropdown">
+				<button class="sketch-btn active" data-sketch="sketch1">
+					Orbital Crescents
+				</button>
+				<button class="sketch-btn" data-sketch="sketch2">Particle Wave</button>
+				<button class="sketch-btn" data-sketch="sketch3">Koch Island</button>
+			</div>
 		</nav>
 		<main>
 			<div id="sketch-container"></div>

@@ -14,6 +14,8 @@ let currentSketch = "sketch1"
 
 const sketchContainer = document.getElementById("sketch-container")
 const menuButtons = document.querySelectorAll(".sketch-btn")
+const hamburgerBtn = document.getElementById("hamburger-btn")
+const menuDropdown = document.getElementById("menu-dropdown")
 
 function getSketchFromURL(): keyof typeof sketches {
 	const urlParams = new URLSearchParams(window.location.search)
@@ -46,6 +48,34 @@ function loadSketch(sketchName: keyof typeof sketches) {
 	}
 }
 
+function toggleMenu() {
+	if (hamburgerBtn && menuDropdown) {
+		const isOpen = menuDropdown.classList.contains("open")
+		hamburgerBtn.classList.toggle("open", !isOpen)
+		menuDropdown.classList.toggle("open", !isOpen)
+	}
+}
+
+function closeMenu() {
+	if (hamburgerBtn && menuDropdown) {
+		hamburgerBtn.classList.remove("open")
+		menuDropdown.classList.remove("open")
+	}
+}
+
+hamburgerBtn?.addEventListener("click", toggleMenu)
+
+document.addEventListener("click", (event) => {
+	if (
+		hamburgerBtn &&
+		menuDropdown &&
+		!hamburgerBtn.contains(event.target as Node) &&
+		!menuDropdown.contains(event.target as Node)
+	) {
+		closeMenu()
+	}
+})
+
 menuButtons.forEach((button) => {
 	button.addEventListener("click", () => {
 		const sketchName = button.getAttribute(
@@ -53,6 +83,7 @@ menuButtons.forEach((button) => {
 		) as keyof typeof sketches
 		if (sketchName && sketchName !== currentSketch) {
 			loadSketch(sketchName)
+			closeMenu()
 		}
 	})
 })
