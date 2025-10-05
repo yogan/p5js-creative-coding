@@ -9,5 +9,7 @@ export default defineConfig({
 	build: {
 		outDir: "dist",
 		sourcemap: true,
+		chunkSizeWarningLimit: 1100, // p5js is huge, nothing we can do about it
+		rollupOptions: { output: { manualChunks: { p5: ["p5"] } } },
 	},
 })
