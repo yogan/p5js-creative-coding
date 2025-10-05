@@ -64,17 +64,6 @@ import { mySketch } from './sketches/mySketch'
 new p5(mySketch, sketchContainer)
 ```
 
-## NeoVim TypeScript Support
-
-For optimal TypeScript support in NeoVim, ensure you have:
-- A TypeScript language server (like `typescript-language-server`)
-- LSP client configured (like `nvim-lspconfig`)
-
-The project includes full type definitions for p5.js, so you'll get:
-- Autocomplete for all p5.js functions
-- Type checking and error highlighting
-- Hover documentation
-
 ## Development Tips
 
 - Sketches auto-reload when you save changes
