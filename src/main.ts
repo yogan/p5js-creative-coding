@@ -1,10 +1,12 @@
 import p5 from "p5"
 import { sketch1 } from "./sketches/sketch1"
 import { sketch2 } from "./sketches/sketch2"
+import { sketch3 } from "./sketches/sketch3"
 
 const sketches = {
 	sketch1,
 	sketch2,
+	sketch3,
 }
 
 let currentP5Instance: p5 | null = null
