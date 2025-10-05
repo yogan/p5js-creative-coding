@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"description": "Creative coding projects with p5.js and TypeScript",
 	"main": "src/main.ts",
+	"type": "module",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",
