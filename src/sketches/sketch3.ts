@@ -65,13 +65,19 @@ export const sketch3 = (p: p5) => {
 		start: { x: number; y: number },
 		end: { x: number; y: number },
 		iteration: number,
+		depth = 0,
 	) {
 		const baseIteration = Math.floor(iteration)
 		const transitionProgress = iteration - baseIteration
 
 		if (baseIteration === 0) {
 			if (transitionProgress === 0) {
-				// Pure straight line
+				// Pure straight line with rainbow color
+				const midX = (start.x + end.x) / 2
+				const midY = (start.y + end.y) / 2
+				const hue =
+					((midX / p.width + midY / p.height + p.millis() * 0.0001) * 360) % 360
+				p.stroke(hue, 80, 90)
 				p.line(start.x, start.y, end.x, end.y)
 				return
 			}
@@ -93,8 +99,18 @@ export const sketch3 = (p: p5) => {
 				})
 			}
 
-			// Draw interpolated segments
+			// Draw interpolated segments with rainbow colors
 			for (let i = 0; i < interpolatedPoints.length - 1; i++) {
+				const midX = (interpolatedPoints[i].x + interpolatedPoints[i + 1].x) / 2
+				const midY = (interpolatedPoints[i].y + interpolatedPoints[i + 1].y) / 2
+				const hue =
+					((midX / p.width +
+						midY / p.height +
+						depth * 30 +
+						p.millis() * 0.0001) *
+						360) %
+					360
+				p.stroke(hue, 80, 90)
 				p.line(
 					interpolatedPoints[i].x,
 					interpolatedPoints[i].y,
@@ -108,13 +124,14 @@ export const sketch3 = (p: p5) => {
 		// For higher iterations, use the Koch points and recurse
 		const kochPoints = getKochPoints(start, end)
 		for (let i = 0; i < kochPoints.length - 1; i++) {
-			drawKochLine(kochPoints[i], kochPoints[i + 1], iteration - 1)
+			drawKochLine(kochPoints[i], kochPoints[i + 1], iteration - 1, depth + 1)
 		}
 	}
 
 	p.setup = () => {
 		p.createCanvas(p.windowWidth, p.windowHeight)
-		p.background(20)
+		p.colorMode(p.HSB, 360, 100, 100)
+		p.background(220, 20, 10)
 	}
 
 	p.draw = () => {
@@ -124,9 +141,8 @@ export const sketch3 = (p: p5) => {
 		const cycleProgress = (currentTime % totalCycleTime) / totalCycleTime
 		const smoothIteration = cycleProgress * maxIterations
 
-		p.background(20)
+		p.background(220, 20, 10)
 
-		p.stroke(255)
 		p.noFill()
 		p.strokeWeight(2)
 
