@@ -2,8 +2,22 @@ import type p5 from "p5"
 
 export const sketch3 = (p: p5) => {
 	const maxIterations = 4
-	const totalCycleTime = 10000 // 10 seconds for full cycle
+	const animationTime = 15000 // 15 seconds for animation
+	const pauseTime = 5000 // 5 seconds pause at final iteration
+	const totalCycleTime = animationTime + pauseTime // 20 seconds total
 	let startTime = 0
+
+	const lineWidthByDepth = new Map([
+		[0, 6],
+		[1, 4],
+		[2, 2],
+		[3, 1],
+	])
+
+	function getLineWidth(depth: number, isPausePhase: boolean): number {
+		if (isPausePhase) return 1
+		return lineWidthByDepth.get(depth) ?? 8
+	}
 
 	function getKochPoints(
 		start: { x: number; y: number },
@@ -66,9 +80,12 @@ export const sketch3 = (p: p5) => {
 		end: { x: number; y: number },
 		iteration: number,
 		depth = 0,
+		isPausePhase = false,
 	) {
 		const baseIteration = Math.floor(iteration)
 		const transitionProgress = iteration - baseIteration
+
+		p.strokeWeight(getLineWidth(depth, isPausePhase))
 
 		if (baseIteration === 0) {
 			if (transitionProgress === 0) {
@@ -124,7 +141,13 @@ export const sketch3 = (p: p5) => {
 		// For higher iterations, use the Koch points and recurse
 		const kochPoints = getKochPoints(start, end)
 		for (let i = 0; i < kochPoints.length - 1; i++) {
-			drawKochLine(kochPoints[i], kochPoints[i + 1], iteration - 1, depth + 1)
+			drawKochLine(
+				kochPoints[i],
+				kochPoints[i + 1],
+				iteration - 1,
+				depth + 1,
+				isPausePhase,
+			)
 		}
 	}
 
@@ -135,16 +158,26 @@ export const sketch3 = (p: p5) => {
 	}
 
 	p.draw = () => {
-		// Calculate smooth animation progress
+		// Calculate smooth animation progress with pause at end
 		if (startTime === 0) startTime = p.millis()
 		const currentTime = p.millis() - startTime
-		const cycleProgress = (currentTime % totalCycleTime) / totalCycleTime
-		const smoothIteration = cycleProgress * maxIterations
+		const cyclePosition = currentTime % totalCycleTime
+
+		let smoothIteration: number
+		let isPausePhase: boolean
+		if (cyclePosition < animationTime) {
+			// Normal animation phase
+			const animationProgress = cyclePosition / animationTime
+			smoothIteration = animationProgress * maxIterations
+			isPausePhase = false
+		} else {
+			// Pause phase - stay at final iteration
+			smoothIteration = maxIterations
+			isPausePhase = true
+		}
 
 		p.background(220, 20, 10)
-
 		p.noFill()
-		p.strokeWeight(2)
 
 		const size = p.min(p.width, p.height) * 0.5
 		const centerX = p.width / 2
@@ -162,7 +195,7 @@ export const sketch3 = (p: p5) => {
 		for (let i = 0; i < 4; i++) {
 			const start = corners[i]
 			const end = corners[(i + 1) % 4]
-			drawKochLine(start, end, smoothIteration)
+			drawKochLine(start, end, smoothIteration, 0, isPausePhase)
 		}
 
 		// Display current iteration
