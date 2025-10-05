@@ -123,9 +123,10 @@ export const sketch3 = (p: p5) => {
 		}
 
 		// Display current iteration
-		p.fill(255)
+		p.noStroke()
+		p.fill(255, 192)
+		p.textFont("monospace", 24)
 		p.textAlign(p.LEFT, p.BOTTOM)
-		p.textFont("Courier New", 24)
 		p.text(`Iteration: ${currentIteration}`, 20, p.height - 20)
 	}
 
