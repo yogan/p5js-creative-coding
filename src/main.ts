@@ -1,18 +1,18 @@
 import p5 from "p5"
-import { sketch1 } from "./sketches/sketch1"
-import { sketch2 } from "./sketches/sketch2"
-import { sketch3 } from "./sketches/sketch3"
-import { sketch4 } from "./sketches/sketch4"
+import { dragonCurve } from "./sketches/dragon-curve"
+import { kochIsland } from "./sketches/koch-island"
+import { orbitalCrescents } from "./sketches/orbital-crescents"
+import { particleWave } from "./sketches/particle-wave"
 
 const sketches = {
-	sketch1,
-	sketch2,
-	sketch3,
-	sketch4,
+	"orbital-crescents": orbitalCrescents,
+	"particle-wave": particleWave,
+	"koch-island": kochIsland,
+	"dragon-curve": dragonCurve,
 }
 
 let currentP5Instance: p5 | null = null
-let currentSketch = "sketch1"
+let currentSketch = "orbital-crescents"
 
 const sketchContainer = document.getElementById("sketch-container")
 const menuButtons = document.querySelectorAll(".sketch-btn")
@@ -22,7 +22,7 @@ const menuDropdown = document.getElementById("menu-dropdown")
 function getSketchFromURL(): keyof typeof sketches {
 	const urlParams = new URLSearchParams(window.location.search)
 	const sketch = urlParams.get("sketch") as keyof typeof sketches
-	return sketch && sketch in sketches ? sketch : "sketch1"
+	return sketch && sketch in sketches ? sketch : "orbital-crescents"
 }
 
 function updateURL(sketchName: keyof typeof sketches) {

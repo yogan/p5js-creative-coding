@@ -1,6 +1,6 @@
 import type p5 from "p5"
 
-export const sketch1 = (p: p5) => {
+export const orbitalCrescents = (p: p5) => {
 	let angle = 0
 
 	p.setup = () => {

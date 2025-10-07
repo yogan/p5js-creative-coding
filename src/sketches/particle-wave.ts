@@ -1,6 +1,6 @@
 import type p5 from "p5"
 
-export const sketch2 = (p: p5) => {
+export const particleWave = (p: p5) => {
 	let time = 0
 	let particles: Particle[] = []
 

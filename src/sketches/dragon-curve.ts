@@ -2,7 +2,7 @@ import type p5 from "p5"
 import { DragonCurveGenerator } from "../fractals/dragon-curve"
 import type { Point } from "../turtle"
 
-export const sketch4 = (p: p5) => {
+export const dragonCurve = (p: p5) => {
 	const maxIterations = 20
 	const iterationDisplayFrames = 2 // 2 frames per iteration
 	const pauseFrames = 5 // 5 frames pause at final iteration
