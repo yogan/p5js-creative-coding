@@ -3,10 +3,10 @@ import { KochIslandGenerator } from "../fractals/koch-island"
 import type { Point } from "../turtle"
 
 export const sketch3 = (p: p5) => {
-	const maxIterations = 4
-	const animationTime = 15000 // 15 seconds for animation
+	const maxIterations = 3 // NOTE: 4 looks cool, but uses a lot of CPU/RAM
+	const animationTime = 10000 // 10 seconds for animation
 	const pauseTime = 5000 // 5 seconds pause at final iteration
-	const totalCycleTime = animationTime + pauseTime // 20 seconds total
+	const totalCycleTime = animationTime + pauseTime
 	let startTime = 0
 
 	const kochGenerator = new KochIslandGenerator()
