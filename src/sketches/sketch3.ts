@@ -1,4 +1,6 @@
 import type p5 from "p5"
+import { KochIslandGenerator } from "../fractals/koch-island"
+import type { Point } from "../turtle"
 
 export const sketch3 = (p: p5) => {
 	const maxIterations = 4
@@ -6,6 +8,8 @@ export const sketch3 = (p: p5) => {
 	const pauseTime = 5000 // 5 seconds pause at final iteration
 	const totalCycleTime = animationTime + pauseTime // 20 seconds total
 	let startTime = 0
+
+	const kochGenerator = new KochIslandGenerator()
 
 	const lineWidthByDepth = new Map([
 		[0, 6],
@@ -19,65 +23,9 @@ export const sketch3 = (p: p5) => {
 		return lineWidthByDepth.get(depth) ?? 8
 	}
 
-	function getKochPoints(
-		start: { x: number; y: number },
-		end: { x: number; y: number },
-	) {
-		const dx = end.x - start.x
-		const dy = end.y - start.y
-		const totalLength = Math.sqrt(dx * dx + dy * dy)
-		const segmentLength = totalLength / 4
-
-		const unitX = dx / totalLength
-		const unitY = dy / totalLength
-		const leftX = -unitY
-		const leftY = unitX
-		const rightX = unitY
-		const rightY = -unitX
-
-		let currentX = start.x
-		let currentY = start.y
-		const points = [{ x: currentX, y: currentY }]
-
-		// Build Koch pattern points
-		currentX += unitX * segmentLength
-		currentY += unitY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		currentX += leftX * segmentLength
-		currentY += leftY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		currentX += unitX * segmentLength
-		currentY += unitY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		currentX += rightX * segmentLength
-		currentY += rightY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		currentX += rightX * segmentLength
-		currentY += rightY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		currentX += unitX * segmentLength
-		currentY += unitY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		currentX += leftX * segmentLength
-		currentY += leftY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		currentX += unitX * segmentLength
-		currentY += unitY * segmentLength
-		points.push({ x: currentX, y: currentY })
-
-		return points
-	}
-
-	function drawKochLine(
-		start: { x: number; y: number },
-		end: { x: number; y: number },
+	function drawFractalSegment(
+		start: Point,
+		end: Point,
 		iteration: number,
 		depth = 0,
 		isPausePhase = false,
@@ -101,7 +49,8 @@ export const sketch3 = (p: p5) => {
 
 			// Transitioning from straight line to Koch pattern
 			const straightPoints = [start, end]
-			const kochPoints = getKochPoints(start, end)
+			const angle = Math.atan2(end.y - start.y, end.x - start.x)
+			const kochPoints = kochGenerator.generatePath({ start, end, angle }, 1)
 
 			// Interpolate between straight line and Koch pattern
 			const interpolatedPoints = []
@@ -138,12 +87,17 @@ export const sketch3 = (p: p5) => {
 			return
 		}
 
-		// For higher iterations, use the Koch points and recurse
-		const kochPoints = getKochPoints(start, end)
-		for (let i = 0; i < kochPoints.length - 1; i++) {
-			drawKochLine(
-				kochPoints[i],
-				kochPoints[i + 1],
+		// For higher iterations, use the fractal generator
+		const angle = Math.atan2(end.y - start.y, end.x - start.x)
+		const fractalPoints = kochGenerator.generatePath(
+			{ start, end, angle },
+			1, // Generate one level at a time to maintain proper depth tracking
+		)
+
+		for (let i = 0; i < fractalPoints.length - 1; i++) {
+			drawFractalSegment(
+				fractalPoints[i],
+				fractalPoints[i + 1],
 				iteration - 1,
 				depth + 1,
 				isPausePhase,
@@ -195,7 +149,7 @@ export const sketch3 = (p: p5) => {
 		for (let i = 0; i < 4; i++) {
 			const start = corners[i]
 			const end = corners[(i + 1) % 4]
-			drawKochLine(start, end, smoothIteration, 0, isPausePhase)
+			drawFractalSegment(start, end, smoothIteration, 0, isPausePhase)
 		}
 
 		// Display current iteration
