@@ -20,7 +20,7 @@ main {
 }
 
 .hamburger-btn {
-	background: rgba(255, 255, 255, 0.1);
+	background: rgba(100, 100, 100, 0.2);
 	border: 1px solid rgba(255, 255, 255, 0.2);
 	padding: 12px;
 	border-radius: 6px;
@@ -46,6 +46,7 @@ main {
 	background: rgba(255, 255, 255, 0.8);
 	transition: all 0.3s ease;
 	border-radius: 1px;
+	filter: drop-shadow(0 0 2px #000);
 }
 
 .hamburger-btn.open .hamburger-line:nth-child(1) {
