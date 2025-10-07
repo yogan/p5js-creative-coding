@@ -4,11 +4,11 @@ import type { Point } from "../turtle"
 
 export const sketch4 = (p: p5) => {
 	const maxIterations = 20
-	const iterationDisplayTime = 2000 // 2 seconds per iteration
-	const pauseTime = 5000 // 5 seconds pause at final iteration
+	const iterationDisplayFrames = 2 // 2 frames per iteration
+	const pauseFrames = 5 // 5 frames pause at final iteration
 	let dragonGenerator: DragonCurveGenerator
 	let currentIteration = 0
-	let lastIterationChangeTime = 0
+	let frameCounter = 0
 	let cachedPath: Point[] | null = null
 	let cachedIteration = -1
 	let cachedBounds: {
@@ -21,29 +21,28 @@ export const sketch4 = (p: p5) => {
 	p.setup = () => {
 		p.createCanvas(p.windowWidth, p.windowHeight)
 		p.colorMode(p.HSB, 360, 100, 100)
+		p.frameRate(1)
 
 		dragonGenerator = new DragonCurveGenerator()
-		lastIterationChangeTime = p.millis()
 	}
 
 	p.draw = () => {
 		p.background(240, 30, 5)
 
 		// Check if we need to advance to next iteration
-		const currentTime = p.millis()
-		const timeSinceLastChange = currentTime - lastIterationChangeTime
+		frameCounter++
 
 		if (currentIteration < maxIterations) {
-			if (timeSinceLastChange >= iterationDisplayTime) {
+			if (frameCounter >= iterationDisplayFrames) {
 				currentIteration++
-				lastIterationChangeTime = currentTime
+				frameCounter = 0
 				cachedIteration = -1 // Force recalculation
 			}
 		} else {
 			// Pause at final iteration
-			if (timeSinceLastChange >= pauseTime) {
+			if (frameCounter >= pauseFrames) {
 				currentIteration = 0
-				lastIterationChangeTime = currentTime
+				frameCounter = 0
 				cachedIteration = -1 // Force recalculation
 			}
 		}
