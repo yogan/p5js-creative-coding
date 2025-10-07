@@ -1,5 +1,6 @@
 import p5 from "p5"
 import { dragonCurve } from "./sketches/dragon-curve"
+import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
 import { kochIsland } from "./sketches/koch-island"
 import { orbitalCrescents } from "./sketches/orbital-crescents"
 import { particleWave } from "./sketches/particle-wave"
@@ -9,6 +10,7 @@ const sketches = {
 	"particle-wave": particleWave,
 	"koch-island": kochIsland,
 	"dragon-curve": dragonCurve,
+	"dragon-curve-anim": dragonCurveAnim,
 }
 
 let currentP5Instance: p5 | null = null
