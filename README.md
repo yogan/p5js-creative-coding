@@ -72,3 +72,10 @@ new p5(mySketch, sketchContainer)
 - The canvas is centered and styled with a dark background
 
 Happy coding! 🎨
+
+## Resources
+
+- [p5.js Reference](https://p5js.org/reference/)
+- [The Nature of Code](https://natureofcode.com/) - Great book for creative
+  coding concepts, all samples are based on p5.js
+- [Gorilla Sun's Tutorials](https://www.gorillasun.de/tag/tutorial)
