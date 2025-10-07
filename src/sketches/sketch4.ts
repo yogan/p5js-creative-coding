@@ -1,5 +1,6 @@
 import type p5 from "p5"
 import { DragonCurveGenerator } from "../fractals/dragon-curve"
+import type { Point } from "../turtle"
 
 export const sketch4 = (p: p5) => {
 	const maxIterations = 20
@@ -8,9 +9,14 @@ export const sketch4 = (p: p5) => {
 	let dragonGenerator: DragonCurveGenerator
 	let currentIteration = 0
 	let lastIterationChangeTime = 0
-	let cachedPath: any = null
+	let cachedPath: Point[] | null = null
 	let cachedIteration = -1
-	let cachedBounds: any = null
+	let cachedBounds: {
+		minX: number
+		maxX: number
+		minY: number
+		maxY: number
+	} | null = null
 
 	p.setup = () => {
 		p.createCanvas(p.windowWidth, p.windowHeight)
@@ -63,6 +69,8 @@ export const sketch4 = (p: p5) => {
 			cachedBounds = { minX, maxX, minY, maxY }
 			cachedIteration = currentIteration
 		}
+
+		if (!cachedPath || !cachedBounds) return
 
 		// Calculate scale to fit in viewport with padding
 		const width = cachedBounds.maxX - cachedBounds.minX
