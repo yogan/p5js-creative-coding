@@ -1,37 +1,39 @@
 import { FractalGenerator, type Point, type TurtleInstruction } from "../turtle"
 
 export class DragonCurveGenerator extends FractalGenerator {
-	protected generateInstructions(iteration: number): TurtleInstruction[] {
+	private generateDragonSequence(iteration: number): string {
 		if (iteration === 0) {
-			return [{ type: "forward", value: 1 }]
+			return "F"
 		}
 
-		const previousInstructions = this.generateInstructions(iteration - 1)
-		const newInstructions: TurtleInstruction[] = []
+		const prev = this.generateDragonSequence(iteration - 1)
+		const reversed = prev.split("").reverse().join("")
+		const flipped = reversed
+			.replace(/L/g, "X")
+			.replace(/R/g, "L")
+			.replace(/X/g, "R")
 
-		// Dragon curve: X -> X+YF+, Y -> -FX-Y
-		// Simplified for forward-only instructions: F -> F+F++F-F
-		for (const instruction of previousInstructions) {
-			if (instruction.type === "forward") {
-				newInstructions.push(
-					{ type: "forward", value: instruction.value / Math.sqrt(2) },
-					{ type: "turn", value: 45 },
-					{ type: "forward", value: instruction.value / Math.sqrt(2) },
-					{ type: "turn", value: 90 },
-					{ type: "forward", value: instruction.value / Math.sqrt(2) },
-					{ type: "turn", value: -135 },
-					{ type: "forward", value: instruction.value / Math.sqrt(2) },
-				)
-			} else {
-				newInstructions.push(instruction)
+		return `${prev}R${flipped}`
+	}
+
+	protected generateInstructions(iteration: number): TurtleInstruction[] {
+		const sequence = this.generateDragonSequence(iteration)
+		const instructions: TurtleInstruction[] = []
+
+		for (const char of sequence) {
+			if (char === "F") {
+				instructions.push({ type: "forward", value: 1 })
+			} else if (char === "R") {
+				instructions.push({ type: "turn", value: 90 })
+			} else if (char === "L") {
+				instructions.push({ type: "turn", value: -90 })
 			}
 		}
 
-		return newInstructions
+		return instructions
 	}
 
 	getInitialSegments(): { start: Point; end: Point; angle: number }[] {
-		// Single line segment for the dragon curve
 		return [{ start: { x: 0, y: 0 }, end: { x: 1, y: 0 }, angle: 0 }]
 	}
 }
