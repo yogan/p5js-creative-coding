@@ -9,6 +9,7 @@ import p5 from "p5"
 export const dragonCurveAnim = (p: p5) => {
 	const segments: Segment[] = []
 	let endSegment: Segment
+	let rotationSpeed = 0.1
 
 	p.setup = () => {
 		p.createCanvas(p.windowWidth, p.windowHeight)
@@ -33,6 +34,8 @@ export const dragonCurveAnim = (p: p5) => {
 
 		endSegment = newSegments[0]
 		segments.push(...newSegments)
+
+		rotationSpeed *= 0.9
 	}
 
 	p.draw = () => {
@@ -92,7 +95,7 @@ export const dragonCurveAnim = (p: p5) => {
 		}
 
 		update() {
-			this.angle += 0.1
+			this.angle += rotationSpeed
 			if (this.angle >= p.HALF_PI) {
 				this.angle = p.HALF_PI
 				this.completed = true
