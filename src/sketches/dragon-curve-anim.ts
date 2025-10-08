@@ -13,8 +13,9 @@ export const dragonCurveAnim = (p: p5) => {
 	p.setup = () => {
 		p.createCanvas(p.windowWidth, p.windowHeight)
 
-		const a = p.createVector(400, 240)
-		const b = p.createVector(400, 220)
+		const length = Math.min(p.width, p.height) / 40
+		const a = p.createVector(p.width / 2, p.height / 2 + length / 2)
+		const b = p.createVector(p.width / 2, p.height / 2 - length / 2)
 
 		endSegment = new Segment(a, b, b, true)
 		segments.push(endSegment)
