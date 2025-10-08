@@ -21,6 +21,8 @@ export const dragonCurveAnim = (p: p5) => {
 	}
 
 	p.mousePressed = () => {
+		if (segments.some((seg) => !seg.complete)) return
+
 		const newSegments: Segment[] = []
 
 		for (const seg of segments) {
