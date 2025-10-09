@@ -1,6 +1,7 @@
 import type p5 from "p5"
 
 let currentRule = 30
+let currentWidth = 10
 
 export const setRule = (rule: number) => {
 	currentRule = Math.max(0, Math.min(255, rule))
@@ -8,8 +9,13 @@ export const setRule = (rule: number) => {
 
 export const getCurrentRule = () => currentRule
 
+export const setWidth = (width: number) => {
+	currentWidth = Math.max(5, Math.min(50, width))
+}
+
+export const getCurrentWidth = () => currentWidth
+
 export const elementaryCellularAutomaton = (p: p5) => {
-	const width = 20
 	const padding = 10
 	let cells: number[] = []
 	let y = 0
@@ -20,25 +26,25 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 		y = padding
 
-		const cols = Math.floor((p.width - padding * 2) / width)
+		const cols = Math.floor((p.width - padding * 2) / getCurrentWidth())
 		cells = new Array(cols).fill(0)
 		cells[Math.floor(cols / 2)] = 1 // set the middle cell to 1
 	}
 
 	p.draw = () => {
 		// center horizontally
-		p.translate(p.width / 2 - (cells.length * width) / 2, 0)
+		p.translate(p.width / 2 - (cells.length * getCurrentWidth()) / 2, 0)
 
 		for (let i = 0; i < cells.length; i++) {
 			p.fill(255 * (1 - cells[i]))
-			p.rect(i * width, y, width, width)
+			p.rect(i * getCurrentWidth(), y, getCurrentWidth(), getCurrentWidth())
 		}
 
 		cells = nextGeneration(cells)
-		y += width
+		y += getCurrentWidth()
 
 		// stop when bottom of canvas is reached
-		if (y + width + padding >= p.height) p.noLoop()
+		if (y + getCurrentWidth() + padding >= p.height) p.noLoop()
 
 		// reset translation and show rule number
 		p.resetMatrix()
@@ -50,15 +56,15 @@ export const elementaryCellularAutomaton = (p: p5) => {
 		const textWidth = p.textWidth(ruleText)
 
 		// calculate box dimensions as multiples of cell width
-		const boxWidthCells = Math.ceil((textWidth + 20) / width)
-		const boxHeightCells = Math.ceil(34 / width) // text height + padding
-		const boxWidth = boxWidthCells * width
-		const boxHeight = boxHeightCells * width
+		const boxWidthCells = Math.ceil((textWidth + 20) / getCurrentWidth())
+		const boxHeightCells = Math.ceil(34 / getCurrentWidth()) // text height + padding
+		const boxWidth = boxWidthCells * getCurrentWidth()
+		const boxHeight = boxHeightCells * getCurrentWidth()
 
 		// calculate the actual grid position (same logic as the cells)
-		const cols = Math.floor((p.width - padding * 2) / width)
-		const gridStartX = p.width / 2 - (cols * width) / 2
-		const gridEndX = gridStartX + cols * width
+		const cols = Math.floor((p.width - padding * 2) / getCurrentWidth())
+		const gridStartX = p.width / 2 - (cols * getCurrentWidth()) / 2
+		const gridEndX = gridStartX + cols * getCurrentWidth()
 
 		// position box to align with rightmost cells
 		const boxX = gridEndX - boxWidth

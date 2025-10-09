@@ -5,7 +5,9 @@ import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
 import {
 	elementaryCellularAutomaton,
 	getCurrentRule,
+	getCurrentWidth,
 	setRule,
+	setWidth,
 } from "./sketches/elementary-cellular-automaton"
 import { kochIsland } from "./sketches/koch-island"
 import { orbitalCrescents } from "./sketches/orbital-crescents"
@@ -50,7 +52,23 @@ function getRuleFromURL(): number {
 	return 30
 }
 
-function updateURL(sketchName: keyof typeof sketches, rule?: number) {
+function getWidthFromURL(): number {
+	const urlParams = new URLSearchParams(window.location.search)
+	const width = urlParams.get("width")
+	if (width) {
+		const widthNumber = parseInt(width, 10)
+		if (!Number.isNaN(widthNumber) && widthNumber >= 5 && widthNumber <= 50) {
+			return widthNumber
+		}
+	}
+	return 10
+}
+
+function updateURL(
+	sketchName: keyof typeof sketches,
+	rule?: number,
+	width?: number,
+) {
 	const url = new URL(window.location.href)
 	url.searchParams.set("sketch", sketchName)
 	if (rule !== undefined && sketchName === "elementary-cellular-automaton") {
@@ -58,10 +76,19 @@ function updateURL(sketchName: keyof typeof sketches, rule?: number) {
 	} else {
 		url.searchParams.delete("rule")
 	}
+	if (width !== undefined && sketchName === "elementary-cellular-automaton") {
+		url.searchParams.set("width", width.toString())
+	} else {
+		url.searchParams.delete("width")
+	}
 	window.history.replaceState({}, "", url)
 }
 
-function loadSketch(sketchName: keyof typeof sketches, rule?: number) {
+function loadSketch(
+	sketchName: keyof typeof sketches,
+	rule?: number,
+	width?: number,
+) {
 	if (currentP5Instance) {
 		currentP5Instance.remove()
 	}
@@ -71,7 +98,7 @@ function loadSketch(sketchName: keyof typeof sketches, rule?: number) {
 		currentP5Instance = new p5(sketchFn, sketchContainer)
 
 		currentSketch = sketchName
-		updateURL(sketchName, rule)
+		updateURL(sketchName, rule, width)
 
 		menuButtons.forEach((btn) => {
 			btn.classList.toggle(
@@ -82,11 +109,17 @@ function loadSketch(sketchName: keyof typeof sketches, rule?: number) {
 
 		if (sketchName === "elementary-cellular-automaton") {
 			const currentRule = rule ?? getRuleFromURL()
+			const currentWidth = width ?? getWidthFromURL()
 			setRule(currentRule)
+			setWidth(currentWidth)
 			if (!sketchConfig) {
 				sketchConfig = new ElementaryCellularAutomatonConfig(sketchMenu)
 				sketchConfig.setOnRuleChange(() => {
-					loadSketch(currentSketch as keyof typeof sketches, getCurrentRule())
+					loadSketch(
+						currentSketch as keyof typeof sketches,
+						getCurrentRule(),
+						getCurrentWidth(),
+					)
 				})
 			}
 			sketchConfig.show()
@@ -149,7 +182,7 @@ menuButtons.forEach((button) => {
 		) as keyof typeof sketches
 		if (sketchName && sketchName !== currentSketch) {
 			if (sketchName === "elementary-cellular-automaton") {
-				loadSketch(sketchName, getCurrentRule())
+				loadSketch(sketchName, getCurrentRule(), getCurrentWidth())
 			} else {
 				loadSketch(sketchName)
 			}
@@ -160,7 +193,7 @@ menuButtons.forEach((button) => {
 
 const initialSketch = getSketchFromURL()
 if (initialSketch === "elementary-cellular-automaton") {
-	loadSketch(initialSketch, getRuleFromURL())
+	loadSketch(initialSketch, getRuleFromURL(), getWidthFromURL())
 } else {
 	loadSketch(initialSketch)
 }
