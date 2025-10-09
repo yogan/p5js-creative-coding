@@ -1,6 +1,7 @@
 import p5 from "p5"
 import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
+import { elementaryCellularAutomaton } from "./sketches/elementary-cellular-automaton"
 import { kochIsland } from "./sketches/koch-island"
 import { orbitalCrescents } from "./sketches/orbital-crescents"
 import { particleWave } from "./sketches/particle-wave"
@@ -11,6 +12,7 @@ const sketches = {
 	"koch-island": kochIsland,
 	"dragon-curve": dragonCurve,
 	"dragon-curve-anim": dragonCurveAnim,
+	"elementary-cellular-automaton": elementaryCellularAutomaton,
 }
 
 let currentP5Instance: p5 | null = null
