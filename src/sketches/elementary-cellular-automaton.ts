@@ -106,21 +106,21 @@ export const elementaryCellularAutomaton = (p: p5) => {
 	p.keyPressed = (event: KeyboardEvent) => {
 		if (event.key === "ArrowLeft") {
 			setRule((getCurrentRule() + 255) % 256)
-			restart(true)
+			restart({ updateUrl: true })
 		} else if (event.key === "ArrowRight") {
 			setRule((getCurrentRule() + 1) % 256)
-			restart(true)
+			restart({ updateUrl: true })
 		} else if (event.key === "ArrowUp") {
 			const nextWidth = getNextWidth(getCurrentWidth())
 			if (nextWidth !== getCurrentWidth()) {
 				setWidth(nextWidth)
-				restart(true)
+				restart({ updateUrl: true })
 			}
 		} else if (event.key === "ArrowDown") {
 			const previousWidth = getPreviousWidth(getCurrentWidth())
 			if (previousWidth !== getCurrentWidth()) {
 				setWidth(previousWidth)
-				restart(true)
+				restart({ updateUrl: true })
 			}
 		} else if (event.key === "Space") {
 			restart()
@@ -158,7 +158,7 @@ export const elementaryCellularAutomaton = (p: p5) => {
 		return 50
 	}
 
-	const restart = (updateUrl = false) => {
+	const restart = ({ updateUrl = false } = {}) => {
 		if (updateUrl)
 			updateCellularAutomatonURL(
 				getCurrentRule(),
