@@ -108,3 +108,156 @@ main {
 	background: rgba(255, 255, 255, 0.15);
 	color: white;
 }
+
+.control-btn {
+	background: rgba(100, 100, 100, 0.2);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	padding: 12px;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	backdrop-filter: blur(10px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 40px;
+	height: 40px;
+	margin-top: 8px;
+	position: relative;
+	z-index: 10000;
+}
+
+.control-btn:hover {
+	background: rgba(255, 255, 255, 0.15);
+}
+
+.control-btn svg {
+	color: rgba(255, 255, 255, 0.8);
+	filter: drop-shadow(0 0 2px #000);
+}
+
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.7);
+	backdrop-filter: blur(5px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 10001;
+}
+
+.modal-content {
+	background: rgba(20, 20, 20, 0.95);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 12px;
+	padding: 24px;
+	min-width: 300px;
+	backdrop-filter: blur(20px);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h3 {
+	margin: 0 0 16px 0;
+	color: white;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.modal-content p {
+	margin: 0 0 16px 0;
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 14px;
+}
+
+.input-group {
+	margin-bottom: 24px;
+}
+
+.rule-slider {
+	width: 100%;
+	height: 6px;
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 3px;
+	outline: none;
+	margin-bottom: 12px;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.rule-slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	background: rgba(255, 255, 255, 0.9);
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	transition: all 0.2s ease;
+}
+
+.rule-slider::-webkit-slider-thumb:hover {
+	background: white;
+	transform: scale(1.1);
+}
+
+.rule-slider::-moz-range-thumb {
+	width: 20px;
+	height: 20px;
+	background: rgba(255, 255, 255, 0.9);
+	border-radius: 50%;
+	cursor: pointer;
+	border: none;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	transition: all 0.2s ease;
+}
+
+.rule-slider::-moz-range-thumb:hover {
+	background: white;
+	transform: scale(1.1);
+}
+
+.rule-preview {
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 12px;
+	font-style: italic;
+}
+
+.modal-buttons {
+	display: flex;
+	gap: 12px;
+	justify-content: flex-end;
+}
+
+.modal-btn {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 500;
+	transition: all 0.2s ease;
+}
+
+.cancel-btn {
+	background: rgba(255, 255, 255, 0.1);
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.cancel-btn:hover {
+	background: rgba(255, 255, 255, 0.15);
+	color: white;
+}
+
+.apply-btn {
+	background: rgba(255, 255, 255, 0.9);
+	color: #1a1a1a;
+}
+
+.apply-btn:hover {
+	background: white;
+}

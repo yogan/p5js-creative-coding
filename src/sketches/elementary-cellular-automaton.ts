@@ -1,5 +1,13 @@
 import type p5 from "p5"
 
+let currentRule = 30
+
+export const setRule = (rule: number) => {
+	currentRule = Math.max(0, Math.min(255, rule))
+}
+
+export const getCurrentRule = () => currentRule
+
 export const elementaryCellularAutomaton = (p: p5) => {
 	const width = 20
 	const padding = 10
@@ -42,12 +50,12 @@ export const elementaryCellularAutomaton = (p: p5) => {
 	const nextGeneration = (current: number[]): number[] => {
 		const next = new Array(current.length).fill(0)
 		for (let i = 1; i < current.length - 1; i++)
-			next[i] = applyRule(30, current[i - 1], current[i], current[i + 1])
+			next[i] = applyRule(current[i - 1], current[i], current[i + 1])
 		return next
 	}
 
-	const applyRule = (rule: number, l: number, c: number, r: number): number => {
+	const applyRule = (l: number, c: number, r: number): number => {
 		const index = (l << 2) | (c << 1) | r
-		return (rule >> index) & 1
+		return (getCurrentRule() >> index) & 1
 	}
 }

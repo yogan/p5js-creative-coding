@@ -1,4 +1,5 @@
 import p5 from "p5"
+import { ElementaryCellularAutomatonConfig } from "./components/elementary-cellular-automaton-config"
 import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
 import { elementaryCellularAutomaton } from "./sketches/elementary-cellular-automaton"
@@ -22,6 +23,9 @@ const sketchContainer = document.getElementById("sketch-container")
 const menuButtons = document.querySelectorAll(".sketch-btn")
 const hamburgerBtn = document.getElementById("hamburger-btn")
 const menuDropdown = document.getElementById("menu-dropdown")
+const sketchMenu = document.querySelector(".sketch-menu") as HTMLElement
+
+let sketchConfig: ElementaryCellularAutomatonConfig | null = null
 
 function getSketchFromURL(): keyof typeof sketches {
 	const urlParams = new URLSearchParams(window.location.search)
@@ -41,7 +45,9 @@ function loadSketch(sketchName: keyof typeof sketches) {
 	}
 
 	if (sketchContainer) {
-		currentP5Instance = new p5(sketches[sketchName], sketchContainer)
+		const sketchFn = sketches[sketchName]
+		currentP5Instance = new p5(sketchFn, sketchContainer)
+
 		currentSketch = sketchName
 		updateURL(sketchName)
 
@@ -51,6 +57,20 @@ function loadSketch(sketchName: keyof typeof sketches) {
 				btn.getAttribute("data-sketch") === sketchName,
 			)
 		})
+
+		if (sketchName === "elementary-cellular-automaton") {
+			if (!sketchConfig) {
+				sketchConfig = new ElementaryCellularAutomatonConfig(sketchMenu)
+				sketchConfig.setOnRuleChange(() => {
+					loadSketch(currentSketch as keyof typeof sketches)
+				})
+			}
+			sketchConfig.show()
+		} else {
+			if (sketchConfig) {
+				sketchConfig.hide()
+			}
+		}
 	}
 }
 
