@@ -230,6 +230,28 @@ main {
 	text-align: center;
 }
 
+.grid-select {
+	width: 100%;
+	background: #444;
+	color: #fff;
+	outline: 1px solid #555;
+	border: none;
+	border-right: 8px solid transparent;
+	padding: 8px;
+	border-radius: 4px;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.grid-select:hover {
+	background: #555;
+	outline-color: #666;
+}
+
+.grid-select:focus {
+	outline-color: #777;
+}
+
 .rule-controls {
 	display: flex;
 	align-items: center;

@@ -1,6 +1,8 @@
 import {
 	getCurrentRule,
 	getCurrentWidth,
+	getGridColor,
+	setGridColor,
 	setRule,
 	setWidth,
 } from "../sketches/elementary-cellular-automaton"
@@ -17,6 +19,7 @@ export class ElementaryCellularAutomatonConfig {
 	private ruleMinusBtn: HTMLElement | null = null
 	private widthPlusBtn: HTMLElement | null = null
 	private widthMinusBtn: HTMLElement | null = null
+	private gridSelect: HTMLSelectElement | null = null
 	private onRuleChange?: () => void
 
 	constructor(private container: HTMLElement) {
@@ -68,6 +71,19 @@ export class ElementaryCellularAutomatonConfig {
 						<button type="button" class="rule-btn" id="width-plus">+</button>
 					</div>
 				</div>
+				<div class="input-group">
+					<div class="input-header">
+						<span class="input-label">Grid</span>
+					</div>
+					<select id="grid-select" class="grid-select">
+						<option value="off">Off</option>
+						<option value="light" selected="selected">Light Gray</option>
+						<option value="dark">Dark Gray</option>
+						<option value="black">Black</option>
+					</select>
+				</div>
+			</div>
+				</div>
 
 			</div>
 		`
@@ -88,6 +104,9 @@ export class ElementaryCellularAutomatonConfig {
 		this.ruleMinusBtn = this.modal.querySelector("#rule-minus")
 		this.widthPlusBtn = this.modal.querySelector("#width-plus")
 		this.widthMinusBtn = this.modal.querySelector("#width-minus")
+		this.gridSelect = this.modal.querySelector(
+			"#grid-select",
+		) as HTMLSelectElement
 	}
 
 	private attachEventListeners() {
@@ -138,6 +157,10 @@ export class ElementaryCellularAutomatonConfig {
 			this.decrementWidth()
 			this.applyChanges()
 		})
+
+		this.gridSelect?.addEventListener("change", () => {
+			this.applyChanges()
+		})
 	}
 
 	private openModal() {
@@ -146,14 +169,17 @@ export class ElementaryCellularAutomatonConfig {
 			this.ruleInput &&
 			this.rulePreview &&
 			this.widthInput &&
-			this.widthPreview
+			this.widthPreview &&
+			this.gridSelect
 		) {
 			const rule = getCurrentRule()
 			const width = getCurrentWidth()
+			const gridColor = getGridColor()
 			this.ruleInput.value = rule.toString()
 			this.rulePreview.textContent = rule.toString()
 			this.widthInput.value = width.toString()
 			this.widthPreview.textContent = `${width} px`
+			this.gridSelect.value = gridColor
 			this.modal.style.display = "flex"
 			this.ruleInput.focus()
 		}
@@ -218,11 +244,13 @@ export class ElementaryCellularAutomatonConfig {
 	}
 
 	private applyChanges() {
-		if (this.ruleInput && this.widthInput) {
+		if (this.ruleInput && this.widthInput && this.gridSelect) {
 			const newRule = parseInt(this.ruleInput.value, 10)
 			const newWidth = parseInt(this.widthInput.value, 10)
+			const gridColor = this.gridSelect.value
 			setRule(newRule)
 			setWidth(newWidth)
+			setGridColor(gridColor)
 			this.onRuleChange?.()
 		}
 	}

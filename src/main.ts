@@ -6,6 +6,8 @@ import {
 	elementaryCellularAutomaton,
 	getCurrentRule,
 	getCurrentWidth,
+	getGridColor,
+	setGridColor,
 	setRule,
 	setWidth,
 } from "./sketches/elementary-cellular-automaton"
@@ -64,10 +66,18 @@ function getWidthFromURL(): number {
 	return 10
 }
 
+function getGridFromURL(): string {
+	const urlParams = new URLSearchParams(window.location.search)
+	const grid = urlParams.get("grid")
+	const validGridColors = ["off", "light", "dark", "black"]
+	return grid && validGridColors.includes(grid) ? grid : "light"
+}
+
 function updateURL(
 	sketchName: keyof typeof sketches,
 	rule?: number,
 	width?: number,
+	grid?: string,
 ) {
 	const url = new URL(window.location.href)
 	url.searchParams.set("sketch", sketchName)
@@ -81,6 +91,11 @@ function updateURL(
 	} else {
 		url.searchParams.delete("width")
 	}
+	if (grid !== undefined && sketchName === "elementary-cellular-automaton") {
+		url.searchParams.set("grid", grid)
+	} else {
+		url.searchParams.delete("grid")
+	}
 	window.history.replaceState({}, "", url)
 }
 
@@ -88,6 +103,7 @@ function loadSketch(
 	sketchName: keyof typeof sketches,
 	rule?: number,
 	width?: number,
+	grid?: string,
 ) {
 	if (currentP5Instance) {
 		currentP5Instance.remove()
@@ -98,7 +114,7 @@ function loadSketch(
 		currentP5Instance = new p5(sketchFn, sketchContainer)
 
 		currentSketch = sketchName
-		updateURL(sketchName, rule, width)
+		updateURL(sketchName, rule, width, grid)
 
 		menuButtons.forEach((btn) => {
 			btn.classList.toggle(
@@ -110,8 +126,10 @@ function loadSketch(
 		if (sketchName === "elementary-cellular-automaton") {
 			const currentRule = rule ?? getRuleFromURL()
 			const currentWidth = width ?? getWidthFromURL()
+			const currentGrid = grid ?? getGridFromURL()
 			setRule(currentRule)
 			setWidth(currentWidth)
+			setGridColor(currentGrid)
 			if (!sketchConfig) {
 				sketchConfig = new ElementaryCellularAutomatonConfig(sketchMenu)
 				sketchConfig.setOnRuleChange(() => {
@@ -119,6 +137,7 @@ function loadSketch(
 						currentSketch as keyof typeof sketches,
 						getCurrentRule(),
 						getCurrentWidth(),
+						getGridColor(),
 					)
 				})
 			}
@@ -182,7 +201,12 @@ menuButtons.forEach((button) => {
 		) as keyof typeof sketches
 		if (sketchName && sketchName !== currentSketch) {
 			if (sketchName === "elementary-cellular-automaton") {
-				loadSketch(sketchName, getCurrentRule(), getCurrentWidth())
+				loadSketch(
+					sketchName,
+					getCurrentRule(),
+					getCurrentWidth(),
+					getGridColor(),
+				)
 			} else {
 				loadSketch(sketchName)
 			}
@@ -193,7 +217,12 @@ menuButtons.forEach((button) => {
 
 const initialSketch = getSketchFromURL()
 if (initialSketch === "elementary-cellular-automaton") {
-	loadSketch(initialSketch, getRuleFromURL(), getWidthFromURL())
+	loadSketch(
+		initialSketch,
+		getRuleFromURL(),
+		getWidthFromURL(),
+		getGridFromURL(),
+	)
 } else {
 	loadSketch(initialSketch)
 }

@@ -2,6 +2,7 @@ import type p5 from "p5"
 
 let currentRule = 30
 let currentWidth = 10
+let gridColor = "light"
 
 export const setRule = (rule: number) => {
 	currentRule = Math.max(0, Math.min(255, rule))
@@ -14,6 +15,12 @@ export const setWidth = (width: number) => {
 }
 
 export const getCurrentWidth = () => currentWidth
+
+export const setGridColor = (color: string) => {
+	gridColor = color
+}
+
+export const getGridColor = () => gridColor
 
 export const elementaryCellularAutomaton = (p: p5) => {
 	const padding = 10
@@ -37,6 +44,22 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 		for (let i = 0; i < cells.length; i++) {
 			p.fill(255 * (1 - cells[i]))
+			if (gridColor === "off") {
+				p.noStroke()
+			} else {
+				p.strokeWeight(0.5)
+				switch (gridColor) {
+					case "black":
+						p.stroke(0)
+						break
+					case "dark":
+						p.stroke(100)
+						break
+					case "light":
+						p.stroke(200)
+						break
+				}
+			}
 			p.rect(i * getCurrentWidth(), y, getCurrentWidth(), getCurrentWidth())
 		}
 
@@ -75,11 +98,28 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 		// center text in the box
 		p.fill(0)
+		p.noStroke()
 		p.text(ruleText, boxX + boxWidth / 2, boxY + boxHeight / 2)
+	}
+
+	p.keyPressed = (event: KeyboardEvent) => {
+		if (event.key === "ArrowLeft") {
+			setRule(getCurrentRule() - (1 % 256))
+			restart()
+		} else if (event.key === "ArrowRight") {
+			setRule(getCurrentRule() + (1 % 256))
+			restart()
+		} else if (event.key === "Space") {
+			restart()
+		}
 	}
 
 	p.windowResized = () => {
 		p.resizeCanvas(p.windowWidth, p.windowHeight)
+		restart()
+	}
+
+	const restart = () => {
 		p.setup() // reinitialize everything
 		p.loop() // restart the draw loop
 	}
