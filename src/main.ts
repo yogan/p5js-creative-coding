@@ -26,6 +26,7 @@ let currentSketch = "orbital-crescents"
 const sketchContainer = document.getElementById("sketch-container")
 const menuButtons = document.querySelectorAll(".sketch-btn")
 const hamburgerBtn = document.getElementById("hamburger-btn")
+const menuOverlay = document.getElementById("menu-overlay")
 const menuDropdown = document.getElementById("menu-dropdown")
 const sketchMenu = document.querySelector(".sketch-menu") as HTMLElement
 
@@ -98,17 +99,27 @@ function loadSketch(sketchName: keyof typeof sketches, rule?: number) {
 }
 
 function toggleMenu() {
-	if (hamburgerBtn && menuDropdown) {
-		const isOpen = menuDropdown.classList.contains("open")
+	if (hamburgerBtn && menuOverlay) {
+		const isOpen = menuOverlay.classList.contains("open")
 		hamburgerBtn.classList.toggle("open", !isOpen)
-		menuDropdown.classList.toggle("open", !isOpen)
+		menuOverlay.classList.toggle("open", !isOpen)
+		if (!isOpen) {
+			menuOverlay.style.display = "block"
+		} else {
+			setTimeout(() => {
+				menuOverlay.style.display = "none"
+			}, 200)
+		}
 	}
 }
 
 function closeMenu() {
-	if (hamburgerBtn && menuDropdown) {
+	if (hamburgerBtn && menuOverlay) {
 		hamburgerBtn.classList.remove("open")
-		menuDropdown.classList.remove("open")
+		menuOverlay.classList.remove("open")
+		setTimeout(() => {
+			menuOverlay.style.display = "none"
+		}, 200)
 	}
 }
 
@@ -121,6 +132,12 @@ document.addEventListener("click", (event) => {
 		!hamburgerBtn.contains(event.target as Node) &&
 		!menuDropdown.contains(event.target as Node)
 	) {
+		closeMenu()
+	}
+})
+
+menuOverlay?.addEventListener("click", (event) => {
+	if (event.target === menuOverlay) {
 		closeMenu()
 	}
 })

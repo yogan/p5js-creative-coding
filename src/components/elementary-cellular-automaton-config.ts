@@ -10,6 +10,8 @@ export class ElementaryCellularAutomatonConfig {
 	private rulePreview: HTMLElement | null = null
 	private cancelBtn: HTMLElement | null = null
 	private applyBtn: HTMLElement | null = null
+	private rulePlusBtn: HTMLElement | null = null
+	private ruleMinusBtn: HTMLElement | null = null
 	private onRuleChange?: () => void
 
 	constructor(private container: HTMLElement) {
@@ -41,7 +43,11 @@ export class ElementaryCellularAutomatonConfig {
 				<h3>Configure Rule</h3>
 				<p>Set the cellular automaton rule (0-255):</p>
 				<div class="input-group">
-					<input type="range" id="rule-input" min="0" max="255" value="30" class="rule-slider">
+					<div class="rule-controls">
+						<button type="button" class="rule-btn" id="rule-minus">−</button>
+						<input type="range" id="rule-input" min="0" max="255" value="30" class="rule-slider">
+						<button type="button" class="rule-btn" id="rule-plus">+</button>
+					</div>
 					<span class="rule-preview" id="rule-preview">Rule 30</span>
 				</div>
 				<div class="modal-buttons">
@@ -60,6 +66,8 @@ export class ElementaryCellularAutomatonConfig {
 		this.rulePreview = this.modal.querySelector("#rule-preview")
 		this.cancelBtn = this.modal.querySelector("#cancel-rule")
 		this.applyBtn = this.modal.querySelector("#apply-rule")
+		this.rulePlusBtn = this.modal.querySelector("#rule-plus")
+		this.ruleMinusBtn = this.modal.querySelector("#rule-minus")
 	}
 
 	private attachEventListeners() {
@@ -94,6 +102,14 @@ export class ElementaryCellularAutomatonConfig {
 				this.closeModal()
 			}
 		})
+
+		this.rulePlusBtn?.addEventListener("click", () => {
+			this.incrementRule()
+		})
+
+		this.ruleMinusBtn?.addEventListener("click", () => {
+			this.decrementRule()
+		})
 	}
 
 	private openModal() {
@@ -117,6 +133,24 @@ export class ElementaryCellularAutomatonConfig {
 			const value = parseInt(this.ruleInput.value, 10)
 			const clampedValue = Math.max(0, Math.min(255, value))
 			this.rulePreview.textContent = `Rule ${clampedValue}`
+		}
+	}
+
+	private incrementRule() {
+		if (this.ruleInput) {
+			const currentValue = parseInt(this.ruleInput.value, 10)
+			const newValue = Math.min(255, currentValue + 1)
+			this.ruleInput.value = newValue.toString()
+			this.updateRulePreview()
+		}
+	}
+
+	private decrementRule() {
+		if (this.ruleInput) {
+			const currentValue = parseInt(this.ruleInput.value, 10)
+			const newValue = Math.max(0, currentValue - 1)
+			this.ruleInput.value = newValue.toString()
+			this.updateRulePreview()
 		}
 	}
 
