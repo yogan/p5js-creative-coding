@@ -11,7 +11,7 @@ export const setRule = (rule: number) => {
 export const getCurrentRule = () => currentRule
 
 export const setWidth = (width: number) => {
-	currentWidth = Math.max(5, Math.min(50, width))
+	currentWidth = Math.max(2, Math.min(100, width))
 }
 
 export const getCurrentWidth = () => currentWidth

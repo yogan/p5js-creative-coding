@@ -59,7 +59,7 @@ function getWidthFromURL(): number {
 	const width = urlParams.get("width")
 	if (width) {
 		const widthNumber = parseInt(width, 10)
-		if (!Number.isNaN(widthNumber) && widthNumber >= 5 && widthNumber <= 50) {
+		if (!Number.isNaN(widthNumber) && widthNumber >= 2 && widthNumber <= 100) {
 			return widthNumber
 		}
 	}

@@ -67,7 +67,7 @@ export class ElementaryCellularAutomatonConfig {
 					</div>
 					<div class="rule-controls">
 						<button type="button" class="rule-btn" id="width-minus">−</button>
-						<input type="range" id="width-input" min="5" max="50" value="10" class="rule-slider">
+						<input type="range" id="width-input" min="2" max="100" value="10" class="rule-slider">
 						<button type="button" class="rule-btn" id="width-plus">+</button>
 					</div>
 				</div>
@@ -82,9 +82,6 @@ export class ElementaryCellularAutomatonConfig {
 						<option value="black">Black</option>
 					</select>
 				</div>
-			</div>
-				</div>
-
 			</div>
 		`
 
@@ -220,7 +217,7 @@ export class ElementaryCellularAutomatonConfig {
 	private updateWidthPreview() {
 		if (this.widthInput && this.widthPreview) {
 			const value = parseInt(this.widthInput.value, 10)
-			const clampedValue = Math.max(5, Math.min(50, value))
+			const clampedValue = Math.max(2, Math.min(100, value))
 			this.widthPreview.textContent = `${clampedValue} px`
 		}
 	}
@@ -228,7 +225,7 @@ export class ElementaryCellularAutomatonConfig {
 	private incrementWidth() {
 		if (this.widthInput) {
 			const currentValue = parseInt(this.widthInput.value, 10)
-			const newValue = Math.min(50, currentValue + 1)
+			const newValue = Math.min(100, currentValue + 1)
 			this.widthInput.value = newValue.toString()
 			this.updateWidthPreview()
 		}
@@ -237,7 +234,7 @@ export class ElementaryCellularAutomatonConfig {
 	private decrementWidth() {
 		if (this.widthInput) {
 			const currentValue = parseInt(this.widthInput.value, 10)
-			const newValue = Math.max(5, currentValue - 1)
+			const newValue = Math.max(2, currentValue - 1)
 			this.widthInput.value = newValue.toString()
 			this.updateWidthPreview()
 		}
