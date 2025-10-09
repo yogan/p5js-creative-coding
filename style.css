@@ -20,13 +20,12 @@ main {
 }
 
 .hamburger-btn {
-	background: rgba(100, 100, 100, 0.2);
-	border: 1px solid rgba(255, 255, 255, 0.2);
+	background: #2a2a2a;
+	border: 1px solid #444;
 	padding: 12px;
 	border-radius: 6px;
 	cursor: pointer;
 	transition: all 0.2s ease;
-	backdrop-filter: blur(10px);
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -37,16 +36,16 @@ main {
 }
 
 .hamburger-btn:hover {
-	background: rgba(255, 255, 255, 0.15);
+	background: #3a3a3a;
+	border-color: #555;
 }
 
 .hamburger-line {
 	width: 18px;
 	height: 2px;
-	background: rgba(255, 255, 255, 0.8);
+	background: #fff;
 	transition: all 0.3s ease;
 	border-radius: 1px;
-	filter: drop-shadow(0 0 2px #000);
 }
 
 .hamburger-btn.open .hamburger-line:nth-child(1) {
@@ -63,12 +62,11 @@ main {
 
 .menu-dropdown {
 	position: absolute;
-	top: 50px;
-	left: 0;
-	background: rgba(0, 0, 0, 0.8);
-	border: 1px solid rgba(255, 255, 255, 0.2);
+	top: 0;
+	left: 50px;
+	background: #2a2a2a;
+	border: 1px solid #444;
 	border-radius: 6px;
-	backdrop-filter: blur(10px);
 	padding: 8px;
 	display: flex;
 	flex-direction: column;
@@ -76,20 +74,20 @@ main {
 	min-width: 150px;
 	opacity: 0;
 	visibility: hidden;
-	transform: translateY(-10px);
+	transform: translateX(-10px);
 	transition: all 0.2s ease;
 }
 
 .menu-dropdown.open {
 	opacity: 1;
 	visibility: visible;
-	transform: translateY(0);
+	transform: translateX(0);
 }
 
 .sketch-btn {
 	background: transparent;
 	border: none;
-	color: rgba(255, 255, 255, 0.8);
+	color: #ccc;
 	padding: 8px 12px;
 	border-radius: 4px;
 	cursor: pointer;
@@ -100,23 +98,22 @@ main {
 }
 
 .sketch-btn:hover {
-	background: rgba(255, 255, 255, 0.1);
+	background: #3a3a3a;
 	color: white;
 }
 
 .sketch-btn.active {
-	background: rgba(255, 255, 255, 0.15);
+	background: #4a4a4a;
 	color: white;
 }
 
 .control-btn {
-	background: rgba(100, 100, 100, 0.2);
-	border: 1px solid rgba(255, 255, 255, 0.2);
-	padding: 12px;
+	background: #2a2a2a;
+	border: 1px solid #444;
+	padding: 6px;
 	border-radius: 6px;
 	cursor: pointer;
 	transition: all 0.2s ease;
-	backdrop-filter: blur(10px);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -128,12 +125,12 @@ main {
 }
 
 .control-btn:hover {
-	background: rgba(255, 255, 255, 0.15);
+	background: #3a3a3a;
+	border-color: #555;
 }
 
 .control-btn svg {
-	color: rgba(255, 255, 255, 0.8);
-	filter: drop-shadow(0 0 2px #000);
+	color: #fff;
 }
 
 .modal-overlay {
@@ -143,21 +140,22 @@ main {
 	width: 100%;
 	height: 100%;
 	background: rgba(0, 0, 0, 0.7);
-	backdrop-filter: blur(5px);
 	display: flex;
-	justify-content: center;
-	align-items: center;
+	justify-content: flex-start;
+	align-items: flex-start;
 	z-index: 10001;
+	padding: 20px;
 }
 
 .modal-content {
-	background: rgba(20, 20, 20, 0.95);
-	border: 1px solid rgba(255, 255, 255, 0.2);
+	background: #2a2a2a;
+	border: 1px solid #444;
 	border-radius: 12px;
 	padding: 24px;
 	min-width: 300px;
-	backdrop-filter: blur(20px);
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+	margin-left: 70px;
+	margin-top: 48px;
 }
 
 .modal-content h3 {
@@ -169,7 +167,7 @@ main {
 
 .modal-content p {
 	margin: 0 0 16px 0;
-	color: rgba(255, 255, 255, 0.8);
+	color: #ccc;
 	font-size: 14px;
 }
 
@@ -180,7 +178,7 @@ main {
 .rule-slider {
 	width: 100%;
 	height: 6px;
-	background: rgba(255, 255, 255, 0.2);
+	background: #444;
 	border-radius: 3px;
 	outline: none;
 	margin-bottom: 12px;
@@ -193,7 +191,7 @@ main {
 	appearance: none;
 	width: 20px;
 	height: 20px;
-	background: rgba(255, 255, 255, 0.9);
+	background: #fff;
 	border-radius: 50%;
 	cursor: pointer;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -201,14 +199,14 @@ main {
 }
 
 .rule-slider::-webkit-slider-thumb:hover {
-	background: white;
+	background: #f0f0f0;
 	transform: scale(1.1);
 }
 
 .rule-slider::-moz-range-thumb {
 	width: 20px;
 	height: 20px;
-	background: rgba(255, 255, 255, 0.9);
+	background: #fff;
 	border-radius: 50%;
 	cursor: pointer;
 	border: none;
@@ -217,12 +215,12 @@ main {
 }
 
 .rule-slider::-moz-range-thumb:hover {
-	background: white;
+	background: #f0f0f0;
 	transform: scale(1.1);
 }
 
 .rule-preview {
-	color: rgba(255, 255, 255, 0.6);
+	color: #999;
 	font-size: 12px;
 	font-style: italic;
 }
@@ -244,20 +242,20 @@ main {
 }
 
 .cancel-btn {
-	background: rgba(255, 255, 255, 0.1);
-	color: rgba(255, 255, 255, 0.8);
+	background: #444;
+	color: #ccc;
 }
 
 .cancel-btn:hover {
-	background: rgba(255, 255, 255, 0.15);
+	background: #555;
 	color: white;
 }
 
 .apply-btn {
-	background: rgba(255, 255, 255, 0.9);
+	background: #fff;
 	color: #1a1a1a;
 }
 
 .apply-btn:hover {
-	background: white;
+	background: #f0f0f0;
 }
