@@ -2,7 +2,11 @@ import p5 from "p5"
 import { ElementaryCellularAutomatonConfig } from "./components/elementary-cellular-automaton-config"
 import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
-import { elementaryCellularAutomaton } from "./sketches/elementary-cellular-automaton"
+import {
+	elementaryCellularAutomaton,
+	getCurrentRule,
+	setRule,
+} from "./sketches/elementary-cellular-automaton"
 import { kochIsland } from "./sketches/koch-island"
 import { orbitalCrescents } from "./sketches/orbital-crescents"
 import { particleWave } from "./sketches/particle-wave"
@@ -33,13 +37,30 @@ function getSketchFromURL(): keyof typeof sketches {
 	return sketch && sketch in sketches ? sketch : "orbital-crescents"
 }
 
-function updateURL(sketchName: keyof typeof sketches) {
+function getRuleFromURL(): number {
+	const urlParams = new URLSearchParams(window.location.search)
+	const rule = urlParams.get("rule")
+	if (rule) {
+		const ruleNumber = parseInt(rule, 10)
+		if (!Number.isNaN(ruleNumber) && ruleNumber >= 0 && ruleNumber <= 255) {
+			return ruleNumber
+		}
+	}
+	return 30
+}
+
+function updateURL(sketchName: keyof typeof sketches, rule?: number) {
 	const url = new URL(window.location.href)
 	url.searchParams.set("sketch", sketchName)
+	if (rule !== undefined && sketchName === "elementary-cellular-automaton") {
+		url.searchParams.set("rule", rule.toString())
+	} else {
+		url.searchParams.delete("rule")
+	}
 	window.history.replaceState({}, "", url)
 }
 
-function loadSketch(sketchName: keyof typeof sketches) {
+function loadSketch(sketchName: keyof typeof sketches, rule?: number) {
 	if (currentP5Instance) {
 		currentP5Instance.remove()
 	}
@@ -49,7 +70,7 @@ function loadSketch(sketchName: keyof typeof sketches) {
 		currentP5Instance = new p5(sketchFn, sketchContainer)
 
 		currentSketch = sketchName
-		updateURL(sketchName)
+		updateURL(sketchName, rule)
 
 		menuButtons.forEach((btn) => {
 			btn.classList.toggle(
@@ -59,10 +80,12 @@ function loadSketch(sketchName: keyof typeof sketches) {
 		})
 
 		if (sketchName === "elementary-cellular-automaton") {
+			const currentRule = rule ?? getRuleFromURL()
+			setRule(currentRule)
 			if (!sketchConfig) {
 				sketchConfig = new ElementaryCellularAutomatonConfig(sketchMenu)
 				sketchConfig.setOnRuleChange(() => {
-					loadSketch(currentSketch as keyof typeof sketches)
+					loadSketch(currentSketch as keyof typeof sketches, getCurrentRule())
 				})
 			}
 			sketchConfig.show()
@@ -108,10 +131,19 @@ menuButtons.forEach((button) => {
 			"data-sketch",
 		) as keyof typeof sketches
 		if (sketchName && sketchName !== currentSketch) {
-			loadSketch(sketchName)
+			if (sketchName === "elementary-cellular-automaton") {
+				loadSketch(sketchName, getCurrentRule())
+			} else {
+				loadSketch(sketchName)
+			}
 			closeMenu()
 		}
 	})
 })
 
-loadSketch(getSketchFromURL())
+const initialSketch = getSketchFromURL()
+if (initialSketch === "elementary-cellular-automaton") {
+	loadSketch(initialSketch, getRuleFromURL())
+} else {
+	loadSketch(initialSketch)
+}
