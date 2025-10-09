@@ -16,6 +16,7 @@ import { orbitalCrescents } from "./sketches/orbital-crescents"
 import { particleWave } from "./sketches/particle-wave"
 import {
 	CELLULAR_AUTOMATON_SKETCH,
+	type GridColor,
 	getGridFromURL,
 	getRuleFromURL,
 	getSketchFromURL,
@@ -49,7 +50,7 @@ function loadSketch(
 	sketchName: SketchName,
 	rule?: number,
 	width?: number,
-	grid?: string,
+	grid?: GridColor,
 ) {
 	if (currentP5Instance) {
 		currentP5Instance.remove()

@@ -6,6 +6,7 @@ import {
 	setRule,
 	setWidth,
 } from "../sketches/elementary-cellular-automaton"
+import type { GridColor } from "../utils/url-params"
 
 export class ElementaryCellularAutomatonConfig {
 	private controlBtn: HTMLElement | null = null
@@ -244,7 +245,7 @@ export class ElementaryCellularAutomatonConfig {
 		if (this.ruleInput && this.widthInput && this.gridSelect) {
 			const newRule = parseInt(this.ruleInput.value, 10)
 			const newWidth = parseInt(this.widthInput.value, 10)
-			const gridColor = this.gridSelect.value
+			const gridColor = this.gridSelect.value as GridColor
 			setRule(newRule)
 			setWidth(newWidth)
 			setGridColor(gridColor)

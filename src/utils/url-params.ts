@@ -3,6 +3,8 @@
 export const CELLULAR_AUTOMATON_SKETCH =
 	"elementary-cellular-automaton" as const
 
+export type GridColor = "off" | "light" | "dark" | "black"
+
 export type SketchName =
 	| "orbital-crescents"
 	| "particle-wave"
@@ -49,18 +51,20 @@ export function getWidthFromURL(): number {
 	return 10
 }
 
-export function getGridFromURL(): string {
+export function getGridFromURL(): GridColor {
 	const urlParams = new URLSearchParams(window.location.search)
 	const grid = urlParams.get("grid")
-	const validGridColors = ["off", "light", "dark", "black"]
-	return grid && validGridColors.includes(grid) ? grid : "light"
+	const validGridColors: GridColor[] = ["off", "light", "dark", "black"]
+	return grid && validGridColors.includes(grid as GridColor)
+		? (grid as GridColor)
+		: "light"
 }
 
 export function updateURL(
 	sketchName: SketchName,
 	rule?: number,
 	width?: number,
-	grid?: string,
+	grid?: GridColor,
 ) {
 	const url = new URL(window.location.href)
 	url.searchParams.set("sketch", sketchName)
@@ -86,7 +90,7 @@ export function updateURL(
 export function updateCellularAutomatonURL(
 	rule: number,
 	width: number,
-	grid: string,
+	grid: GridColor,
 ) {
 	updateURL(CELLULAR_AUTOMATON_SKETCH, rule, width, grid)
 }

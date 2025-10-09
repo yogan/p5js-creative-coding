@@ -1,9 +1,9 @@
 import type p5 from "p5"
-import { updateCellularAutomatonURL } from "../utils/url-params"
+import { type GridColor, updateCellularAutomatonURL } from "../utils/url-params"
 
 let currentRule = 30
 let currentWidth = 10
-let gridColor = "light"
+let gridColor: GridColor = "light"
 
 export const setRule = (rule: number) => {
 	currentRule = Math.max(0, Math.min(255, rule))
@@ -17,11 +17,11 @@ export const setWidth = (width: number) => {
 
 export const getCurrentWidth = () => currentWidth
 
-export const setGridColor = (color: string) => {
+export const setGridColor = (color: GridColor) => {
 	gridColor = color
 }
 
-export const getGridColor = () => gridColor
+export const getGridColor = (): GridColor => gridColor
 
 export const elementaryCellularAutomaton = (p: p5) => {
 	const padding = 10
