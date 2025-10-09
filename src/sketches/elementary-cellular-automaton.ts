@@ -135,25 +135,25 @@ export const elementaryCellularAutomaton = (p: p5) => {
 	}
 
 	p.keyPressed = (event: KeyboardEvent) => {
-		if (event.key === "ArrowLeft") {
+		if (event.code === "ArrowLeft") {
 			setRule((getCurrentRule() + 255) % 256)
 			restart({ updateUrl: true })
-		} else if (event.key === "ArrowRight") {
+		} else if (event.code === "ArrowRight") {
 			setRule((getCurrentRule() + 1) % 256)
 			restart({ updateUrl: true })
-		} else if (event.key === "ArrowUp") {
+		} else if (event.code === "ArrowUp") {
 			const nextWidth = getNextWidth(getCurrentWidth())
 			if (nextWidth !== getCurrentWidth()) {
 				setWidth(nextWidth)
 				restart({ updateUrl: true })
 			}
-		} else if (event.key === "ArrowDown") {
+		} else if (event.code === "ArrowDown") {
 			const previousWidth = getPreviousWidth(getCurrentWidth())
 			if (previousWidth !== getCurrentWidth()) {
 				setWidth(previousWidth)
 				restart({ updateUrl: true })
 			}
-		} else if (event.key === "Space") {
+		} else if (event.code === "Space") {
 			restart()
 		}
 	}
