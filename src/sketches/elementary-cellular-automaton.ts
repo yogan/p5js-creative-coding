@@ -110,6 +110,18 @@ export const elementaryCellularAutomaton = (p: p5) => {
 		} else if (event.key === "ArrowRight") {
 			setRule((getCurrentRule() + 1) % 256)
 			restart(true)
+		} else if (event.key === "ArrowUp") {
+			const nextWidth = getNextWidth(getCurrentWidth())
+			if (nextWidth !== getCurrentWidth()) {
+				setWidth(nextWidth)
+				restart(true)
+			}
+		} else if (event.key === "ArrowDown") {
+			const previousWidth = getPreviousWidth(getCurrentWidth())
+			if (previousWidth !== getCurrentWidth()) {
+				setWidth(previousWidth)
+				restart(true)
+			}
 		} else if (event.key === "Space") {
 			restart()
 		}
@@ -118,6 +130,32 @@ export const elementaryCellularAutomaton = (p: p5) => {
 	p.windowResized = () => {
 		p.resizeCanvas(p.windowWidth, p.windowHeight)
 		restart()
+	}
+
+	const getNextWidth = (currentWidth: number): number => {
+		if (currentWidth < 10) {
+			return Math.min(10, currentWidth + 1)
+		} else if (currentWidth < 20) {
+			return Math.min(20, currentWidth + 2)
+		} else if (currentWidth < 50) {
+			return Math.min(50, currentWidth + 5)
+		} else if (currentWidth < 100) {
+			return Math.min(100, currentWidth + 10)
+		}
+		return 100
+	}
+
+	const getPreviousWidth = (currentWidth: number): number => {
+		if (currentWidth <= 10) {
+			return Math.max(2, currentWidth - 1)
+		} else if (currentWidth <= 20) {
+			return Math.max(10, currentWidth - 2)
+		} else if (currentWidth <= 50) {
+			return Math.max(20, currentWidth - 5)
+		} else if (currentWidth <= 100) {
+			return Math.max(50, currentWidth - 10)
+		}
+		return 50
 	}
 
 	const restart = (updateUrl = false) => {
