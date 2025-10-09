@@ -1,9 +1,14 @@
 import type p5 from "p5"
-import { type GridColor, updateCellularAutomatonURL } from "../utils/url-params"
+import {
+	type GridColor,
+	type InitialCells,
+	updateCellularAutomatonURL,
+} from "../utils/url-params"
 
 let currentRule = 30
 let currentWidth = 10
 let gridColor: GridColor = "light"
+let initialCells: InitialCells = "middle"
 
 export const setRule = (rule: number) => {
 	currentRule = Math.max(0, Math.min(255, rule))
@@ -23,6 +28,12 @@ export const setGridColor = (color: GridColor) => {
 
 export const getGridColor = (): GridColor => gridColor
 
+export const setInitialCells = (config: InitialCells) => {
+	initialCells = config
+}
+
+export const getInitialCells = (): InitialCells => initialCells
+
 export const elementaryCellularAutomaton = (p: p5) => {
 	const padding = p.windowWidth < 600 ? 2 : 10
 	let cells: number[] = []
@@ -36,7 +47,23 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 		const cols = Math.floor((p.width - padding * 2) / getCurrentWidth())
 		cells = new Array(cols).fill(0)
-		cells[Math.floor(cols / 2)] = 1 // set the middle cell to 1
+
+		// Initialize cells based on initial cells configuration
+		switch (getInitialCells()) {
+			case "middle":
+				cells[Math.floor(cols / 2)] = 1
+				break
+			case "alternating":
+				for (let i = 0; i < cols; i += 2) {
+					cells[i] = 1
+				}
+				break
+			case "random":
+				for (let i = 0; i < cols; i++) {
+					cells[i] = p.random() < 0.5 ? 1 : 0
+				}
+				break
+		}
 	}
 
 	p.draw = () => {
@@ -73,7 +100,7 @@ export const elementaryCellularAutomaton = (p: p5) => {
 		// reset translation and show rule number
 		p.resetMatrix()
 		p.textAlign(p.CENTER, p.CENTER)
-		p.textSize(p.windowWidth < 600 ? 16 : 20)
+		p.textSize(p.windowWidth < 600 ? 14 : 20)
 
 		// create grid-aligned background box for text
 		const ruleText = `Rule ${getCurrentRule()}`
@@ -168,6 +195,7 @@ export const elementaryCellularAutomaton = (p: p5) => {
 				getCurrentRule(),
 				getCurrentWidth(),
 				getGridColor(),
+				getInitialCells(),
 			)
 
 		p.setup() // reinitialize everything

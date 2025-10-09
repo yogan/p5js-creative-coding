@@ -5,6 +5,8 @@ export const CELLULAR_AUTOMATON_SKETCH =
 
 export type GridColor = "off" | "light" | "dark" | "black"
 
+export type InitialCells = "middle" | "alternating" | "random"
+
 export type SketchName =
 	| "orbital-crescents"
 	| "particle-wave"
@@ -60,11 +62,21 @@ export function getGridFromURL(): GridColor {
 		: "light"
 }
 
+export function getStartFromURL(): InitialCells {
+	const urlParams = new URLSearchParams(window.location.search)
+	const start = urlParams.get("start")
+	const validInitialCells: InitialCells[] = ["middle", "alternating", "random"]
+	return start && validInitialCells.includes(start as InitialCells)
+		? (start as InitialCells)
+		: "middle"
+}
+
 export function updateURL(
 	sketchName: SketchName,
 	rule?: number,
 	width?: number,
 	grid?: GridColor,
+	start?: InitialCells,
 ) {
 	const url = new URL(window.location.href)
 	url.searchParams.set("sketch", sketchName)
@@ -83,6 +95,11 @@ export function updateURL(
 	} else {
 		url.searchParams.delete("grid")
 	}
+	if (start !== undefined && sketchName === CELLULAR_AUTOMATON_SKETCH) {
+		url.searchParams.set("start", start)
+	} else {
+		url.searchParams.delete("start")
+	}
 	window.history.replaceState({}, "", url)
 }
 
@@ -91,6 +108,7 @@ export function updateCellularAutomatonURL(
 	rule: number,
 	width: number,
 	grid: GridColor,
+	start: InitialCells,
 ) {
-	updateURL(CELLULAR_AUTOMATON_SKETCH, rule, width, grid)
+	updateURL(CELLULAR_AUTOMATON_SKETCH, rule, width, grid, start)
 }

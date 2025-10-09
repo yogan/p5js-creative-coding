@@ -7,7 +7,9 @@ import {
 	getCurrentRule,
 	getCurrentWidth,
 	getGridColor,
+	getInitialCells,
 	setGridColor,
+	setInitialCells,
 	setRule,
 	setWidth,
 } from "./sketches/elementary-cellular-automaton"
@@ -20,7 +22,9 @@ import {
 	getGridFromURL,
 	getRuleFromURL,
 	getSketchFromURL,
+	getStartFromURL,
 	getWidthFromURL,
+	type InitialCells,
 	type SketchName,
 	updateURL,
 } from "./utils/url-params"
@@ -51,6 +55,7 @@ function loadSketch(
 	rule?: number,
 	width?: number,
 	grid?: GridColor,
+	start?: InitialCells,
 ) {
 	if (currentP5Instance) {
 		currentP5Instance.remove()
@@ -61,7 +66,7 @@ function loadSketch(
 		currentP5Instance = new p5(sketchFn, sketchContainer)
 
 		currentSketch = sketchName
-		updateURL(sketchName, rule, width, grid)
+		updateURL(sketchName, rule, width, grid, start)
 
 		menuButtons.forEach((btn) => {
 			btn.classList.toggle(
@@ -74,9 +79,11 @@ function loadSketch(
 			const currentRule = rule ?? getRuleFromURL()
 			const currentWidth = width ?? getWidthFromURL()
 			const currentGrid = grid ?? getGridFromURL()
+			const currentStart = start ?? getStartFromURL()
 			setRule(currentRule)
 			setWidth(currentWidth)
 			setGridColor(currentGrid)
+			setInitialCells(currentStart)
 			if (!sketchConfig) {
 				sketchConfig = new ElementaryCellularAutomatonConfig(sketchMenu)
 				sketchConfig.setOnRuleChange(() => {
@@ -85,6 +92,7 @@ function loadSketch(
 						getCurrentRule(),
 						getCurrentWidth(),
 						getGridColor(),
+						getInitialCells(),
 					)
 				})
 			}
@@ -151,6 +159,7 @@ menuButtons.forEach((button) => {
 					getCurrentRule(),
 					getCurrentWidth(),
 					getGridColor(),
+					getInitialCells(),
 				)
 			} else {
 				loadSketch(sketchName)
@@ -167,6 +176,7 @@ if (initialSketch === CELLULAR_AUTOMATON_SKETCH) {
 		getRuleFromURL(),
 		getWidthFromURL(),
 		getGridFromURL(),
+		getStartFromURL(),
 	)
 } else {
 	loadSketch(initialSketch)
