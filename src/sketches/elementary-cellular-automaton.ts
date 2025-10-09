@@ -39,6 +39,37 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 		// stop when bottom of canvas is reached
 		if (y + width + padding >= p.height) p.noLoop()
+
+		// reset translation and show rule number
+		p.resetMatrix()
+		p.textAlign(p.CENTER, p.CENTER)
+		p.textSize(20)
+
+		// create grid-aligned background box for text
+		const ruleText = `Rule ${getCurrentRule()}`
+		const textWidth = p.textWidth(ruleText)
+
+		// calculate box dimensions as multiples of cell width
+		const boxWidthCells = Math.ceil((textWidth + 20) / width)
+		const boxHeightCells = Math.ceil(34 / width) // text height + padding
+		const boxWidth = boxWidthCells * width
+		const boxHeight = boxHeightCells * width
+
+		// calculate the actual grid position (same logic as the cells)
+		const cols = Math.floor((p.width - padding * 2) / width)
+		const gridStartX = p.width / 2 - (cols * width) / 2
+		const gridEndX = gridStartX + cols * width
+
+		// position box to align with rightmost cells
+		const boxX = gridEndX - boxWidth
+		const boxY = padding
+
+		p.fill(255, 200) // semi-transparent white background
+		p.rect(boxX, boxY, boxWidth, boxHeight)
+
+		// center text in the box
+		p.fill(0)
+		p.text(ruleText, boxX + boxWidth / 2, boxY + boxHeight / 2)
 	}
 
 	p.windowResized = () => {
