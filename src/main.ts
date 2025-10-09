@@ -14,14 +14,23 @@ import {
 import { kochIsland } from "./sketches/koch-island"
 import { orbitalCrescents } from "./sketches/orbital-crescents"
 import { particleWave } from "./sketches/particle-wave"
+import {
+	CELLULAR_AUTOMATON_SKETCH,
+	getGridFromURL,
+	getRuleFromURL,
+	getSketchFromURL,
+	getWidthFromURL,
+	type SketchName,
+	updateURL,
+} from "./utils/url-params"
 
-const sketches = {
+const sketches: Record<SketchName, (p: p5) => void> = {
 	"orbital-crescents": orbitalCrescents,
 	"particle-wave": particleWave,
 	"koch-island": kochIsland,
 	"dragon-curve": dragonCurve,
 	"dragon-curve-anim": dragonCurveAnim,
-	"elementary-cellular-automaton": elementaryCellularAutomaton,
+	[CELLULAR_AUTOMATON_SKETCH]: elementaryCellularAutomaton,
 }
 
 let currentP5Instance: p5 | null = null
@@ -36,71 +45,8 @@ const sketchMenu = document.querySelector(".sketch-menu") as HTMLElement
 
 let sketchConfig: ElementaryCellularAutomatonConfig | null = null
 
-function getSketchFromURL(): keyof typeof sketches {
-	const urlParams = new URLSearchParams(window.location.search)
-	const sketch = urlParams.get("sketch") as keyof typeof sketches
-	return sketch && sketch in sketches ? sketch : "orbital-crescents"
-}
-
-function getRuleFromURL(): number {
-	const urlParams = new URLSearchParams(window.location.search)
-	const rule = urlParams.get("rule")
-	if (rule) {
-		const ruleNumber = parseInt(rule, 10)
-		if (!Number.isNaN(ruleNumber) && ruleNumber >= 0 && ruleNumber <= 255) {
-			return ruleNumber
-		}
-	}
-	return 30
-}
-
-function getWidthFromURL(): number {
-	const urlParams = new URLSearchParams(window.location.search)
-	const width = urlParams.get("width")
-	if (width) {
-		const widthNumber = parseInt(width, 10)
-		if (!Number.isNaN(widthNumber) && widthNumber >= 2 && widthNumber <= 100) {
-			return widthNumber
-		}
-	}
-	return 10
-}
-
-function getGridFromURL(): string {
-	const urlParams = new URLSearchParams(window.location.search)
-	const grid = urlParams.get("grid")
-	const validGridColors = ["off", "light", "dark", "black"]
-	return grid && validGridColors.includes(grid) ? grid : "light"
-}
-
-function updateURL(
-	sketchName: keyof typeof sketches,
-	rule?: number,
-	width?: number,
-	grid?: string,
-) {
-	const url = new URL(window.location.href)
-	url.searchParams.set("sketch", sketchName)
-	if (rule !== undefined && sketchName === "elementary-cellular-automaton") {
-		url.searchParams.set("rule", rule.toString())
-	} else {
-		url.searchParams.delete("rule")
-	}
-	if (width !== undefined && sketchName === "elementary-cellular-automaton") {
-		url.searchParams.set("width", width.toString())
-	} else {
-		url.searchParams.delete("width")
-	}
-	if (grid !== undefined && sketchName === "elementary-cellular-automaton") {
-		url.searchParams.set("grid", grid)
-	} else {
-		url.searchParams.delete("grid")
-	}
-	window.history.replaceState({}, "", url)
-}
-
 function loadSketch(
-	sketchName: keyof typeof sketches,
+	sketchName: SketchName,
 	rule?: number,
 	width?: number,
 	grid?: string,
@@ -123,7 +69,7 @@ function loadSketch(
 			)
 		})
 
-		if (sketchName === "elementary-cellular-automaton") {
+		if (sketchName === CELLULAR_AUTOMATON_SKETCH) {
 			const currentRule = rule ?? getRuleFromURL()
 			const currentWidth = width ?? getWidthFromURL()
 			const currentGrid = grid ?? getGridFromURL()
@@ -134,7 +80,7 @@ function loadSketch(
 				sketchConfig = new ElementaryCellularAutomatonConfig(sketchMenu)
 				sketchConfig.setOnRuleChange(() => {
 					loadSketch(
-						currentSketch as keyof typeof sketches,
+						currentSketch as SketchName,
 						getCurrentRule(),
 						getCurrentWidth(),
 						getGridColor(),
@@ -196,11 +142,9 @@ menuOverlay?.addEventListener("click", (event) => {
 
 menuButtons.forEach((button) => {
 	button.addEventListener("click", () => {
-		const sketchName = button.getAttribute(
-			"data-sketch",
-		) as keyof typeof sketches
+		const sketchName = button.getAttribute("data-sketch") as SketchName
 		if (sketchName && sketchName !== currentSketch) {
-			if (sketchName === "elementary-cellular-automaton") {
+			if (sketchName === CELLULAR_AUTOMATON_SKETCH) {
 				loadSketch(
 					sketchName,
 					getCurrentRule(),
@@ -216,7 +160,7 @@ menuButtons.forEach((button) => {
 })
 
 const initialSketch = getSketchFromURL()
-if (initialSketch === "elementary-cellular-automaton") {
+if (initialSketch === CELLULAR_AUTOMATON_SKETCH) {
 	loadSketch(
 		initialSketch,
 		getRuleFromURL(),

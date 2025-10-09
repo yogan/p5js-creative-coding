@@ -1,4 +1,5 @@
 import type p5 from "p5"
+import { updateCellularAutomatonURL } from "../utils/url-params"
 
 let currentRule = 30
 let currentWidth = 10
@@ -104,11 +105,11 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 	p.keyPressed = (event: KeyboardEvent) => {
 		if (event.key === "ArrowLeft") {
-			setRule(getCurrentRule() - (1 % 256))
-			restart()
+			setRule((getCurrentRule() + 255) % 256)
+			restart(true)
 		} else if (event.key === "ArrowRight") {
-			setRule(getCurrentRule() + (1 % 256))
-			restart()
+			setRule((getCurrentRule() + 1) % 256)
+			restart(true)
 		} else if (event.key === "Space") {
 			restart()
 		}
@@ -119,7 +120,14 @@ export const elementaryCellularAutomaton = (p: p5) => {
 		restart()
 	}
 
-	const restart = () => {
+	const restart = (updateUrl = false) => {
+		if (updateUrl)
+			updateCellularAutomatonURL(
+				getCurrentRule(),
+				getCurrentWidth(),
+				getGridColor(),
+			)
+
 		p.setup() // reinitialize everything
 		p.loop() // restart the draw loop
 	}
