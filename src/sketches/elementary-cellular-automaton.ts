@@ -24,7 +24,7 @@ export const setGridColor = (color: GridColor) => {
 export const getGridColor = (): GridColor => gridColor
 
 export const elementaryCellularAutomaton = (p: p5) => {
-	const padding = 10
+	const padding = p.windowWidth < 600 ? 2 : 10
 	let cells: number[] = []
 	let y = 0
 
@@ -73,15 +73,19 @@ export const elementaryCellularAutomaton = (p: p5) => {
 		// reset translation and show rule number
 		p.resetMatrix()
 		p.textAlign(p.CENTER, p.CENTER)
-		p.textSize(20)
+		p.textSize(p.windowWidth < 600 ? 16 : 20)
 
 		// create grid-aligned background box for text
 		const ruleText = `Rule ${getCurrentRule()}`
 		const textWidth = p.textWidth(ruleText)
 
 		// calculate box dimensions as multiples of cell width
-		const boxWidthCells = Math.ceil((textWidth + 20) / getCurrentWidth())
-		const boxHeightCells = Math.ceil(34 / getCurrentWidth()) // text height + padding
+		const textPadding = p.windowWidth < 600 ? 10 : 20
+		const baseBoxHeight = p.windowWidth < 600 ? 24 : 34
+		const boxWidthCells = Math.ceil(
+			(textWidth + textPadding) / getCurrentWidth(),
+		)
+		const boxHeightCells = Math.ceil(baseBoxHeight / getCurrentWidth())
 		const boxWidth = boxWidthCells * getCurrentWidth()
 		const boxHeight = boxHeightCells * getCurrentWidth()
 
