@@ -12,8 +12,7 @@ export class ElementaryCellularAutomatonConfig {
 	private rulePreview: HTMLElement | null = null
 	private widthInput: HTMLInputElement | null = null
 	private widthPreview: HTMLElement | null = null
-	private cancelBtn: HTMLElement | null = null
-	private applyBtn: HTMLElement | null = null
+
 	private rulePlusBtn: HTMLElement | null = null
 	private ruleMinusBtn: HTMLElement | null = null
 	private widthPlusBtn: HTMLElement | null = null
@@ -47,28 +46,29 @@ export class ElementaryCellularAutomatonConfig {
 		this.modal.innerHTML = `
 			<div class="modal-content">
 				<h3>Configure Cellular Automaton</h3>
-				<p>Automaton Rule (0-255)</p>
 				<div class="input-group">
+					<div class="input-header">
+						<span class="input-label">Rule</span>
+						<span class="input-value" id="rule-preview">30</span>
+					</div>
 					<div class="rule-controls">
 						<button type="button" class="rule-btn" id="rule-minus">−</button>
 						<input type="range" id="rule-input" min="0" max="255" value="30" class="rule-slider">
 						<button type="button" class="rule-btn" id="rule-plus">+</button>
 					</div>
-					<span class="rule-preview" id="rule-preview">Rule 30</span>
 				</div>
-				<p>Cell Width (5-50 pixels)</p>
 				<div class="input-group">
+					<div class="input-header">
+						<span class="input-label">Cell Width</span>
+						<span class="input-value" id="width-preview">10 px</span>
+					</div>
 					<div class="rule-controls">
 						<button type="button" class="rule-btn" id="width-minus">−</button>
 						<input type="range" id="width-input" min="5" max="50" value="10" class="rule-slider">
 						<button type="button" class="rule-btn" id="width-plus">+</button>
 					</div>
-					<span class="rule-preview" id="width-preview">Width 10 pixels</span>
 				</div>
-				<div class="modal-buttons">
-					<button class="modal-btn cancel-btn" id="cancel-rule">Cancel</button>
-					<button class="modal-btn apply-btn" id="apply-rule">Apply</button>
-				</div>
+
 			</div>
 		`
 
@@ -83,8 +83,7 @@ export class ElementaryCellularAutomatonConfig {
 			"#width-input",
 		) as HTMLInputElement
 		this.widthPreview = this.modal.querySelector("#width-preview")
-		this.cancelBtn = this.modal.querySelector("#cancel-rule")
-		this.applyBtn = this.modal.querySelector("#apply-rule")
+
 		this.rulePlusBtn = this.modal.querySelector("#rule-plus")
 		this.ruleMinusBtn = this.modal.querySelector("#rule-minus")
 		this.widthPlusBtn = this.modal.querySelector("#width-plus")
@@ -104,44 +103,40 @@ export class ElementaryCellularAutomatonConfig {
 			}
 		})
 
-		this.cancelBtn?.addEventListener("click", () => {
-			this.closeModal()
-		})
-
-		this.applyBtn?.addEventListener("click", () => {
-			this.applyRule()
-		})
-
 		this.ruleInput?.addEventListener("input", () => {
 			this.updateRulePreview()
+			this.applyChanges()
 		})
 
 		this.ruleInput?.addEventListener("keydown", (event) => {
-			if (event.key === "Enter") {
-				this.applyRule()
-			} else if (event.key === "Escape") {
+			if (event.key === "Escape") {
 				this.closeModal()
 			}
 		})
 
 		this.rulePlusBtn?.addEventListener("click", () => {
 			this.incrementRule()
+			this.applyChanges()
 		})
 
 		this.ruleMinusBtn?.addEventListener("click", () => {
 			this.decrementRule()
+			this.applyChanges()
 		})
 
 		this.widthInput?.addEventListener("input", () => {
 			this.updateWidthPreview()
+			this.applyChanges()
 		})
 
 		this.widthPlusBtn?.addEventListener("click", () => {
 			this.incrementWidth()
+			this.applyChanges()
 		})
 
 		this.widthMinusBtn?.addEventListener("click", () => {
 			this.decrementWidth()
+			this.applyChanges()
 		})
 	}
 
@@ -156,9 +151,9 @@ export class ElementaryCellularAutomatonConfig {
 			const rule = getCurrentRule()
 			const width = getCurrentWidth()
 			this.ruleInput.value = rule.toString()
-			this.rulePreview.textContent = `Rule ${rule}`
+			this.rulePreview.textContent = rule.toString()
 			this.widthInput.value = width.toString()
-			this.widthPreview.textContent = `Width ${width} pixels`
+			this.widthPreview.textContent = `${width} px`
 			this.modal.style.display = "flex"
 			this.ruleInput.focus()
 		}
@@ -174,7 +169,7 @@ export class ElementaryCellularAutomatonConfig {
 		if (this.ruleInput && this.rulePreview) {
 			const value = parseInt(this.ruleInput.value, 10)
 			const clampedValue = Math.max(0, Math.min(255, value))
-			this.rulePreview.textContent = `Rule ${clampedValue}`
+			this.rulePreview.textContent = clampedValue.toString()
 		}
 	}
 
@@ -200,7 +195,7 @@ export class ElementaryCellularAutomatonConfig {
 		if (this.widthInput && this.widthPreview) {
 			const value = parseInt(this.widthInput.value, 10)
 			const clampedValue = Math.max(5, Math.min(50, value))
-			this.widthPreview.textContent = `Width ${clampedValue} pixels`
+			this.widthPreview.textContent = `${clampedValue} px`
 		}
 	}
 
@@ -222,13 +217,12 @@ export class ElementaryCellularAutomatonConfig {
 		}
 	}
 
-	private applyRule() {
+	private applyChanges() {
 		if (this.ruleInput && this.widthInput) {
 			const newRule = parseInt(this.ruleInput.value, 10)
 			const newWidth = parseInt(this.widthInput.value, 10)
 			setRule(newRule)
 			setWidth(newWidth)
-			this.closeModal()
 			this.onRuleChange?.()
 		}
 	}

@@ -181,8 +181,6 @@ main {
 	}
 
 	.modal-content {
-		margin-left: 0;
-		margin-top: 0;
 		max-width: 90vw;
 		margin: 20px;
 	}
@@ -202,14 +200,40 @@ main {
 }
 
 .input-group {
-	margin-bottom: 24px;
+	margin-bottom: 32px;
+}
+
+.input-group:last-child {
+	margin-bottom: 0;
+}
+
+.input-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 12px;
+}
+
+.input-label {
+	font-weight: 500;
+	color: #fff;
+	font-size: 14px;
+}
+
+.input-value {
+	color: #aaa;
+	font-size: 14px;
+	background: #333;
+	padding: 4px 8px;
+	border-radius: 4px;
+	min-width: 40px;
+	text-align: center;
 }
 
 .rule-controls {
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	margin-bottom: 12px;
 }
 
 .rule-btn {
@@ -279,12 +303,6 @@ main {
 .rule-slider::-moz-range-thumb:hover {
 	background: #f0f0f0;
 	transform: scale(1.1);
-}
-
-.rule-preview {
-	color: #999;
-	font-size: 12px;
-	font-style: italic;
 }
 
 .modal-buttons {
