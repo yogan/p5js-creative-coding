@@ -9,7 +9,6 @@ import p5 from "p5"
 export const dragonCurveAnim = (p: p5) => {
 	const segments: Segment[] = []
 	let endSegment: Segment
-	let rotationSpeed = 0.1
 	let zoom = 1
 	let targetZoom = zoom / Math.sqrt(2)
 	let amount = 0
@@ -75,8 +74,6 @@ export const dragonCurveAnim = (p: p5) => {
 
 		endSegment = newSegments[0]
 		segments.push(...newSegments)
-
-		rotationSpeed *= 0.5
 	}
 
 	class Segment {
