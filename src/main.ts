@@ -14,8 +14,7 @@ import {
 	setWidth,
 } from "./sketches/elementary-cellular-automaton"
 import { kochIsland } from "./sketches/koch-island"
-import { orbitalCrescents } from "./sketches/orbital-crescents"
-import { particleWave } from "./sketches/particle-wave"
+
 import {
 	CELLULAR_AUTOMATON_SKETCH,
 	type GridColor,
@@ -30,8 +29,6 @@ import {
 } from "./utils/url-params"
 
 const sketches: Record<SketchName, (p: p5) => void> = {
-	"orbital-crescents": orbitalCrescents,
-	"particle-wave": particleWave,
 	"koch-island": kochIsland,
 	"dragon-curve": dragonCurve,
 	"dragon-curve-anim": dragonCurveAnim,
@@ -39,7 +36,7 @@ const sketches: Record<SketchName, (p: p5) => void> = {
 }
 
 let currentP5Instance: p5 | null = null
-let currentSketch = "orbital-crescents"
+let currentSketch = "koch-island"
 
 const sketchContainer = document.getElementById("sketch-container")
 const menuButtons = document.querySelectorAll(".sketch-btn")

@@ -8,8 +8,6 @@ export type GridColor = "off" | "light" | "dark" | "black"
 export type InitialCells = "middle" | "alternating" | "random"
 
 export type SketchName =
-	| "orbital-crescents"
-	| "particle-wave"
 	| "koch-island"
 	| "dragon-curve"
 	| "dragon-curve-anim"
@@ -19,14 +17,12 @@ export function getSketchFromURL(): SketchName {
 	const urlParams = new URLSearchParams(window.location.search)
 	const sketch = urlParams.get("sketch") as SketchName
 	const validSketches: SketchName[] = [
-		"orbital-crescents",
-		"particle-wave",
 		"koch-island",
 		"dragon-curve",
 		"dragon-curve-anim",
 		CELLULAR_AUTOMATON_SKETCH,
 	]
-	return sketch && validSketches.includes(sketch) ? sketch : "orbital-crescents"
+	return sketch && validSketches.includes(sketch) ? sketch : "koch-island"
 }
 
 export function getRuleFromURL(): number {
