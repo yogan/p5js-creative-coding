@@ -11,6 +11,7 @@ export type SketchName =
 	| "koch-island"
 	| "dragon-curve"
 	| "dragon-curve-anim"
+	| "scratch-randomness"
 	| typeof CELLULAR_AUTOMATON_SKETCH
 
 export function getSketchFromURL(): SketchName {
@@ -20,6 +21,7 @@ export function getSketchFromURL(): SketchName {
 		"koch-island",
 		"dragon-curve",
 		"dragon-curve-anim",
+		"scratch-randomness",
 		CELLULAR_AUTOMATON_SKETCH,
 	]
 	return sketch && validSketches.includes(sketch) ? sketch : "koch-island"

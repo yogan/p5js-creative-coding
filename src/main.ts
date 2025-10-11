@@ -1,5 +1,6 @@
 import p5 from "p5"
 import { ElementaryCellularAutomatonConfig } from "./components/elementary-cellular-automaton-config"
+import { ScratchRandomnessConfig } from "./components/scratch-randomness-config"
 import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
 import {
@@ -14,6 +15,10 @@ import {
 	setWidth,
 } from "./sketches/elementary-cellular-automaton"
 import { kochIsland } from "./sketches/koch-island"
+import {
+	scratchRandomness,
+	setScratchRandomnessSettings,
+} from "./sketches/scratch-randomness"
 
 import {
 	CELLULAR_AUTOMATON_SKETCH,
@@ -33,6 +38,7 @@ const sketches: Record<SketchName, (p: p5) => void> = {
 	"dragon-curve": dragonCurve,
 	"dragon-curve-anim": dragonCurveAnim,
 	[CELLULAR_AUTOMATON_SKETCH]: elementaryCellularAutomaton,
+	"scratch-randomness": scratchRandomness,
 }
 
 let currentP5Instance: p5 | null = null
@@ -46,6 +52,7 @@ const menuDropdown = document.getElementById("menu-dropdown")
 const sketchMenu = document.querySelector(".sketch-menu") as HTMLElement
 
 let sketchConfig: ElementaryCellularAutomatonConfig | null = null
+let scratchConfig: ScratchRandomnessConfig | null = null
 
 function loadSketch(
 	sketchName: SketchName,
@@ -94,9 +101,26 @@ function loadSketch(
 				})
 			}
 			sketchConfig.show()
+			if (scratchConfig) {
+				scratchConfig.hide()
+			}
+		} else if (sketchName === "scratch-randomness") {
+			if (!scratchConfig) {
+				scratchConfig = new ScratchRandomnessConfig(sketchMenu)
+				scratchConfig.setOnSettingsChange((settings) => {
+					setScratchRandomnessSettings(settings)
+				})
+			}
+			scratchConfig.show()
+			if (sketchConfig) {
+				sketchConfig.hide()
+			}
 		} else {
 			if (sketchConfig) {
 				sketchConfig.hide()
+			}
+			if (scratchConfig) {
+				scratchConfig.hide()
 			}
 		}
 	}
