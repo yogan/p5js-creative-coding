@@ -1,5 +1,6 @@
 import p5 from "p5"
 import { ElementaryCellularAutomatonConfig } from "./components/elementary-cellular-automaton-config"
+import { LandscapeConfig } from "./components/landscape-config"
 import { ScratchRandomnessConfig } from "./components/scratch-randomness-config"
 import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
@@ -15,6 +16,7 @@ import {
 	setWidth,
 } from "./sketches/elementary-cellular-automaton"
 import { kochIsland } from "./sketches/koch-island"
+import { landscape, setLandscapeSettings } from "./sketches/landscape"
 import {
 	scratchRandomness,
 	setScratchRandomnessSettings,
@@ -39,6 +41,7 @@ const sketches: Record<SketchName, (p: p5) => void> = {
 	"dragon-curve-anim": dragonCurveAnim,
 	[CELLULAR_AUTOMATON_SKETCH]: elementaryCellularAutomaton,
 	"scratch-randomness": scratchRandomness,
+	landscape: landscape,
 }
 
 let currentP5Instance: p5 | null = null
@@ -53,6 +56,7 @@ const sketchMenu = document.querySelector(".sketch-menu") as HTMLElement
 
 let sketchConfig: ElementaryCellularAutomatonConfig | null = null
 let scratchConfig: ScratchRandomnessConfig | null = null
+let landscapeConfig: LandscapeConfig | null = null
 
 function loadSketch(
 	sketchName: SketchName,
@@ -115,12 +119,34 @@ function loadSketch(
 			if (sketchConfig) {
 				sketchConfig.hide()
 			}
+			if (landscapeConfig) {
+				landscapeConfig.hide()
+			}
+		} else if (sketchName === "landscape") {
+			if (!landscapeConfig) {
+				landscapeConfig = new LandscapeConfig(sketchMenu)
+				landscapeConfig.setOnSettingsChange((settings) => {
+					setLandscapeSettings(settings)
+				})
+			}
+			// Set initial settings from URL
+			setLandscapeSettings(landscapeConfig.getSettings())
+			landscapeConfig.show()
+			if (sketchConfig) {
+				sketchConfig.hide()
+			}
+			if (scratchConfig) {
+				scratchConfig.hide()
+			}
 		} else {
 			if (sketchConfig) {
 				sketchConfig.hide()
 			}
 			if (scratchConfig) {
 				scratchConfig.hide()
+			}
+			if (landscapeConfig) {
+				landscapeConfig.hide()
 			}
 		}
 	}

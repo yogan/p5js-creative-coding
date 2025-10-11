@@ -12,6 +12,7 @@ export type SketchName =
 	| "dragon-curve"
 	| "dragon-curve-anim"
 	| "scratch-randomness"
+	| "landscape"
 	| typeof CELLULAR_AUTOMATON_SKETCH
 
 export function getSketchFromURL(): SketchName {
@@ -22,6 +23,7 @@ export function getSketchFromURL(): SketchName {
 		"dragon-curve",
 		"dragon-curve-anim",
 		"scratch-randomness",
+		"landscape",
 		CELLULAR_AUTOMATON_SKETCH,
 	]
 	return sketch && validSketches.includes(sketch) ? sketch : "koch-island"
@@ -78,6 +80,8 @@ export function updateURL(
 ) {
 	const url = new URL(window.location.href)
 	url.searchParams.set("sketch", sketchName)
+
+	// Cellular automaton parameters
 	if (rule !== undefined && sketchName === CELLULAR_AUTOMATON_SKETCH) {
 		url.searchParams.set("rule", rule.toString())
 	} else {
@@ -98,6 +102,71 @@ export function updateURL(
 	} else {
 		url.searchParams.delete("start")
 	}
+
+	// Landscape parameters - remove when not landscape sketch
+	if (sketchName !== "landscape") {
+		url.searchParams.delete("mesh")
+		url.searchParams.delete("heightSpeed")
+		url.searchParams.delete("roughness")
+	}
+
+	window.history.replaceState({}, "", url)
+}
+
+// Landscape sketch parameter functions
+export type LandscapeMesh = "Triangles" | "Squares"
+
+export function getMeshFromURL(): LandscapeMesh {
+	const urlParams = new URLSearchParams(window.location.search)
+	const mesh = urlParams.get("mesh")
+	const validMeshTypes: LandscapeMesh[] = ["Triangles", "Squares"]
+	return mesh && validMeshTypes.includes(mesh as LandscapeMesh)
+		? (mesh as LandscapeMesh)
+		: "Triangles"
+}
+
+export function getHeightChangeSpeedFromURL(): number {
+	const urlParams = new URLSearchParams(window.location.search)
+	const speed = urlParams.get("heightSpeed")
+	if (speed) {
+		const speedNumber = parseFloat(speed)
+		if (
+			!Number.isNaN(speedNumber) &&
+			speedNumber >= 0.001 &&
+			speedNumber <= 0.01
+		) {
+			return speedNumber
+		}
+	}
+	return 0.005
+}
+
+export function getRoughnessFromURL(): number {
+	const urlParams = new URLSearchParams(window.location.search)
+	const roughness = urlParams.get("roughness")
+	if (roughness) {
+		const roughnessNumber = parseFloat(roughness)
+		if (
+			!Number.isNaN(roughnessNumber) &&
+			roughnessNumber >= 0.05 &&
+			roughnessNumber <= 0.25
+		) {
+			return roughnessNumber
+		}
+	}
+	return 0.15
+}
+
+export function updateLandscapeURL(
+	mesh: LandscapeMesh,
+	heightChangeSpeed: number,
+	roughness: number,
+) {
+	const url = new URL(window.location.href)
+	url.searchParams.set("sketch", "landscape")
+	url.searchParams.set("mesh", mesh)
+	url.searchParams.set("heightSpeed", heightChangeSpeed.toString())
+	url.searchParams.set("roughness", roughness.toString())
 	window.history.replaceState({}, "", url)
 }
 
@@ -109,4 +178,25 @@ export function updateCellularAutomatonURL(
 	start: InitialCells,
 ) {
 	updateURL(CELLULAR_AUTOMATON_SKETCH, rule, width, grid, start)
+}
+
+// Generic URL parameter functions
+export function getUrlParams() {
+	const urlParams = new URLSearchParams(window.location.search)
+	const params: Record<string, string | number> = {}
+
+	// Convert all params to appropriate types
+	for (const [key, value] of urlParams.entries()) {
+		// Try to convert to number if it looks like a number
+		const numValue = Number(value)
+		params[key] = !Number.isNaN(numValue) ? numValue : value
+	}
+
+	return params
+}
+
+export function setUrlParam(key: string, value: string | number) {
+	const url = new URL(window.location.href)
+	url.searchParams.set(key, value.toString())
+	window.history.replaceState({}, "", url)
 }
