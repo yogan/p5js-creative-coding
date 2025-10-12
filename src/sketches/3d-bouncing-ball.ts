@@ -132,12 +132,16 @@ export const bouncingBall3D = (p: p5) => {
 	}
 
 	class Ball {
+		private readonly mass: number
+
 		constructor(
 			private readonly position: p5.Vector,
 			private readonly radius: number,
 			private readonly velocity: p5.Vector = p.createVector(0, 0, 0),
 			private readonly color: p5.Color = p.color(255),
-		) {}
+		) {
+			this.mass = this.radius * this.radius * this.radius
+		}
 
 		collidesWith(other: Ball): boolean {
 			const distance = p
@@ -161,16 +165,20 @@ export const bouncingBall3D = (p: p5) => {
 			const normalZ = dz / distance
 
 			const overlap = this.radius + other.radius - distance
-			const separationX = (overlap / 2) * normalX
-			const separationY = (overlap / 2) * normalY
-			const separationZ = (overlap / 2) * normalZ
+			const totalMass = this.mass + other.mass
+			const thisRatio = other.mass / totalMass
+			const otherRatio = this.mass / totalMass
 
-			this.position.x -= separationX
-			this.position.y -= separationY
-			this.position.z -= separationZ
-			other.position.x += separationX
-			other.position.y += separationY
-			other.position.z += separationZ
+			const separationX = overlap * normalX
+			const separationY = overlap * normalY
+			const separationZ = overlap * normalZ
+
+			this.position.x -= separationX * thisRatio
+			this.position.y -= separationY * thisRatio
+			this.position.z -= separationZ * thisRatio
+			other.position.x += separationX * otherRatio
+			other.position.y += separationY * otherRatio
+			other.position.z += separationZ * otherRatio
 
 			const relativeVelocityX = other.velocity.x - this.velocity.x
 			const relativeVelocityY = other.velocity.y - this.velocity.y
@@ -184,14 +192,16 @@ export const bouncingBall3D = (p: p5) => {
 			if (velocityAlongNormal > 0) return
 
 			const restitution = 0.8
-			const impulse = (-(1 + restitution) * velocityAlongNormal) / 2
+			const impulse =
+				(-(1 + restitution) * velocityAlongNormal) /
+				(1 / this.mass + 1 / other.mass)
 
-			this.velocity.x -= impulse * normalX
-			this.velocity.y -= impulse * normalY
-			this.velocity.z -= impulse * normalZ
-			other.velocity.x += impulse * normalX
-			other.velocity.y += impulse * normalY
-			other.velocity.z += impulse * normalZ
+			this.velocity.x -= (impulse / this.mass) * normalX
+			this.velocity.y -= (impulse / this.mass) * normalY
+			this.velocity.z -= (impulse / this.mass) * normalZ
+			other.velocity.x += (impulse / other.mass) * normalX
+			other.velocity.y += (impulse / other.mass) * normalY
+			other.velocity.z += (impulse / other.mass) * normalZ
 		}
 
 		update(box: BoundingBox) {
