@@ -109,6 +109,7 @@ function loadSketch(sketchName: SketchName) {
 				scratchConfig.hide()
 			}
 		} else {
+			updateSketchConfig(sketchName, {})
 			if (sketchConfig) {
 				sketchConfig.hide()
 			}
