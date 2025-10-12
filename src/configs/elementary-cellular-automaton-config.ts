@@ -13,8 +13,9 @@ import {
 	type InitialCells,
 	updateCellularAutomatonURL,
 } from "../utils/url-params"
+import { BaseConfig } from "./base-config"
 
-export class ElementaryCellularAutomatonConfig {
+export class ElementaryCellularAutomatonConfig extends BaseConfig<void> {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
 	private ruleInput: HTMLInputElement | null = null
@@ -31,6 +32,7 @@ export class ElementaryCellularAutomatonConfig {
 	private onRuleChange?: () => void
 
 	constructor(private container: HTMLElement) {
+		super()
 		this.createElements()
 		this.attachEventListeners()
 	}
@@ -305,7 +307,7 @@ export class ElementaryCellularAutomatonConfig {
 		}
 	}
 
-	public setOnRuleChange(callback: () => void) {
+	public setOnChange(callback: () => void) {
 		this.onRuleChange = callback
 	}
 

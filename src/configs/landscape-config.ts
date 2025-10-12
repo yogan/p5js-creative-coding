@@ -5,10 +5,11 @@ import {
 	type LandscapeConfig as LandscapeSettings,
 	updateLandscapeURL,
 } from "../utils/url-params"
+import { BaseConfig } from "./base-config"
 
 export type { LandscapeSettings }
 
-export class LandscapeConfig {
+export class LandscapeConfig extends BaseConfig<LandscapeSettings> {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
 	private onSettingsChange?: (settings: LandscapeSettings) => void
@@ -16,6 +17,7 @@ export class LandscapeConfig {
 	private currentSettings: LandscapeSettings = getLandscapeConfigFromURL()
 
 	constructor(private container: HTMLElement) {
+		super()
 		this.createElements()
 		this.attachEventListeners()
 		this.syncUIWithSettings()
@@ -220,7 +222,7 @@ export class LandscapeConfig {
 		}
 	}
 
-	public setOnSettingsChange(callback: (settings: LandscapeSettings) => void) {
+	public setOnChange(callback: (settings: LandscapeSettings) => void) {
 		this.onSettingsChange = callback
 	}
 

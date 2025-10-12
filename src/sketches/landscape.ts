@@ -1,5 +1,5 @@
 import type p5 from "p5"
-import type { LandscapeSettings } from "../components/landscape-config"
+import type { LandscapeSettings } from "../configs/landscape-config"
 
 let settings: LandscapeSettings = {
 	mesh: "Triangles",

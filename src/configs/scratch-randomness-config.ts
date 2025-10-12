@@ -7,8 +7,9 @@ import {
 	type VisualizationType,
 	type WalkerMode,
 } from "../utils/url-params"
+import { BaseConfig } from "./base-config"
 
-export class ScratchRandomnessConfigComponent {
+export class ScratchRandomnessConfigComponent extends BaseConfig<ScratchRandomnessSettings> {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
 	private onSettingsChange?: (settings: ScratchRandomnessSettings) => void
@@ -17,6 +18,7 @@ export class ScratchRandomnessConfigComponent {
 		getScratchRandomnessConfigFromURL()
 
 	constructor(private container: HTMLElement) {
+		super()
 		this.createElements()
 		this.attachEventListeners()
 	}
@@ -235,9 +237,7 @@ export class ScratchRandomnessConfigComponent {
 		}
 	}
 
-	public setOnSettingsChange(
-		callback: (settings: ScratchRandomnessSettings) => void,
-	) {
+	public setOnChange(callback: (settings: ScratchRandomnessSettings) => void) {
 		this.onSettingsChange = callback
 	}
 

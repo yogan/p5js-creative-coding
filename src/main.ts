@@ -1,7 +1,7 @@
 import p5 from "p5"
-import { ElementaryCellularAutomatonConfig } from "./components/elementary-cellular-automaton-config"
-import { LandscapeConfig } from "./components/landscape-config"
-import { ScratchRandomnessConfigComponent } from "./components/scratch-randomness-config"
+import { ElementaryCellularAutomatonConfig } from "./configs/elementary-cellular-automaton-config"
+import { LandscapeConfig } from "./configs/landscape-config"
+import { ScratchRandomnessConfigComponent } from "./configs/scratch-randomness-config"
 import { bouncingBall3D } from "./sketches/3d-bouncing-ball"
 import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
@@ -64,7 +64,7 @@ function loadSketch(sketchName: SketchName) {
 		if (sketchName === "elementary-cellular-automaton") {
 			if (!sketchConfig) {
 				sketchConfig = new ElementaryCellularAutomatonConfig(sketchMenu)
-				sketchConfig.setOnRuleChange(() => {
+				sketchConfig.setOnChange(() => {
 					loadSketch(currentSketch as SketchName)
 				})
 			}
@@ -78,7 +78,7 @@ function loadSketch(sketchName: SketchName) {
 		} else if (sketchName === "scratch-randomness") {
 			if (!scratchConfig) {
 				scratchConfig = new ScratchRandomnessConfigComponent(sketchMenu)
-				scratchConfig.setOnSettingsChange((settings) => {
+				scratchConfig.setOnChange((settings) => {
 					setScratchRandomnessSettings(settings)
 				})
 			}
@@ -94,7 +94,7 @@ function loadSketch(sketchName: SketchName) {
 		} else if (sketchName === "landscape") {
 			if (!landscapeConfig) {
 				landscapeConfig = new LandscapeConfig(sketchMenu)
-				landscapeConfig.setOnSettingsChange((settings) => {
+				landscapeConfig.setOnChange((settings) => {
 					setLandscapeSettings(settings)
 				})
 			}
