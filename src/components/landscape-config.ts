@@ -206,6 +206,12 @@ export class LandscapeConfig {
 		if (this.controlBtn) {
 			this.controlBtn.style.display = "flex"
 		}
+		updateLandscapeURL(
+			this.currentSettings.mesh,
+			this.currentSettings.heightChangeSpeed,
+			this.currentSettings.roughness,
+			this.currentSettings.camera,
+		)
 	}
 
 	public hide() {

@@ -53,7 +53,6 @@ function loadSketch(sketchName: SketchName) {
 		currentP5Instance = new p5(sketchFn, sketchContainer)
 
 		currentSketch = sketchName
-		updateSketchConfig(sketchName)
 
 		menuButtons.forEach((btn) => {
 			btn.classList.toggle(

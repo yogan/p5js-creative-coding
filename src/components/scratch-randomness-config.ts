@@ -222,6 +222,11 @@ export class ScratchRandomnessConfigComponent {
 		if (this.controlBtn) {
 			this.controlBtn.style.display = "flex"
 		}
+		updateScratchRandomnessURL(
+			this.currentSettings.visualization,
+			this.currentSettings.circleMode,
+			this.currentSettings.walkerMode,
+		)
 	}
 
 	public hide() {
