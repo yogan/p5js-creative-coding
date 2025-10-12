@@ -8,7 +8,11 @@ import {
 	setRule,
 	setWidth,
 } from "../sketches/elementary-cellular-automaton"
-import type { GridColor, InitialCells } from "../utils/url-params"
+import {
+	type GridColor,
+	type InitialCells,
+	updateCellularAutomatonURL,
+} from "../utils/url-params"
 
 export class ElementaryCellularAutomatonConfig {
 	private controlBtn: HTMLElement | null = null
@@ -279,6 +283,7 @@ export class ElementaryCellularAutomatonConfig {
 			setWidth(newWidth)
 			setGridColor(gridColor)
 			setInitialCells(initialCells)
+			updateCellularAutomatonURL(newRule, newWidth, gridColor, initialCells)
 			this.onRuleChange?.()
 		}
 	}
@@ -287,6 +292,11 @@ export class ElementaryCellularAutomatonConfig {
 		if (this.controlBtn) {
 			this.controlBtn.style.display = "flex"
 		}
+		const rule = getCurrentRule()
+		const width = getCurrentWidth()
+		const gridColor = getGridColor()
+		const initialCells = getInitialCells()
+		updateCellularAutomatonURL(rule, width, gridColor, initialCells)
 	}
 
 	public hide() {

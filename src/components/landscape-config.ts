@@ -1,31 +1,19 @@
 import {
-	getCameraFromURL,
-	getHeightChangeSpeedFromURL,
-	getMeshFromURL,
-	getRoughnessFromURL,
+	getLandscapeConfigFromURL,
 	type LandscapeCamera,
 	type LandscapeMesh,
+	type LandscapeConfig as LandscapeSettings,
 	updateLandscapeURL,
 } from "../utils/url-params"
 
-export type LandscapeSettings = {
-	mesh: LandscapeMesh
-	heightChangeSpeed: number
-	roughness: number
-	camera: LandscapeCamera
-}
+export type { LandscapeSettings }
 
 export class LandscapeConfig {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
 	private onSettingsChange?: (settings: LandscapeSettings) => void
 
-	private currentSettings: LandscapeSettings = {
-		mesh: getMeshFromURL(),
-		heightChangeSpeed: getHeightChangeSpeedFromURL(),
-		roughness: getRoughnessFromURL(),
-		camera: getCameraFromURL(),
-	}
+	private currentSettings: LandscapeSettings = getLandscapeConfigFromURL()
 
 	constructor(private container: HTMLElement) {
 		this.createElements()

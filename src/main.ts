@@ -1,21 +1,11 @@
 import p5 from "p5"
 import { ElementaryCellularAutomatonConfig } from "./components/elementary-cellular-automaton-config"
 import { LandscapeConfig } from "./components/landscape-config"
-import { ScratchRandomnessConfig } from "./components/scratch-randomness-config"
+import { ScratchRandomnessConfigComponent } from "./components/scratch-randomness-config"
 import { bouncingBall3D } from "./sketches/3d-bouncing-ball"
 import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
-import {
-	elementaryCellularAutomaton,
-	getCurrentRule,
-	getCurrentWidth,
-	getGridColor,
-	getInitialCells,
-	setGridColor,
-	setInitialCells,
-	setRule,
-	setWidth,
-} from "./sketches/elementary-cellular-automaton"
+import { elementaryCellularAutomaton } from "./sketches/elementary-cellular-automaton"
 import { kochIsland } from "./sketches/koch-island"
 import { landscape, setLandscapeSettings } from "./sketches/landscape"
 import {
@@ -24,15 +14,9 @@ import {
 } from "./sketches/scratch-randomness"
 
 import {
-	type GridColor,
-	getGridFromURL,
-	getRuleFromURL,
 	getSketchFromURL,
-	getStartFromURL,
-	getWidthFromURL,
-	type InitialCells,
 	type SketchName,
-	updateURL,
+	updateSketchConfig,
 } from "./utils/url-params"
 
 const sketches: Record<SketchName, (p: p5) => void> = {
@@ -56,16 +40,10 @@ const menuDropdown = document.getElementById("menu-dropdown")
 const sketchMenu = document.querySelector(".sketch-menu") as HTMLElement
 
 let sketchConfig: ElementaryCellularAutomatonConfig | null = null
-let scratchConfig: ScratchRandomnessConfig | null = null
+let scratchConfig: ScratchRandomnessConfigComponent | null = null
 let landscapeConfig: LandscapeConfig | null = null
 
-function loadSketch(
-	sketchName: SketchName,
-	rule?: number,
-	width?: number,
-	grid?: GridColor,
-	start?: InitialCells,
-) {
+function loadSketch(sketchName: SketchName) {
 	if (currentP5Instance) {
 		currentP5Instance.remove()
 	}
@@ -75,7 +53,7 @@ function loadSketch(
 		currentP5Instance = new p5(sketchFn, sketchContainer)
 
 		currentSketch = sketchName
-		updateURL(sketchName, rule, width, grid, start)
+		updateSketchConfig(sketchName)
 
 		menuButtons.forEach((btn) => {
 			btn.classList.toggle(
@@ -85,37 +63,28 @@ function loadSketch(
 		})
 
 		if (sketchName === "elementary-cellular-automaton") {
-			const currentRule = rule ?? getRuleFromURL()
-			const currentWidth = width ?? getWidthFromURL()
-			const currentGrid = grid ?? getGridFromURL()
-			const currentStart = start ?? getStartFromURL()
-			setRule(currentRule)
-			setWidth(currentWidth)
-			setGridColor(currentGrid)
-			setInitialCells(currentStart)
 			if (!sketchConfig) {
 				sketchConfig = new ElementaryCellularAutomatonConfig(sketchMenu)
 				sketchConfig.setOnRuleChange(() => {
-					loadSketch(
-						currentSketch as SketchName,
-						getCurrentRule(),
-						getCurrentWidth(),
-						getGridColor(),
-						getInitialCells(),
-					)
+					loadSketch(currentSketch as SketchName)
 				})
 			}
 			sketchConfig.show()
 			if (scratchConfig) {
 				scratchConfig.hide()
 			}
+			if (landscapeConfig) {
+				landscapeConfig.hide()
+			}
 		} else if (sketchName === "scratch-randomness") {
 			if (!scratchConfig) {
-				scratchConfig = new ScratchRandomnessConfig(sketchMenu)
+				scratchConfig = new ScratchRandomnessConfigComponent(sketchMenu)
 				scratchConfig.setOnSettingsChange((settings) => {
 					setScratchRandomnessSettings(settings)
 				})
 			}
+			// Apply current settings to sketch
+			setScratchRandomnessSettings(scratchConfig.getSettings())
 			scratchConfig.show()
 			if (sketchConfig) {
 				sketchConfig.hide()
@@ -130,7 +99,7 @@ function loadSketch(
 					setLandscapeSettings(settings)
 				})
 			}
-			// Set initial settings from URL
+			// Apply current settings to sketch
 			setLandscapeSettings(landscapeConfig.getSettings())
 			landscapeConfig.show()
 			if (sketchConfig) {
@@ -201,31 +170,11 @@ menuButtons.forEach((button) => {
 	button.addEventListener("click", () => {
 		const sketchName = button.getAttribute("data-sketch") as SketchName
 		if (sketchName && sketchName !== currentSketch) {
-			if (sketchName === "elementary-cellular-automaton") {
-				loadSketch(
-					sketchName,
-					getCurrentRule(),
-					getCurrentWidth(),
-					getGridColor(),
-					getInitialCells(),
-				)
-			} else {
-				loadSketch(sketchName)
-			}
+			loadSketch(sketchName)
 			closeMenu()
 		}
 	})
 })
 
 const initialSketch = getSketchFromURL()
-if (initialSketch === "elementary-cellular-automaton") {
-	loadSketch(
-		initialSketch,
-		getRuleFromURL(),
-		getWidthFromURL(),
-		getGridFromURL(),
-		getStartFromURL(),
-	)
-} else {
-	loadSketch(initialSketch)
-}
+loadSketch(initialSketch)

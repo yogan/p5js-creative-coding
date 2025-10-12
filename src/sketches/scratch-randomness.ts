@@ -1,23 +1,16 @@
 import type p5 from "p5"
+import {
+	type CircleMode,
+	getScratchRandomnessConfigFromURL,
+	type ScratchRandomnessConfig,
+	type WalkerMode,
+} from "../utils/url-params"
 
-export type CircleMode = "gaussian" | "random" | "mouse"
-export type WalkerMode = "normal" | "gaussian" | "accept-reject" | "perlin"
-export type VisualizationType = "circles" | "bars" | "walker" | "pixelNoise"
-
-export type ScratchRandomnessSettings = {
-	visualization: VisualizationType
-	circleMode: CircleMode
-	walkerMode: WalkerMode
-}
-
-let currentSettings: ScratchRandomnessSettings = {
-	visualization: "circles",
-	circleMode: "gaussian",
-	walkerMode: "normal",
-}
+let currentSettings: ScratchRandomnessConfig =
+	getScratchRandomnessConfigFromURL()
 
 export const setScratchRandomnessSettings = (
-	settings: ScratchRandomnessSettings,
+	settings: ScratchRandomnessConfig,
 ) => {
 	currentSettings = { ...settings }
 	if (initializeFunction) {
@@ -25,7 +18,7 @@ export const setScratchRandomnessSettings = (
 	}
 }
 
-export const getScratchRandomnessSettings = (): ScratchRandomnessSettings => {
+export const getScratchRandomnessSettings = (): ScratchRandomnessConfig => {
 	return { ...currentSettings }
 }
 

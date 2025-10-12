@@ -1,21 +1,20 @@
-import type {
-	CircleMode,
-	ScratchRandomnessSettings,
-	VisualizationType,
-	WalkerMode,
-} from "../sketches/scratch-randomness"
 import { resetScratchRandomness } from "../sketches/scratch-randomness"
+import {
+	type CircleMode,
+	getScratchRandomnessConfigFromURL,
+	type ScratchRandomnessConfig as ScratchRandomnessSettings,
+	updateScratchRandomnessURL,
+	type VisualizationType,
+	type WalkerMode,
+} from "../utils/url-params"
 
-export class ScratchRandomnessConfig {
+export class ScratchRandomnessConfigComponent {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
 	private onSettingsChange?: (settings: ScratchRandomnessSettings) => void
 
-	private currentSettings: ScratchRandomnessSettings = {
-		visualization: "circles",
-		circleMode: "gaussian",
-		walkerMode: "normal",
-	}
+	private currentSettings: ScratchRandomnessSettings =
+		getScratchRandomnessConfigFromURL()
 
 	constructor(private container: HTMLElement) {
 		this.createElements()
@@ -196,6 +195,13 @@ export class ScratchRandomnessConfig {
 			this.currentSettings.walkerMode =
 				(modeSelect?.value as WalkerMode) ?? "normal"
 		}
+
+		// Update URL with new settings
+		updateScratchRandomnessURL(
+			this.currentSettings.visualization,
+			this.currentSettings.circleMode,
+			this.currentSettings.walkerMode,
+		)
 
 		this.onSettingsChange?.(this.currentSettings)
 	}
