@@ -1,8 +1,5 @@
 // URL parameter handling for cellular automaton sketch parameters
 
-export const CELLULAR_AUTOMATON_SKETCH =
-	"elementary-cellular-automaton" as const
-
 export type GridColor = "off" | "light" | "dark" | "black"
 
 export type InitialCells = "middle" | "alternating" | "random"
@@ -11,7 +8,7 @@ export type SketchName =
 	| "3d-bouncing-ball"
 	| "dragon-curve"
 	| "dragon-curve-anim"
-	| typeof CELLULAR_AUTOMATON_SKETCH
+	| "elementary-cellular-automaton"
 	| "koch-island"
 	| "landscape"
 	| "scratch-randomness"
@@ -23,7 +20,7 @@ export function getSketchFromURL(): SketchName {
 		"3d-bouncing-ball",
 		"dragon-curve",
 		"dragon-curve-anim",
-		CELLULAR_AUTOMATON_SKETCH,
+		"elementary-cellular-automaton",
 		"koch-island",
 		"landscape",
 		"scratch-randomness",
@@ -84,22 +81,22 @@ export function updateURL(
 	url.searchParams.set("sketch", sketchName)
 
 	// Cellular automaton parameters
-	if (rule !== undefined && sketchName === CELLULAR_AUTOMATON_SKETCH) {
+	if (rule !== undefined && sketchName === "elementary-cellular-automaton") {
 		url.searchParams.set("rule", rule.toString())
 	} else {
 		url.searchParams.delete("rule")
 	}
-	if (width !== undefined && sketchName === CELLULAR_AUTOMATON_SKETCH) {
+	if (width !== undefined && sketchName === "elementary-cellular-automaton") {
 		url.searchParams.set("width", width.toString())
 	} else {
 		url.searchParams.delete("width")
 	}
-	if (grid !== undefined && sketchName === CELLULAR_AUTOMATON_SKETCH) {
+	if (grid !== undefined && sketchName === "elementary-cellular-automaton") {
 		url.searchParams.set("grid", grid)
 	} else {
 		url.searchParams.delete("grid")
 	}
-	if (start !== undefined && sketchName === CELLULAR_AUTOMATON_SKETCH) {
+	if (start !== undefined && sketchName === "elementary-cellular-automaton") {
 		url.searchParams.set("start", start)
 	} else {
 		url.searchParams.delete("start")
@@ -193,7 +190,7 @@ export function updateCellularAutomatonURL(
 	grid: GridColor,
 	start: InitialCells,
 ) {
-	updateURL(CELLULAR_AUTOMATON_SKETCH, rule, width, grid, start)
+	updateURL("elementary-cellular-automaton", rule, width, grid, start)
 }
 
 // Generic URL parameter functions

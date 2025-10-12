@@ -2,6 +2,7 @@ import p5 from "p5"
 import { ElementaryCellularAutomatonConfig } from "./components/elementary-cellular-automaton-config"
 import { LandscapeConfig } from "./components/landscape-config"
 import { ScratchRandomnessConfig } from "./components/scratch-randomness-config"
+import { bouncingBall3D } from "./sketches/3d-bouncing-ball"
 import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
 import {
@@ -21,10 +22,8 @@ import {
 	scratchRandomness,
 	setScratchRandomnessSettings,
 } from "./sketches/scratch-randomness"
-import { bouncingBall3D } from "./sketches/3d-bouncing-ball"
 
 import {
-	CELLULAR_AUTOMATON_SKETCH,
 	type GridColor,
 	getGridFromURL,
 	getRuleFromURL,
@@ -40,7 +39,7 @@ const sketches: Record<SketchName, (p: p5) => void> = {
 	"3d-bouncing-ball": bouncingBall3D,
 	"dragon-curve": dragonCurve,
 	"dragon-curve-anim": dragonCurveAnim,
-	[CELLULAR_AUTOMATON_SKETCH]: elementaryCellularAutomaton,
+	"elementary-cellular-automaton": elementaryCellularAutomaton,
 	"koch-island": kochIsland,
 	landscape: landscape,
 	"scratch-randomness": scratchRandomness,
@@ -85,7 +84,7 @@ function loadSketch(
 			)
 		})
 
-		if (sketchName === CELLULAR_AUTOMATON_SKETCH) {
+		if (sketchName === "elementary-cellular-automaton") {
 			const currentRule = rule ?? getRuleFromURL()
 			const currentWidth = width ?? getWidthFromURL()
 			const currentGrid = grid ?? getGridFromURL()
@@ -202,7 +201,7 @@ menuButtons.forEach((button) => {
 	button.addEventListener("click", () => {
 		const sketchName = button.getAttribute("data-sketch") as SketchName
 		if (sketchName && sketchName !== currentSketch) {
-			if (sketchName === CELLULAR_AUTOMATON_SKETCH) {
+			if (sketchName === "elementary-cellular-automaton") {
 				loadSketch(
 					sketchName,
 					getCurrentRule(),
@@ -219,7 +218,7 @@ menuButtons.forEach((button) => {
 })
 
 const initialSketch = getSketchFromURL()
-if (initialSketch === CELLULAR_AUTOMATON_SKETCH) {
+if (initialSketch === "elementary-cellular-automaton") {
 	loadSketch(
 		initialSketch,
 		getRuleFromURL(),
