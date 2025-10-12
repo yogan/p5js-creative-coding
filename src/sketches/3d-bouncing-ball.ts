@@ -61,11 +61,29 @@ export const bouncingBall3D = (p: p5) => {
 		p.directionalLight(50, 50, 50, -0.8, -0.5, -0.8)
 	}
 
+	const handleBallCollisions = (): void => {
+		for (let i = 0; i < balls.length; i++) {
+			for (let j = i + 1; j < balls.length; j++) {
+				const ball1 = balls[i]
+				const ball2 = balls[j]
+
+				if (ball1.collidesWith(ball2)) {
+					ball1.resolveCollision(ball2)
+				}
+			}
+		}
+	}
+
 	const drawObjects = (): void => {
 		boundingBox.draw()
 
 		for (const ball of balls) {
 			ball.update(boundingBox)
+		}
+
+		handleBallCollisions()
+
+		for (const ball of balls) {
 			ball.draw()
 		}
 	}
@@ -128,6 +146,52 @@ export const bouncingBall3D = (p: p5) => {
 				.sub(other.position)
 				.mag()
 			return distance < this.radius + other.radius
+		}
+
+		resolveCollision(other: Ball): void {
+			const dx = other.position.x - this.position.x
+			const dy = other.position.y - this.position.y
+			const dz = other.position.z - this.position.z
+			const distance = Math.sqrt(dx * dx + dy * dy + dz * dz)
+
+			if (distance === 0) return
+
+			const normalX = dx / distance
+			const normalY = dy / distance
+			const normalZ = dz / distance
+
+			const overlap = this.radius + other.radius - distance
+			const separationX = (overlap / 2) * normalX
+			const separationY = (overlap / 2) * normalY
+			const separationZ = (overlap / 2) * normalZ
+
+			this.position.x -= separationX
+			this.position.y -= separationY
+			this.position.z -= separationZ
+			other.position.x += separationX
+			other.position.y += separationY
+			other.position.z += separationZ
+
+			const relativeVelocityX = other.velocity.x - this.velocity.x
+			const relativeVelocityY = other.velocity.y - this.velocity.y
+			const relativeVelocityZ = other.velocity.z - this.velocity.z
+
+			const velocityAlongNormal =
+				relativeVelocityX * normalX +
+				relativeVelocityY * normalY +
+				relativeVelocityZ * normalZ
+
+			if (velocityAlongNormal > 0) return
+
+			const restitution = 0.8
+			const impulse = (-(1 + restitution) * velocityAlongNormal) / 2
+
+			this.velocity.x -= impulse * normalX
+			this.velocity.y -= impulse * normalY
+			this.velocity.z -= impulse * normalZ
+			other.velocity.x += impulse * normalX
+			other.velocity.y += impulse * normalY
+			other.velocity.z += impulse * normalZ
 		}
 
 		update(box: BoundingBox) {
