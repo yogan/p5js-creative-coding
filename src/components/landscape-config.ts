@@ -1,7 +1,9 @@
 import {
+	getCameraFromURL,
 	getHeightChangeSpeedFromURL,
 	getMeshFromURL,
 	getRoughnessFromURL,
+	type LandscapeCamera,
 	type LandscapeMesh,
 	updateLandscapeURL,
 } from "../utils/url-params"
@@ -10,6 +12,7 @@ export type LandscapeSettings = {
 	mesh: LandscapeMesh
 	heightChangeSpeed: number
 	roughness: number
+	camera: LandscapeCamera
 }
 
 export class LandscapeConfig {
@@ -21,6 +24,7 @@ export class LandscapeConfig {
 		mesh: getMeshFromURL(),
 		heightChangeSpeed: getHeightChangeSpeedFromURL(),
 		roughness: getRoughnessFromURL(),
+		camera: getCameraFromURL(),
 	}
 
 	constructor(private container: HTMLElement) {
@@ -86,6 +90,21 @@ export class LandscapeConfig {
 						<span class="slider-label">rough</span>
 					</div>
 				</div>
+				<div class="input-group">
+					<div class="input-header">
+						<span class="input-label">Camera</span>
+					</div>
+					<div class="radio-group horizontal">
+						<label class="radio-label">
+							<input type="radio" name="camera" value="auto">
+							<span class="radio-text">Auto Rotate</span>
+						</label>
+						<label class="radio-label">
+							<input type="radio" name="camera" value="manual">
+							<span class="radio-text">Manual</span>
+						</label>
+					</div>
+				</div>
 			</div>
 		`
 
@@ -117,6 +136,16 @@ export class LandscapeConfig {
 			})
 		})
 
+		// Camera radio buttons
+		const cameraRadios = this.modal?.querySelectorAll(
+			'input[name="camera"]',
+		) as NodeListOf<HTMLInputElement>
+		cameraRadios?.forEach((radio) => {
+			radio.addEventListener("change", () => {
+				this.updateSettings()
+			})
+		})
+
 		// Speed slider
 		const speedSlider = this.modal?.querySelector(
 			"#height-speed",
@@ -140,6 +169,9 @@ export class LandscapeConfig {
 		const selectedMeshRadio = this.modal?.querySelector(
 			'input[name="mesh"]:checked',
 		) as HTMLInputElement
+		const selectedCameraRadio = this.modal?.querySelector(
+			'input[name="camera"]:checked',
+		) as HTMLInputElement
 		const speedSlider = this.modal?.querySelector(
 			"#height-speed",
 		) as HTMLInputElement
@@ -147,8 +179,14 @@ export class LandscapeConfig {
 			"#roughness",
 		) as HTMLInputElement
 
-		if (selectedMeshRadio && speedSlider && roughnessSlider) {
+		if (
+			selectedMeshRadio &&
+			selectedCameraRadio &&
+			speedSlider &&
+			roughnessSlider
+		) {
 			this.currentSettings.mesh = selectedMeshRadio.value as LandscapeMesh
+			this.currentSettings.camera = selectedCameraRadio.value as LandscapeCamera
 			this.currentSettings.heightChangeSpeed = parseFloat(speedSlider.value)
 			this.currentSettings.roughness = parseFloat(roughnessSlider.value)
 
@@ -157,6 +195,7 @@ export class LandscapeConfig {
 				this.currentSettings.mesh,
 				this.currentSettings.heightChangeSpeed,
 				this.currentSettings.roughness,
+				this.currentSettings.camera,
 			)
 
 			this.onSettingsChange?.(this.currentSettings)
@@ -196,12 +235,20 @@ export class LandscapeConfig {
 	}
 
 	private syncUIWithSettings() {
-		// Update radio buttons
+		// Update mesh radio buttons
 		const meshRadios = this.modal?.querySelectorAll(
 			'input[name="mesh"]',
 		) as NodeListOf<HTMLInputElement>
 		meshRadios?.forEach((radio) => {
 			radio.checked = radio.value === this.currentSettings.mesh
+		})
+
+		// Update camera radio buttons
+		const cameraRadios = this.modal?.querySelectorAll(
+			'input[name="camera"]',
+		) as NodeListOf<HTMLInputElement>
+		cameraRadios?.forEach((radio) => {
+			radio.checked = radio.value === this.currentSettings.camera
 		})
 
 		// Update sliders

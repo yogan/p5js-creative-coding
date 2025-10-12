@@ -108,6 +108,7 @@ export function updateURL(
 		url.searchParams.delete("mesh")
 		url.searchParams.delete("heightSpeed")
 		url.searchParams.delete("roughness")
+		url.searchParams.delete("camera")
 	}
 
 	window.history.replaceState({}, "", url)
@@ -115,6 +116,7 @@ export function updateURL(
 
 // Landscape sketch parameter functions
 export type LandscapeMesh = "Triangles" | "Squares"
+export type LandscapeCamera = "auto" | "manual"
 
 export function getMeshFromURL(): LandscapeMesh {
 	const urlParams = new URLSearchParams(window.location.search)
@@ -157,16 +159,27 @@ export function getRoughnessFromURL(): number {
 	return 0.15
 }
 
+export function getCameraFromURL(): LandscapeCamera {
+	const urlParams = new URLSearchParams(window.location.search)
+	const camera = urlParams.get("camera")
+	const validCameraModes: LandscapeCamera[] = ["auto", "manual"]
+	return camera && validCameraModes.includes(camera as LandscapeCamera)
+		? (camera as LandscapeCamera)
+		: "auto"
+}
+
 export function updateLandscapeURL(
 	mesh: LandscapeMesh,
 	heightChangeSpeed: number,
 	roughness: number,
+	camera: LandscapeCamera,
 ) {
 	const url = new URL(window.location.href)
 	url.searchParams.set("sketch", "landscape")
 	url.searchParams.set("mesh", mesh)
 	url.searchParams.set("heightSpeed", heightChangeSpeed.toString())
 	url.searchParams.set("roughness", roughness.toString())
+	url.searchParams.set("camera", camera)
 	window.history.replaceState({}, "", url)
 }
 

@@ -5,6 +5,7 @@ let settings: LandscapeSettings = {
 	mesh: "Triangles",
 	heightChangeSpeed: 0.005,
 	roughness: 0.15,
+	camera: "auto",
 }
 
 export const setLandscapeSettings = (newSettings: LandscapeSettings) => {
@@ -34,27 +35,30 @@ export const landscape = (p: p5) => {
 
 	p.draw = () => {
 		p.background(0)
-		p.orbitControl()
 
-		// Set up rotating camera
-		const cameraX = p.cos(angle) * 600
-		const cameraZ = p.sin(angle) * 600
-		const cameraY = -200
+		if (settings.camera === "manual") {
+			p.orbitControl()
+		} else {
+			// Set up rotating camera
+			const cameraX = p.cos(angle) * 600
+			const cameraZ = p.sin(angle) * 600
+			const cameraY = -200
 
-		p.camera(
-			cameraX,
-			cameraY,
-			cameraZ, // camera position
-			0,
-			0,
-			0, // look at center
-			0,
-			1,
-			0, // up vector
-		)
+			p.camera(
+				cameraX,
+				cameraY,
+				cameraZ, // camera position
+				0,
+				0,
+				0, // look at center
+				0,
+				1,
+				0, // up vector
+			)
 
-		// Rotate slowly
-		angle += 0.0015
+			// Rotate slowly
+			angle += 0.0015
+		}
 
 		// Cyberspace styling
 		p.fill(140, 200, 150, 40) // Semi-transparent white surfaces
