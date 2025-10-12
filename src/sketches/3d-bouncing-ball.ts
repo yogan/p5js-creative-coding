@@ -1,6 +1,6 @@
 import type p5 from "p5"
 
-export const scratchVectors = (p: p5) => {
+export const bouncingBall3D = (p: p5) => {
 	let min: p5.Vector
 	let max: p5.Vector
 	let ball: p5.Vector

@@ -8,25 +8,25 @@ export type GridColor = "off" | "light" | "dark" | "black"
 export type InitialCells = "middle" | "alternating" | "random"
 
 export type SketchName =
-	| "koch-island"
+	| "3d-bouncing-ball"
 	| "dragon-curve"
 	| "dragon-curve-anim"
-	| "scratch-randomness"
-	| "scratch-vectors"
-	| "landscape"
 	| typeof CELLULAR_AUTOMATON_SKETCH
+	| "koch-island"
+	| "landscape"
+	| "scratch-randomness"
 
 export function getSketchFromURL(): SketchName {
 	const urlParams = new URLSearchParams(window.location.search)
 	const sketch = urlParams.get("sketch") as SketchName
 	const validSketches: SketchName[] = [
-		"koch-island",
+		"3d-bouncing-ball",
 		"dragon-curve",
 		"dragon-curve-anim",
-		"scratch-randomness",
-		"scratch-vectors",
-		"landscape",
 		CELLULAR_AUTOMATON_SKETCH,
+		"koch-island",
+		"landscape",
+		"scratch-randomness",
 	]
 	return sketch && validSketches.includes(sketch) ? sketch : "koch-island"
 }

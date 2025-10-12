@@ -21,7 +21,7 @@ import {
 	scratchRandomness,
 	setScratchRandomnessSettings,
 } from "./sketches/scratch-randomness"
-import { scratchVectors } from "./sketches/scratch-vectors"
+import { bouncingBall3D } from "./sketches/3d-bouncing-ball"
 
 import {
 	CELLULAR_AUTOMATON_SKETCH,
@@ -37,13 +37,13 @@ import {
 } from "./utils/url-params"
 
 const sketches: Record<SketchName, (p: p5) => void> = {
-	"koch-island": kochIsland,
+	"3d-bouncing-ball": bouncingBall3D,
 	"dragon-curve": dragonCurve,
 	"dragon-curve-anim": dragonCurveAnim,
 	[CELLULAR_AUTOMATON_SKETCH]: elementaryCellularAutomaton,
-	"scratch-randomness": scratchRandomness,
-	"scratch-vectors": scratchVectors,
+	"koch-island": kochIsland,
 	landscape: landscape,
+	"scratch-randomness": scratchRandomness,
 }
 
 let currentP5Instance: p5 | null = null
