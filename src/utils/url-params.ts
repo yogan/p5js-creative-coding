@@ -106,7 +106,7 @@ export function updateURL(
 	// Landscape parameters - remove when not landscape sketch
 	if (sketchName !== "landscape") {
 		url.searchParams.delete("mesh")
-		url.searchParams.delete("heightSpeed")
+		url.searchParams.delete("speed")
 		url.searchParams.delete("roughness")
 		url.searchParams.delete("camera")
 	}
@@ -121,15 +121,16 @@ export type LandscapeCamera = "auto" | "manual"
 export function getMeshFromURL(): LandscapeMesh {
 	const urlParams = new URLSearchParams(window.location.search)
 	const mesh = urlParams.get("mesh")
-	const validMeshTypes: LandscapeMesh[] = ["Triangles", "Squares"]
-	return mesh && validMeshTypes.includes(mesh as LandscapeMesh)
-		? (mesh as LandscapeMesh)
-		: "Triangles"
+	const meshMap: Record<string, LandscapeMesh> = {
+		triangles: "Triangles",
+		squares: "Squares",
+	}
+	return mesh && meshMap[mesh] ? meshMap[mesh] : "Triangles"
 }
 
 export function getHeightChangeSpeedFromURL(): number {
 	const urlParams = new URLSearchParams(window.location.search)
-	const speed = urlParams.get("heightSpeed")
+	const speed = urlParams.get("speed")
 	if (speed) {
 		const speedNumber = parseFloat(speed)
 		if (
@@ -176,8 +177,8 @@ export function updateLandscapeURL(
 ) {
 	const url = new URL(window.location.href)
 	url.searchParams.set("sketch", "landscape")
-	url.searchParams.set("mesh", mesh)
-	url.searchParams.set("heightSpeed", heightChangeSpeed.toString())
+	url.searchParams.set("mesh", mesh.toLowerCase())
+	url.searchParams.set("speed", heightChangeSpeed.toString())
 	url.searchParams.set("roughness", roughness.toString())
 	url.searchParams.set("camera", camera)
 	window.history.replaceState({}, "", url)
