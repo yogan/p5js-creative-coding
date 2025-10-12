@@ -2,7 +2,7 @@ import type p5 from "p5"
 
 export const bouncingBall3D = (p: p5) => {
 	let boundingBox: BoundingBox
-	let ball: Ball
+	let balls: Ball[] = []
 
 	const createBoundingBox = (): BoundingBox => {
 		const depth = Math.min(p.width, p.height) / 2
@@ -13,15 +13,15 @@ export const bouncingBall3D = (p: p5) => {
 	}
 
 	const createBall = (box: BoundingBox): Ball => {
-		const size = Math.min(p.width, p.height) / 25
+		const size = (Math.min(p.width, p.height) / 25) * p.random(0.5, 1.5)
 		const pos = p.createVector(
 			p.random(box.min.x + size, box.max.x - size),
 			p.random(box.min.y + size, box.max.y - size),
 			p.random(box.min.z + size, box.max.z - size),
 		)
 
-		const speedMin = size / 20
-		const speedMax = size / 10
+		const speedMin = size / 30
+		const speedMax = size / 5
 		const velocity = p.createVector(
 			p.random([-1, 1]) * p.random(speedMin, speedMax),
 			p.random([-1, 1]) * p.random(speedMin, speedMax),
@@ -53,15 +53,21 @@ export const bouncingBall3D = (p: p5) => {
 	const drawObjects = (): void => {
 		boundingBox.draw()
 
-		ball.update(boundingBox)
-		ball.draw()
+		for (const ball of balls) {
+			ball.update(boundingBox)
+			ball.draw()
+		}
 	}
 
 	p.setup = () => {
 		p.createCanvas(p.windowWidth, p.windowHeight, p.WEBGL)
 		setupCamera()
 		boundingBox = createBoundingBox()
-		ball = createBall(boundingBox)
+		balls = [
+			createBall(boundingBox),
+			createBall(boundingBox),
+			createBall(boundingBox),
+		]
 	}
 
 	p.draw = () => {
