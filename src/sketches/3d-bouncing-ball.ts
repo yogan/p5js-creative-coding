@@ -2,7 +2,7 @@ import type p5 from "p5"
 
 export const bouncingBall3D = (p: p5) => {
 	let boundingBox: BoundingBox
-	let balls: Ball[] = []
+	const balls: Ball[] = []
 
 	const createBoundingBox = (): BoundingBox => {
 		const depth = Math.min(p.width, p.height) / 2
@@ -12,12 +12,22 @@ export const bouncingBall3D = (p: p5) => {
 		)
 	}
 
-	const createBall = (box: BoundingBox): Ball => {
+	const createBall = (box: BoundingBox, existingBalls: Ball[] = []): Ball => {
 		const size = (Math.min(p.width, p.height) / 25) * p.random(0.5, 1.5)
-		const pos = p.createVector(
-			p.random(box.min.x + size, box.max.x - size),
-			p.random(box.min.y + size, box.max.y - size),
-			p.random(box.min.z + size, box.max.z - size),
+		const maxAttempts = 100
+		let attempts = 0
+		let pos: p5.Vector
+
+		do {
+			pos = p.createVector(
+				p.random(box.min.x + size, box.max.x - size),
+				p.random(box.min.y + size, box.max.y - size),
+				p.random(box.min.z + size, box.max.z - size),
+			)
+			attempts++
+		} while (
+			attempts < maxAttempts &&
+			existingBalls.some((ball) => new Ball(pos, size).collidesWith(ball))
 		)
 
 		const speedMin = size / 30
@@ -29,16 +39,17 @@ export const bouncingBall3D = (p: p5) => {
 		)
 
 		const color = p.color(p.random(255), p.random(255), p.random(255))
-		return new Ball(pos, velocity, size, color)
+		return new Ball(pos, size, velocity, color)
 	}
 
 	const setupCamera = (): void => {
 		const distance = Math.max(p.width, p.height)
+
 		// biome-ignore format: manually formatted
 		p.camera(
-			distance * 0.12,  // x: a bit to the left
+			 distance * 0.12, // x: a bit to the left
 			-distance * 0.2,  // y: slightly from above
-			distance * 0.8,   // z: move back
+			 distance * 0.8,  // z: move back
 			0, 0, 0,          // look at center of box
 			0, 1, 0           // up vector
 		)
@@ -63,11 +74,9 @@ export const bouncingBall3D = (p: p5) => {
 		p.createCanvas(p.windowWidth, p.windowHeight, p.WEBGL)
 		setupCamera()
 		boundingBox = createBoundingBox()
-		balls = [
-			createBall(boundingBox),
-			createBall(boundingBox),
-			createBall(boundingBox),
-		]
+		balls.push(createBall(boundingBox, balls))
+		balls.push(createBall(boundingBox, balls))
+		balls.push(createBall(boundingBox, balls))
 	}
 
 	p.draw = () => {
@@ -106,11 +115,20 @@ export const bouncingBall3D = (p: p5) => {
 
 	class Ball {
 		constructor(
-			private position: p5.Vector,
-			private velocity: p5.Vector,
-			private radius: number,
-			private color: p5.Color,
+			private readonly position: p5.Vector,
+			private readonly radius: number,
+			private readonly velocity: p5.Vector = p.createVector(0, 0, 0),
+			private readonly color: p5.Color = p.color(255),
 		) {}
+
+		collidesWith(other: Ball): boolean {
+			const distance = p
+				.createVector()
+				.set(this.position)
+				.sub(other.position)
+				.mag()
+			return distance < this.radius + other.radius
+		}
 
 		update(box: BoundingBox) {
 			this.position.add(this.velocity)
