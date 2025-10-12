@@ -12,6 +12,7 @@ export type SketchName =
 	| "dragon-curve"
 	| "dragon-curve-anim"
 	| "scratch-randomness"
+	| "scratch-vectors"
 	| "landscape"
 	| typeof CELLULAR_AUTOMATON_SKETCH
 
@@ -23,6 +24,7 @@ export function getSketchFromURL(): SketchName {
 		"dragon-curve",
 		"dragon-curve-anim",
 		"scratch-randomness",
+		"scratch-vectors",
 		"landscape",
 		CELLULAR_AUTOMATON_SKETCH,
 	]

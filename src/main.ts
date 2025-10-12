@@ -21,6 +21,7 @@ import {
 	scratchRandomness,
 	setScratchRandomnessSettings,
 } from "./sketches/scratch-randomness"
+import { scratchVectors } from "./sketches/scratch-vectors"
 
 import {
 	CELLULAR_AUTOMATON_SKETCH,
@@ -41,6 +42,7 @@ const sketches: Record<SketchName, (p: p5) => void> = {
 	"dragon-curve-anim": dragonCurveAnim,
 	[CELLULAR_AUTOMATON_SKETCH]: elementaryCellularAutomaton,
 	"scratch-randomness": scratchRandomness,
+	"scratch-vectors": scratchVectors,
 	landscape: landscape,
 }
 
