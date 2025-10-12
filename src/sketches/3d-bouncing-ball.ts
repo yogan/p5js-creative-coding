@@ -4,20 +4,20 @@ export const bouncingBall3D = (p: p5) => {
 	let boundingBox: BoundingBox
 	let ball: Ball
 
-	p.setup = () => {
-		p.createCanvas(p.windowWidth, p.windowHeight, p.WEBGL)
-
+	const createBoundingBox = (): BoundingBox => {
 		const depth = Math.min(p.width, p.height) / 2
-		boundingBox = new BoundingBox(
+		return new BoundingBox(
 			p.createVector(-p.width / 4, -p.height / 4, 0),
 			p.createVector(p.width / 4, p.height / 4, depth),
 		)
+	}
 
+	const createBall = (box: BoundingBox): Ball => {
 		const size = Math.min(p.width, p.height) / 25
 		const pos = p.createVector(
-			p.random(boundingBox.min.x + size, boundingBox.max.x - size),
-			p.random(boundingBox.min.y + size, boundingBox.max.y - size),
-			p.random(boundingBox.min.z + size, boundingBox.max.z - size),
+			p.random(box.min.x + size, box.max.x - size),
+			p.random(box.min.y + size, box.max.y - size),
+			p.random(box.min.z + size, box.max.z - size),
 		)
 
 		const speedMin = size / 20
@@ -29,8 +29,10 @@ export const bouncingBall3D = (p: p5) => {
 		)
 
 		const color = p.color(p.random(255), p.random(255), p.random(255))
-		ball = new Ball(pos, velocity, size, color)
+		return new Ball(pos, velocity, size, color)
+	}
 
+	const setupCamera = (): void => {
 		const distance = Math.max(p.width, p.height)
 		// biome-ignore format: manually formatted
 		p.camera(
@@ -42,18 +44,31 @@ export const bouncingBall3D = (p: p5) => {
 		)
 	}
 
-	p.draw = () => {
-		p.background(220)
-		p.orbitControl()
-
+	const setupLight = (): void => {
 		p.ambientLight(60, 60, 60)
 		p.directionalLight(80, 80, 80, -1, 0.5, -1)
 		p.directionalLight(50, 50, 50, -0.8, -0.5, -0.8)
+	}
 
+	const drawObjects = (): void => {
 		boundingBox.draw()
 
 		ball.update(boundingBox)
 		ball.draw()
+	}
+
+	p.setup = () => {
+		p.createCanvas(p.windowWidth, p.windowHeight, p.WEBGL)
+		setupCamera()
+		boundingBox = createBoundingBox()
+		ball = createBall(boundingBox)
+	}
+
+	p.draw = () => {
+		p.background(220)
+		p.orbitControl()
+		setupLight()
+		drawObjects()
 	}
 
 	p.windowResized = () => {
