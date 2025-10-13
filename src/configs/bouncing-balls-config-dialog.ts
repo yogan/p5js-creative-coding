@@ -1,3 +1,7 @@
+import {
+	disableOrbitalControls,
+	enableOrbitalControls,
+} from "../sketches/3d-bouncing-balls"
 import { updateSketchConfig } from "../utils/url-params"
 import { BaseConfigDialog } from "./base-config-dialog"
 import {
@@ -77,7 +81,15 @@ export class BouncingBallsConfigDialog extends BaseConfigDialog<BouncingBallsCon
 		this.ballCountSlider.value = this.currentConfig.ballCount.toString()
 		this.ballCountValue.textContent = this.currentConfig.ballCount.toString()
 
+		// Disable orbital controls to prevent camera movement while using slider
+		disableOrbitalControls()
+
 		this.modal.style.display = "flex"
+	}
+
+	protected closeModal() {
+		super.closeModal()
+		enableOrbitalControls()
 	}
 
 	public setOnChange(callback: (config: BouncingBallsConfig) => void) {

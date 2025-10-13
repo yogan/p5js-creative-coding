@@ -6,6 +6,7 @@ import {
 
 let bouncingBallsConfig: BouncingBallsConfig = getBouncingBallsConfigFromURL()
 let recreateBouncingBalls: (() => void) | null = null
+let orbitalControlsEnabled = true
 
 export function setBouncingBallsConfig(config: BouncingBallsConfig) {
 	bouncingBallsConfig = config
@@ -15,6 +16,14 @@ export function setBouncingBallsConfig(config: BouncingBallsConfig) {
 export function restartBouncingBalls() {
 	bouncingBallsConfig = getBouncingBallsConfigFromURL()
 	recreateBouncingBalls?.()
+}
+
+export function disableOrbitalControls() {
+	orbitalControlsEnabled = false
+}
+
+export function enableOrbitalControls() {
+	orbitalControlsEnabled = true
 }
 
 export const bouncingBalls3D = (p: p5) => {
@@ -122,7 +131,9 @@ export const bouncingBalls3D = (p: p5) => {
 
 	p.draw = () => {
 		p.background(220)
-		p.orbitControl()
+		if (orbitalControlsEnabled) {
+			p.orbitControl()
+		}
 		setupLight()
 		drawObjects()
 	}
