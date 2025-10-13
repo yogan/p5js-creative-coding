@@ -11,8 +11,6 @@ import {
 } from "./scratch-randomness-config"
 
 export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRandomnessConfig> {
-	private controlBtn!: HTMLElement
-	private modal!: HTMLElement
 	private radioButtons!: NodeListOf<HTMLInputElement>
 	private modeSelect!: HTMLSelectElement
 	private resetBtn!: HTMLButtonElement
@@ -189,7 +187,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 		this.onConfigChange?.(this.currentConfig)
 	}
 
-	private openModal() {
+	protected openModal() {
 		// Update current config from URL
 		this.currentConfig = getScratchRandomnessConfigFromURL()
 
@@ -204,19 +202,6 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 		this.modal.style.display = "flex"
 	}
 
-	private closeModal() {
-		this.modal.style.display = "none"
-	}
-
-	public show() {
-		this.controlBtn.style.display = "flex"
-		this.updateURL()
-	}
-
-	public hide() {
-		this.controlBtn.style.display = "none"
-	}
-
 	public setOnChange(callback: (config: ScratchRandomnessConfig) => void) {
 		this.onConfigChange = callback
 	}
@@ -225,12 +210,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 		return { ...this.currentConfig }
 	}
 
-	public destroy() {
-		this.controlBtn.remove()
-		this.modal.remove()
-	}
-
-	private updateURL() {
+	protected updateURL() {
 		updateSketchConfig("scratch-randomness", {
 			visualization: this.currentConfig.visualization,
 			circleMode: this.currentConfig.circleMode,

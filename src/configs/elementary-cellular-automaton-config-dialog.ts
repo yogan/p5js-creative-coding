@@ -9,8 +9,6 @@ import type {
 import { createConfigButton } from "./config-button"
 
 export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<CellularAutomatonConfig> {
-	private controlBtn!: HTMLElement
-	private modal!: HTMLElement
 	private ruleInput!: HTMLInputElement
 	private rulePreview!: HTMLElement
 	private widthInput!: HTMLInputElement
@@ -165,7 +163,7 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 		})
 	}
 
-	private openModal() {
+	protected openModal() {
 		const config = getElementaryCellularAutomatonConfig()
 		this.ruleInput.value = config.rule.toString()
 		this.rulePreview.textContent = config.rule.toString()
@@ -174,10 +172,6 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 		this.gridSelect.value = config.grid
 		this.startSelect.value = config.start
 		this.modal.style.display = "flex"
-	}
-
-	private closeModal() {
-		this.modal.style.display = "none"
 	}
 
 	private updateRulePreview() {
@@ -229,15 +223,6 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 		this.onRuleChange?.({ rule, width, grid, start })
 	}
 
-	public show() {
-		this.controlBtn.style.display = "flex"
-		this.updateURL()
-	}
-
-	public hide() {
-		this.controlBtn.style.display = "none"
-	}
-
 	public setOnChange(callback: (config: CellularAutomatonConfig) => void) {
 		this.onRuleChange = callback
 	}
@@ -246,12 +231,7 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 		return getElementaryCellularAutomatonConfig()
 	}
 
-	public destroy() {
-		this.controlBtn.remove()
-		this.modal.remove()
-	}
-
-	private updateURL() {
+	protected updateURL() {
 		updateSketchConfig(
 			"elementary-cellular-automaton",
 			getElementaryCellularAutomatonConfig(),

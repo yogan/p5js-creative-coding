@@ -9,8 +9,6 @@ import {
 } from "./landscape-config"
 
 export class LandscapeConfigDialog extends BaseConfigDialog<LandscapeConfig> {
-	private controlBtn!: HTMLElement
-	private modal!: HTMLElement
 	private meshRadios!: NodeListOf<HTMLInputElement>
 	private cameraRadios!: NodeListOf<HTMLInputElement>
 	private speedSlider!: HTMLInputElement
@@ -156,7 +154,7 @@ export class LandscapeConfigDialog extends BaseConfigDialog<LandscapeConfig> {
 		this.onConfigChange?.(this.currentConfig)
 	}
 
-	private openModal() {
+	protected openModal() {
 		// Update current config from URL
 		this.currentConfig = getLandscapeConfigFromURL()
 
@@ -177,19 +175,6 @@ export class LandscapeConfigDialog extends BaseConfigDialog<LandscapeConfig> {
 		this.modal.style.display = "flex"
 	}
 
-	private closeModal() {
-		this.modal.style.display = "none"
-	}
-
-	public show() {
-		this.controlBtn.style.display = "flex"
-		this.updateURL()
-	}
-
-	public hide() {
-		this.controlBtn.style.display = "none"
-	}
-
 	public setOnChange(callback: (config: LandscapeConfig) => void) {
 		this.onConfigChange = callback
 	}
@@ -198,12 +183,7 @@ export class LandscapeConfigDialog extends BaseConfigDialog<LandscapeConfig> {
 		return { ...this.currentConfig }
 	}
 
-	public destroy() {
-		this.controlBtn.remove()
-		this.modal.remove()
-	}
-
-	private updateURL() {
+	protected updateURL() {
 		updateSketchConfig("landscape", {
 			mesh: this.currentConfig.mesh,
 			speed: this.currentConfig.heightChangeSpeed,
