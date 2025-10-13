@@ -1,16 +1,15 @@
 # Agent Guidelines for p5.js Creative Coding Project
 
 ## Build/Lint/Test Commands
-- `npm run dev` - Start development server
 - `npm run build` - TypeScript compile and Vite build
 - `npm run lint` - Check code with Biome
 - `npm run lint:fix` - Fix linting issues automatically
 - `npm run format` - Format code with Biome
 - No test framework configured
 
-## Tool Usage
-- Never start a dev server on your own, unless explicitly asked
-- There will usually be one running on port 3000 already, which can be accessed
+## Avoid These Commands
+- Do NOT start a dev server
+- Do NOT use cURL to test the app, as it's a graphical p5.js project
 
 ## Code Style Guidelines
 - Use Biome for formatting and linting (semicolons as needed)
@@ -21,6 +20,6 @@
 - DOM types enabled, no unused locals/parameters allowed
 - p5.js sketches follow pattern: `export const sketchName = (p: p5) => { ... }`
 - Use arrow functions and const declarations
-- HSB color mode for p5.js animations
+- RGB color mode for p5.js animations
 - Responsive canvas sizing with windowResized handler
 - No comments added unless explicitly requested
