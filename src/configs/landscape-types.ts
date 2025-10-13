@@ -1,4 +1,4 @@
-export type LandscapeMesh = "Triangles" | "Squares"
+export type LandscapeMesh = "triangles" | "squares"
 export type LandscapeCamera = "auto" | "manual"
 
 export type LandscapeConfig = {
@@ -9,7 +9,7 @@ export type LandscapeConfig = {
 }
 
 export const DEFAULT_LANDSCAPE_CONFIG: LandscapeConfig = {
-	mesh: "Triangles",
+	mesh: "triangles",
 	heightChangeSpeed: 0.005,
 	roughness: 0.15,
 	camera: "auto",
@@ -21,8 +21,8 @@ export function getLandscapeConfigFromURL(): LandscapeConfig {
 
 	const mesh = urlParams.get("mesh")
 	const meshMap: Record<string, LandscapeMesh> = {
-		triangles: "Triangles",
-		squares: "Squares",
+		triangles: "triangles",
+		squares: "squares",
 	}
 	const validMesh = mesh && meshMap[mesh] ? meshMap[mesh] : defaults.mesh
 

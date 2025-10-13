@@ -42,11 +42,11 @@ export class LandscapeConfig extends BaseConfig<LandscapeSettings> {
 					</div>
 					<div class="radio-group horizontal">
 						<label class="radio-label">
-							<input type="radio" name="mesh" value="Triangles">
+							<input type="radio" name="mesh" value="triangles">
 							<span class="radio-text">Triangles</span>
 						</label>
 						<label class="radio-label">
-							<input type="radio" name="mesh" value="Squares">
+							<input type="radio" name="mesh" value="squares">
 							<span class="radio-text">Squares</span>
 						</label>
 					</div>

@@ -2,7 +2,7 @@ import type p5 from "p5"
 import type { LandscapeSettings } from "../configs/landscape-config"
 
 let settings: LandscapeSettings = {
-	mesh: "Triangles",
+	mesh: "triangles",
 	heightChangeSpeed: 0.005,
 	roughness: 0.15,
 	camera: "auto",
@@ -71,7 +71,7 @@ export const landscape = (p: p5) => {
 		// Draw terrain as mesh
 		for (let y = 0; y < rows - 1; y++) {
 			p.beginShape(
-				settings.mesh === "Squares" ? p.QUAD_STRIP : p.TRIANGLE_STRIP,
+				settings.mesh === "squares" ? p.QUAD_STRIP : p.TRIANGLE_STRIP,
 			)
 			for (let x = 0; x < cols; x++) {
 				p.vertex(x * scl, terrain[x][y], y * scl)
