@@ -279,12 +279,16 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfig<void> {
 	}
 
 	public show() {
-		if (this.controlBtn) this.controlBtn.style.display = "flex"
+		if (this.controlBtn) {
+			this.controlBtn.style.display = "flex"
+		}
 		this.updateURL()
 	}
 
 	public hide() {
-		if (this.controlBtn) this.controlBtn.style.display = "none"
+		if (this.controlBtn) {
+			this.controlBtn.style.display = "none"
+		}
 	}
 
 	public setOnChange(callback: () => void) {

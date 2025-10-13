@@ -19,7 +19,6 @@ export class LandscapeConfigDialog extends BaseConfig<LandscapeConfig> {
 		super()
 		this.createElements()
 		this.attachEventListeners()
-		this.syncUIWithConfig()
 	}
 
 	private createElements() {
@@ -175,6 +174,40 @@ export class LandscapeConfigDialog extends BaseConfig<LandscapeConfig> {
 
 	private openModal() {
 		if (this.modal) {
+			// Update current config from URL
+			this.currentConfig = getLandscapeConfigFromURL()
+
+			// Update mesh radio buttons
+			const meshRadios = this.modal.querySelectorAll(
+				'input[name="mesh"]',
+			) as NodeListOf<HTMLInputElement>
+			meshRadios.forEach((radio) => {
+				radio.checked = radio.value === this.currentConfig.mesh
+			})
+
+			// Update camera radio buttons
+			const cameraRadios = this.modal.querySelectorAll(
+				'input[name="camera"]',
+			) as NodeListOf<HTMLInputElement>
+			cameraRadios.forEach((radio) => {
+				radio.checked = radio.value === this.currentConfig.camera
+			})
+
+			// Update sliders
+			const speedSlider = this.modal.querySelector(
+				"#height-speed",
+			) as HTMLInputElement
+			if (speedSlider) {
+				speedSlider.value = this.currentConfig.heightChangeSpeed.toString()
+			}
+
+			const roughnessSlider = this.modal.querySelector(
+				"#roughness",
+			) as HTMLInputElement
+			if (roughnessSlider) {
+				roughnessSlider.value = this.currentConfig.roughness.toString()
+			}
+
 			this.modal.style.display = "flex"
 		}
 	}
@@ -204,39 +237,6 @@ export class LandscapeConfigDialog extends BaseConfig<LandscapeConfig> {
 
 	public getConfig(): LandscapeConfig {
 		return { ...this.currentConfig }
-	}
-
-	private syncUIWithConfig() {
-		// Update mesh radio buttons
-		const meshRadios = this.modal?.querySelectorAll(
-			'input[name="mesh"]',
-		) as NodeListOf<HTMLInputElement>
-		meshRadios?.forEach((radio) => {
-			radio.checked = radio.value === this.currentConfig.mesh
-		})
-
-		// Update camera radio buttons
-		const cameraRadios = this.modal?.querySelectorAll(
-			'input[name="camera"]',
-		) as NodeListOf<HTMLInputElement>
-		cameraRadios?.forEach((radio) => {
-			radio.checked = radio.value === this.currentConfig.camera
-		})
-
-		// Update sliders
-		const speedSlider = this.modal?.querySelector(
-			"#height-speed",
-		) as HTMLInputElement
-		if (speedSlider) {
-			speedSlider.value = this.currentConfig.heightChangeSpeed.toString()
-		}
-
-		const roughnessSlider = this.modal?.querySelector(
-			"#roughness",
-		) as HTMLInputElement
-		if (roughnessSlider) {
-			roughnessSlider.value = this.currentConfig.roughness.toString()
-		}
 	}
 
 	public destroy() {
