@@ -1,7 +1,7 @@
 // Centralized URL parameter handling for all sketches
 
 export type SketchName =
-	| "3d-bouncing-ball"
+	| "3d-bouncing-balls"
 	| "dragon-curve"
 	| "dragon-curve-anim"
 	| "elementary-cellular-automaton"
@@ -13,7 +13,7 @@ export function getSketchFromURL(): SketchName {
 	const urlParams = new URLSearchParams(window.location.search)
 	const sketch = urlParams.get("sketch") as SketchName
 	const validSketches: SketchName[] = [
-		"3d-bouncing-ball",
+		"3d-bouncing-balls",
 		"dragon-curve",
 		"dragon-curve-anim",
 		"elementary-cellular-automaton",

@@ -1,6 +1,6 @@
 import type p5 from "p5"
 
-export const bouncingBall3D = (p: p5) => {
+export const bouncingBalls3D = (p: p5) => {
 	let boundingBox: BoundingBox
 	const balls: Ball[] = []
 

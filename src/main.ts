@@ -2,7 +2,7 @@ import p5 from "p5"
 import { ElementaryCellularAutomatonConfig } from "./configs/elementary-cellular-automaton-config"
 import { LandscapeConfig } from "./configs/landscape-config"
 import { ScratchRandomnessConfigComponent } from "./configs/scratch-randomness-config"
-import { bouncingBall3D } from "./sketches/3d-bouncing-ball"
+import { bouncingBalls3D } from "./sketches/3d-bouncing-balls"
 import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
 import { elementaryCellularAutomaton } from "./sketches/elementary-cellular-automaton"
@@ -20,7 +20,7 @@ import {
 } from "./utils/url-params"
 
 const sketches: Record<SketchName, (p: p5) => void> = {
-	"3d-bouncing-ball": bouncingBall3D,
+	"3d-bouncing-balls": bouncingBalls3D,
 	"dragon-curve": dragonCurve,
 	"dragon-curve-anim": dragonCurveAnim,
 	"elementary-cellular-automaton": elementaryCellularAutomaton,
