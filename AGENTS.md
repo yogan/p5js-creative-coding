@@ -7,9 +7,10 @@
 - `npm run format` - Format code with Biome
 - No test framework configured
 
-## Avoid These Commands
+## Forbidden Actions
 - Do NOT start a dev server
 - Do NOT use cURL to test the app, as it's a graphical p5.js project
+- Do ONLY create commits when explicitly requested
 
 ## Code Style Guidelines
 - Use Biome for formatting and linting (semicolons as needed)
