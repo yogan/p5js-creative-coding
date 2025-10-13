@@ -5,7 +5,7 @@ export interface BouncingBallsConfig {
 }
 
 const DEFAULT_CONFIG: BouncingBallsConfig = {
-	ballCount: 3,
+	ballCount: 8,
 }
 
 export function getBouncingBallsConfigFromURL(): BouncingBallsConfig {
@@ -13,7 +13,7 @@ export function getBouncingBallsConfigFromURL(): BouncingBallsConfig {
 	return {
 		ballCount: Math.max(
 			2,
-			Math.min(10, Number(params.ballCount) || DEFAULT_CONFIG.ballCount),
+			Math.min(15, Number(params.ballCount) || DEFAULT_CONFIG.ballCount),
 		),
 	}
 }

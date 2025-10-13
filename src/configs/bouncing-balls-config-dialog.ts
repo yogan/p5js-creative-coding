@@ -32,8 +32,8 @@ export class BouncingBallsConfigDialog extends BaseConfigDialog<BouncingBallsCon
 					</div>
 					<div class="slider-container">
 						<span class="slider-label">2</span>
-						<input type="range" id="ball-count-slider" min="2" max="10" step="1" value="${this.currentConfig.ballCount}" class="range-slider">
-						<span class="slider-label">10</span>
+						<input type="range" id="ball-count-slider" min="2" max="15" step="1" value="${this.currentConfig.ballCount}" class="range-slider">
+						<span class="slider-label">15</span>
 					</div>
 				</div>
 			</div>
