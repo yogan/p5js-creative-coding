@@ -1,6 +1,6 @@
 import { updateSketchConfig } from "../utils/url-params"
 import { BaseConfigDialog } from "./base-config-dialog"
-import { createConfigButton } from "./config-button"
+
 import {
 	getLandscapeConfigFromURL,
 	type LandscapeCamera,
@@ -17,21 +17,13 @@ export class LandscapeConfigDialog extends BaseConfigDialog<LandscapeConfig> {
 	private onConfigChange?: (config: LandscapeConfig) => void
 	private currentConfig: LandscapeConfig = getLandscapeConfigFromURL()
 
-	constructor(private container: HTMLElement) {
-		super()
-		this.createElements()
-		this.queryElements()
-		this.attachEventListeners()
+	constructor(container: HTMLElement) {
+		super(container)
+		this.initialize()
 	}
 
-	private createElements() {
-		this.controlBtn = createConfigButton()
-
-		this.modal = document.createElement("div")
-		this.modal.className = "modal-overlay"
-		this.modal.id = "landscape-modal"
-		this.modal.style.display = "none"
-		this.modal.innerHTML = `
+	protected getModalContent(): string {
+		return `
 			<div class="modal-content">
 				<h3>Configure Landscape</h3>
 				<div class="input-group">
@@ -86,21 +78,18 @@ export class LandscapeConfigDialog extends BaseConfigDialog<LandscapeConfig> {
 				</div>
 			</div>
 		`
-
-		this.container.appendChild(this.controlBtn)
-		document.body.appendChild(this.modal)
 	}
 
-	private queryElements() {
+	protected queryElements() {
 		this.meshRadios = this.modal.querySelectorAll('input[name="mesh"]')
 		this.cameraRadios = this.modal.querySelectorAll('input[name="camera"]')
-		// biome-ignore-start lint/style/noNonNullAssertion: see createElements()
+		// biome-ignore-start lint/style/noNonNullAssertion: see getModalContent()
 		this.speedSlider = this.modal.querySelector("#height-speed")!
 		this.roughnessSlider = this.modal.querySelector("#roughness")!
-		// biome-ignore-end lint/style/noNonNullAssertion: see createElements()
+		// biome-ignore-end lint/style/noNonNullAssertion: see getModalContent()
 	}
 
-	private attachEventListeners() {
+	protected attachEventListeners() {
 		this.controlBtn.addEventListener("click", (event) => {
 			event.stopPropagation()
 			event.preventDefault()

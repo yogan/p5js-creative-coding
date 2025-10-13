@@ -6,7 +6,6 @@ import type {
 	GridColor,
 	InitialCells,
 } from "./cellular-automaton-config"
-import { createConfigButton } from "./config-button"
 
 export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<CellularAutomatonConfig> {
 	private ruleInput!: HTMLInputElement
@@ -22,21 +21,13 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 
 	private onRuleChange?: (config: CellularAutomatonConfig) => void
 
-	constructor(private container: HTMLElement) {
-		super()
-		this.createElements()
-		this.queryElements()
-		this.attachEventListeners()
+	constructor(container: HTMLElement) {
+		super(container)
+		this.initialize()
 	}
 
-	private createElements() {
-		this.controlBtn = createConfigButton()
-
-		this.modal = document.createElement("div")
-		this.modal.className = "modal-overlay"
-		this.modal.id = "rule-modal"
-		this.modal.style.display = "none"
-		this.modal.innerHTML = `
+	protected getModalContent(): string {
+		return `
 			<div class="modal-content">
 				<h3>Configure Cellular Automaton</h3>
 				<div class="input-group">
@@ -78,20 +69,16 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 					<select id="grid-select" class="grid-select">
 						<option value="off">Off</option>
 						<option value="light" selected="selected">Light Gray</option>
-						<option value="dark">Dark Gray</option>
+						<option value="dark" selected="selected">Dark Gray</option>
 						<option value="black">Black</option>
 					</select>
 				</div>
 			</div>
 		`
-
-		// Add elements to container and document
-		this.container.appendChild(this.controlBtn)
-		document.body.appendChild(this.modal)
 	}
 
-	private queryElements() {
-		// biome-ignore-start lint/style/noNonNullAssertion: see createElements()
+	protected queryElements() {
+		// biome-ignore-start lint/style/noNonNullAssertion: see getModalContent()
 		this.ruleInput = this.modal.querySelector("#rule-input")!
 		this.rulePreview = this.modal.querySelector("#rule-preview")!
 		this.widthInput = this.modal.querySelector("#width-input")!
@@ -102,10 +89,10 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 		this.widthMinusBtn = this.modal.querySelector("#width-minus")!
 		this.gridSelect = this.modal.querySelector("#grid-select")!
 		this.startSelect = this.modal.querySelector("#start-select")!
-		// biome-ignore-end lint/style/noNonNullAssertion: see createElements()
+		// biome-ignore-end lint/style/noNonNullAssertion: see getModalContent()
 	}
 
-	private attachEventListeners() {
+	protected attachEventListeners() {
 		this.controlBtn.addEventListener("click", (event) => {
 			event.stopPropagation()
 			event.preventDefault()
