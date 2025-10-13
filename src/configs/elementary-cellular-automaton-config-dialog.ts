@@ -1,13 +1,4 @@
-import {
-	getCurrentRule,
-	getCurrentWidth,
-	getGridColor,
-	getInitialCells,
-	setGridColor,
-	setInitialCells,
-	setRule,
-	setWidth,
-} from "../sketches/elementary-cellular-automaton"
+import { getElementaryCellularAutomatonConfig } from "../sketches/elementary-cellular-automaton"
 import { updateSketchConfig } from "../utils/url-params"
 import { BaseConfigDialog } from "./base-config-dialog"
 import type {
@@ -189,18 +180,14 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 			this.gridSelect &&
 			this.startSelect
 		) {
-			const rule = getCurrentRule()
-			const width = getCurrentWidth()
-			const gridColor = getGridColor()
-			const initialCells = getInitialCells()
-			this.ruleInput.value = rule.toString()
-			this.rulePreview.textContent = rule.toString()
-			this.widthInput.value = width.toString()
-			this.widthPreview.textContent = `${width} px`
-			this.gridSelect.value = gridColor
-			this.startSelect.value = initialCells
+			const config = getElementaryCellularAutomatonConfig()
+			this.ruleInput.value = config.rule.toString()
+			this.rulePreview.textContent = config.rule.toString()
+			this.widthInput.value = config.width.toString()
+			this.widthPreview.textContent = `${config.width} px`
+			this.gridSelect.value = config.grid
+			this.startSelect.value = config.start
 			this.modal.style.display = "flex"
-			this.ruleInput.focus()
 		}
 	}
 
@@ -273,17 +260,8 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 			const width = parseInt(this.widthInput.value, 10)
 			const grid = this.gridSelect.value as GridColor
 			const start = this.startSelect.value as InitialCells
-			setRule(rule)
-			setWidth(width)
-			setGridColor(grid)
-			setInitialCells(start)
 			this.updateURL()
-			this.onRuleChange?.({
-				rule,
-				width,
-				grid,
-				start,
-			})
+			this.onRuleChange?.({ rule, width, grid, start })
 		}
 	}
 
@@ -305,12 +283,7 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 	}
 
 	public getConfig(): CellularAutomatonConfig {
-		return {
-			rule: getCurrentRule(),
-			width: getCurrentWidth(),
-			grid: getGridColor(),
-			start: getInitialCells(),
-		}
+		return getElementaryCellularAutomatonConfig()
 	}
 
 	public destroy() {
@@ -319,11 +292,9 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 	}
 
 	private updateURL() {
-		updateSketchConfig("elementary-cellular-automaton", {
-			rule: getCurrentRule(),
-			width: getCurrentWidth(),
-			grid: getGridColor(),
-			start: getInitialCells(),
-		})
+		updateSketchConfig(
+			"elementary-cellular-automaton",
+			getElementaryCellularAutomatonConfig(),
+		)
 	}
 }

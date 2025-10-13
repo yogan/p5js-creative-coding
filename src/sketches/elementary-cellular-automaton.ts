@@ -1,49 +1,27 @@
 import type p5 from "p5"
-import type {
-	CellularAutomatonConfig,
-	GridColor,
-	InitialCells,
-} from "../configs/cellular-automaton-config"
+import type { CellularAutomatonConfig } from "../configs/cellular-automaton-config"
 import { updateSketchConfig } from "../utils/url-params"
 
-let currentRule = 30
-let currentWidth = 10
-let gridColor: GridColor = "light"
-let initialCells: InitialCells = "middle"
-
-export const setRule = (rule: number) => {
-	currentRule = Math.max(0, Math.min(255, rule))
+let config: CellularAutomatonConfig = {
+	rule: 30,
+	width: 10,
+	grid: "light",
+	start: "middle",
 }
-
-export const getCurrentRule = () => currentRule
-
-export const setWidth = (width: number) => {
-	currentWidth = Math.max(2, Math.min(100, width))
-}
-
-export const getCurrentWidth = () => currentWidth
-
-export const setGridColor = (color: GridColor) => {
-	gridColor = color
-}
-
-export const getGridColor = (): GridColor => gridColor
-
-export const setInitialCells = (config: InitialCells) => {
-	initialCells = config
-}
-
-export const getInitialCells = (): InitialCells => initialCells
 
 let restartFunction: (() => void) | null = null
 
+export const getElementaryCellularAutomatonConfig =
+	(): CellularAutomatonConfig => config
+
 export const setElementaryCellularAutomatonConfig = (
-	config: CellularAutomatonConfig,
+	newConfig: CellularAutomatonConfig,
 ) => {
-	setRule(config.rule)
-	setWidth(config.width)
-	setGridColor(config.grid)
-	setInitialCells(config.start)
+	config = {
+		...newConfig,
+		rule: Math.max(0, Math.min(255, newConfig.rule)),
+		width: Math.max(2, Math.min(100, newConfig.width)),
+	}
 	restartFunction?.()
 }
 
@@ -58,11 +36,11 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 		y = padding
 
-		const cols = Math.floor((p.width - padding * 2) / getCurrentWidth())
+		const cols = Math.floor((p.width - padding * 2) / config.width)
 		cells = new Array(cols).fill(0)
 
 		// Initialize cells based on initial cells configuration
-		switch (getInitialCells()) {
+		switch (config.start) {
 			case "middle":
 				cells[Math.floor(cols / 2)] = 1
 				break
@@ -81,15 +59,15 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 	p.draw = () => {
 		// center horizontally
-		p.translate(p.width / 2 - (cells.length * getCurrentWidth()) / 2, 0)
+		p.translate(p.width / 2 - (cells.length * config.width) / 2, 0)
 
 		for (let i = 0; i < cells.length; i++) {
 			p.fill(255 * (1 - cells[i]))
-			if (gridColor === "off") {
+			if (config.grid === "off") {
 				p.noStroke()
 			} else {
 				p.strokeWeight(0.5)
-				switch (gridColor) {
+				switch (config.grid) {
 					case "black":
 						p.stroke(0)
 						break
@@ -101,14 +79,14 @@ export const elementaryCellularAutomaton = (p: p5) => {
 						break
 				}
 			}
-			p.rect(i * getCurrentWidth(), y, getCurrentWidth(), getCurrentWidth())
+			p.rect(i * config.width, y, config.width, config.width)
 		}
 
 		cells = nextGeneration(cells)
-		y += getCurrentWidth()
+		y += config.width
 
 		// stop when bottom of canvas is reached
-		if (y + getCurrentWidth() + padding >= p.height) p.noLoop()
+		if (y + config.width + padding >= p.height) p.noLoop()
 
 		// reset translation and show rule number
 		p.resetMatrix()
@@ -116,23 +94,21 @@ export const elementaryCellularAutomaton = (p: p5) => {
 		p.textSize(p.windowWidth < 600 ? 14 : 20)
 
 		// create grid-aligned background box for text
-		const ruleText = `Rule ${getCurrentRule()}`
+		const ruleText = `Rule ${config.rule}`
 		const textWidth = p.textWidth(ruleText)
 
 		// calculate box dimensions as multiples of cell width
 		const textPadding = p.windowWidth < 600 ? 10 : 20
 		const baseBoxHeight = p.windowWidth < 600 ? 24 : 34
-		const boxWidthCells = Math.ceil(
-			(textWidth + textPadding) / getCurrentWidth(),
-		)
-		const boxHeightCells = Math.ceil(baseBoxHeight / getCurrentWidth())
-		const boxWidth = boxWidthCells * getCurrentWidth()
-		const boxHeight = boxHeightCells * getCurrentWidth()
+		const boxWidthCells = Math.ceil((textWidth + textPadding) / config.width)
+		const boxHeightCells = Math.ceil(baseBoxHeight / config.width)
+		const boxWidth = boxWidthCells * config.width
+		const boxHeight = boxHeightCells * config.width
 
 		// calculate the actual grid position (same logic as the cells)
-		const cols = Math.floor((p.width - padding * 2) / getCurrentWidth())
-		const gridStartX = p.width / 2 - (cols * getCurrentWidth()) / 2
-		const gridEndX = gridStartX + cols * getCurrentWidth()
+		const cols = Math.floor((p.width - padding * 2) / config.width)
+		const gridStartX = p.width / 2 - (cols * config.width) / 2
+		const gridEndX = gridStartX + cols * config.width
 
 		// position box to align with rightmost cells
 		const boxX = gridEndX - boxWidth
@@ -149,21 +125,33 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 	p.keyPressed = (event: KeyboardEvent) => {
 		if (event.code === "ArrowLeft") {
-			setRule((getCurrentRule() + 255) % 256)
+			setElementaryCellularAutomatonConfig({
+				...config,
+				rule: (config.rule + 255) % 256,
+			})
 			restart({ updateUrl: true })
 		} else if (event.code === "ArrowRight") {
-			setRule((getCurrentRule() + 1) % 256)
+			setElementaryCellularAutomatonConfig({
+				...config,
+				rule: (config.rule + 1) % 256,
+			})
 			restart({ updateUrl: true })
 		} else if (event.code === "ArrowUp") {
-			const nextWidth = getNextWidth(getCurrentWidth())
-			if (nextWidth !== getCurrentWidth()) {
-				setWidth(nextWidth)
+			const nextWidth = getNextWidth(config.width)
+			if (nextWidth !== config.width) {
+				setElementaryCellularAutomatonConfig({
+					...config,
+					width: nextWidth,
+				})
 				restart({ updateUrl: true })
 			}
 		} else if (event.code === "ArrowDown") {
-			const previousWidth = getPreviousWidth(getCurrentWidth())
-			if (previousWidth !== getCurrentWidth()) {
-				setWidth(previousWidth)
+			const previousWidth = getPreviousWidth(config.width)
+			if (previousWidth !== config.width) {
+				setElementaryCellularAutomatonConfig({
+					...config,
+					width: previousWidth,
+				})
 				restart({ updateUrl: true })
 			}
 		} else if (event.code === "Space") {
@@ -204,12 +192,7 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 	const restart = ({ updateUrl = false } = {}) => {
 		if (updateUrl) {
-			updateSketchConfig("elementary-cellular-automaton", {
-				rule: getCurrentRule(),
-				width: getCurrentWidth(),
-				grid: getGridColor(),
-				start: getInitialCells(),
-			})
+			updateSketchConfig("elementary-cellular-automaton", config)
 		}
 
 		p.setup() // reinitialize everything
@@ -228,6 +211,6 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 	const applyRule = (l: number, c: number, r: number): number => {
 		const index = (l << 2) | (c << 1) | r
-		return (getCurrentRule() >> index) & 1
+		return (config.rule >> index) & 1
 	}
 }
