@@ -1,6 +1,6 @@
 import { resetScratchRandomness } from "../sketches/scratch-randomness"
 import { updateSketchConfig } from "../utils/url-params"
-import { BaseConfig } from "./base-config"
+import { BaseConfigDialog } from "./base-config-dialog"
 import { createConfigButton } from "./config-button"
 import {
 	type CircleMode,
@@ -10,7 +10,7 @@ import {
 	type WalkerMode,
 } from "./scratch-randomness-config"
 
-export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessConfig> {
+export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRandomnessConfig> {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
 	private onConfigChange?: (config: ScratchRandomnessConfig) => void
@@ -25,10 +25,8 @@ export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessC
 	}
 
 	private createElements() {
-		// Create control button using shared utility
 		this.controlBtn = createConfigButton()
 
-		// Create modal
 		this.modal = document.createElement("div")
 		this.modal.className = "modal-overlay"
 		this.modal.id = "scratch-modal"
@@ -81,7 +79,6 @@ export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessC
 			</div>
 		`
 
-		// Add elements to container and document
 		this.container.appendChild(this.controlBtn)
 		document.body.appendChild(this.modal)
 	}

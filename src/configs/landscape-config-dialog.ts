@@ -1,5 +1,5 @@
 import { updateSketchConfig } from "../utils/url-params"
-import { BaseConfig } from "./base-config"
+import { BaseConfigDialog } from "./base-config-dialog"
 import { createConfigButton } from "./config-button"
 import {
 	getLandscapeConfigFromURL,
@@ -8,7 +8,7 @@ import {
 	type LandscapeMesh,
 } from "./landscape-config"
 
-export class LandscapeConfigDialog extends BaseConfig<LandscapeConfig> {
+export class LandscapeConfigDialog extends BaseConfigDialog<LandscapeConfig> {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
 	private onConfigChange?: (config: LandscapeConfig) => void

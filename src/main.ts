@@ -1,4 +1,5 @@
 import p5 from "p5"
+import type { BaseConfigDialog } from "./configs/base-config-dialog"
 import { ElementaryCellularAutomatonConfigDialog } from "./configs/elementary-cellular-automaton-config-dialog"
 import { LandscapeConfigDialog } from "./configs/landscape-config-dialog"
 import { ScratchRandomnessConfigDialog } from "./configs/scratch-randomness-config-dialog"
@@ -16,7 +17,6 @@ import {
 	scratchRandomness,
 	setScratchRandomnessConfig,
 } from "./sketches/scratch-randomness"
-
 import {
 	getSketchFromURL,
 	type SketchName,
@@ -48,85 +48,75 @@ let scratchConfig: ScratchRandomnessConfigDialog | null = null
 let landscapeConfig: LandscapeConfigDialog | null = null
 
 function loadSketch(sketchName: SketchName) {
-	if (currentP5Instance) {
-		currentP5Instance.remove()
+	if (!sketchContainer) return
+
+	currentSketch = sketchName
+	const sketchFn = sketches[sketchName]
+
+	if (currentP5Instance) currentP5Instance.remove()
+	currentP5Instance = new p5(sketchFn, sketchContainer)
+
+	menuButtons.forEach((btn) => {
+		btn.classList.toggle(
+			"active",
+			btn.getAttribute("data-sketch") === sketchName,
+		)
+	})
+
+	if (sketchName === "elementary-cellular-automaton") {
+		showConfigDialog(initElementaryCellularAutomatonConfigDialog())
+	} else if (sketchName === "scratch-randomness") {
+		showConfigDialog(initScratchRandomnessConfigDialog())
+	} else if (sketchName === "landscape") {
+		showConfigDialog(initLandscapeConfigDialog())
+	} else {
+		updateSketchConfig(sketchName)
+		hideAllConfigDialogs()
 	}
+}
 
-	if (sketchContainer) {
-		const sketchFn = sketches[sketchName]
-		currentP5Instance = new p5(sketchFn, sketchContainer)
-
-		currentSketch = sketchName
-
-		menuButtons.forEach((btn) => {
-			btn.classList.toggle(
-				"active",
-				btn.getAttribute("data-sketch") === sketchName,
-			)
+function initElementaryCellularAutomatonConfigDialog() {
+	if (!cellularAutomaton) {
+		cellularAutomaton = new ElementaryCellularAutomatonConfigDialog(sketchMenu)
+		cellularAutomaton.setOnChange((config) => {
+			setElementaryCellularAutomatonConfig(config)
 		})
-
-		if (sketchName === "elementary-cellular-automaton") {
-			if (!cellularAutomaton) {
-				cellularAutomaton = new ElementaryCellularAutomatonConfigDialog(
-					sketchMenu,
-				)
-				cellularAutomaton.setOnChange((config) => {
-					setElementaryCellularAutomatonConfig(config)
-				})
-			}
-			setElementaryCellularAutomatonConfig(
-				getElementaryCellularAutomatonConfig(),
-			)
-			cellularAutomaton.show()
-			if (scratchConfig) {
-				scratchConfig.hide()
-			}
-			if (landscapeConfig) {
-				landscapeConfig.hide()
-			}
-		} else if (sketchName === "scratch-randomness") {
-			if (!scratchConfig) {
-				scratchConfig = new ScratchRandomnessConfigDialog(sketchMenu)
-				scratchConfig.setOnChange((config) => {
-					setScratchRandomnessConfig(config)
-				})
-			}
-			setScratchRandomnessConfig(scratchConfig.getConfig())
-			scratchConfig.show()
-			if (cellularAutomaton) {
-				cellularAutomaton.hide()
-			}
-			if (landscapeConfig) {
-				landscapeConfig.hide()
-			}
-		} else if (sketchName === "landscape") {
-			if (!landscapeConfig) {
-				landscapeConfig = new LandscapeConfigDialog(sketchMenu)
-				landscapeConfig.setOnChange((config) => {
-					setLandscapeConfig(config)
-				})
-			}
-			setLandscapeConfig(landscapeConfig.getConfig())
-			landscapeConfig.show()
-			if (cellularAutomaton) {
-				cellularAutomaton.hide()
-			}
-			if (scratchConfig) {
-				scratchConfig.hide()
-			}
-		} else {
-			updateSketchConfig(sketchName, {})
-			if (cellularAutomaton) {
-				cellularAutomaton.hide()
-			}
-			if (scratchConfig) {
-				scratchConfig.hide()
-			}
-			if (landscapeConfig) {
-				landscapeConfig.hide()
-			}
-		}
 	}
+	setElementaryCellularAutomatonConfig(getElementaryCellularAutomatonConfig())
+	return cellularAutomaton
+}
+
+function initScratchRandomnessConfigDialog() {
+	if (!scratchConfig) {
+		scratchConfig = new ScratchRandomnessConfigDialog(sketchMenu)
+		scratchConfig.setOnChange((config) => {
+			setScratchRandomnessConfig(config)
+		})
+	}
+	setScratchRandomnessConfig(scratchConfig.getConfig())
+	return scratchConfig
+}
+
+function initLandscapeConfigDialog() {
+	if (!landscapeConfig) {
+		landscapeConfig = new LandscapeConfigDialog(sketchMenu)
+		landscapeConfig.setOnChange((config) => {
+			setLandscapeConfig(config)
+		})
+	}
+	setLandscapeConfig(landscapeConfig.getConfig())
+	return landscapeConfig
+}
+
+function showConfigDialog(dialog: BaseConfigDialog) {
+	hideAllConfigDialogs()
+	dialog.show()
+}
+
+function hideAllConfigDialogs() {
+	cellularAutomaton?.hide()
+	scratchConfig?.hide()
+	landscapeConfig?.hide()
 }
 
 function toggleMenu() {

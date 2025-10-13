@@ -7,6 +7,5 @@ export abstract class BaseConfigDialog<TConfig = void> {
 		callback: TConfig extends void ? () => void : (config: TConfig) => void,
 	): void
 
-	// FIXME: don't let this be optional
 	getConfig?(): TConfig
 }

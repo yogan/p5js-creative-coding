@@ -9,7 +9,7 @@ import {
 	setWidth,
 } from "../sketches/elementary-cellular-automaton"
 import { updateSketchConfig } from "../utils/url-params"
-import { BaseConfig } from "./base-config"
+import { BaseConfigDialog } from "./base-config-dialog"
 import type {
 	CellularAutomatonConfig,
 	GridColor,
@@ -17,7 +17,7 @@ import type {
 } from "./cellular-automaton-config"
 import { createConfigButton } from "./config-button"
 
-export class ElementaryCellularAutomatonConfigDialog extends BaseConfig<CellularAutomatonConfig> {
+export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<CellularAutomatonConfig> {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
 	private ruleInput: HTMLInputElement | null = null

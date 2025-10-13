@@ -28,7 +28,7 @@ type ConfigValue = string | number | boolean
 
 export function updateSketchConfig(
 	sketchName: SketchName,
-	config?: Record<string, ConfigValue>,
+	config: Record<string, ConfigValue> = {},
 ) {
 	const url = new URL(window.location.href)
 	url.searchParams.set("sketch", sketchName)
