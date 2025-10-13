@@ -1,15 +1,13 @@
-export abstract class BaseConfig<TSettings = void> {
+export abstract class BaseConfig<TConfig = void> {
 	abstract show(): void
 	abstract hide(): void
 	abstract destroy(): void
 
 	// Unified change callback method
 	abstract setOnChange(
-		callback: TSettings extends void
-			? () => void
-			: (settings: TSettings) => void,
+		callback: TConfig extends void ? () => void : (config: TConfig) => void,
 	): void
 
-	// Optional getSettings method for configs with settings
-	getSettings?(): TSettings
+	// Optional getConfig method for configs with config
+	getConfig?(): TConfig
 }

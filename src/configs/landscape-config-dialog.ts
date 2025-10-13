@@ -4,24 +4,22 @@ import { createConfigButton } from "./config-button"
 import {
 	getLandscapeConfigFromURL,
 	type LandscapeCamera,
+	type LandscapeConfig,
 	type LandscapeMesh,
-	type LandscapeConfig as LandscapeSettings,
-} from "./landscape-types"
+} from "./landscape-config"
 
-export type { LandscapeSettings }
-
-export class LandscapeConfigDialog extends BaseConfig<LandscapeSettings> {
+export class LandscapeConfigDialog extends BaseConfig<LandscapeConfig> {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
-	private onSettingsChange?: (settings: LandscapeSettings) => void
+	private onConfigChange?: (config: LandscapeConfig) => void
 
-	private currentSettings: LandscapeSettings = getLandscapeConfigFromURL()
+	private currentConfig: LandscapeConfig = getLandscapeConfigFromURL()
 
 	constructor(private container: HTMLElement) {
 		super()
 		this.createElements()
 		this.attachEventListeners()
-		this.syncUIWithSettings()
+		this.syncUIWithConfig()
 	}
 
 	private createElements() {
@@ -113,7 +111,7 @@ export class LandscapeConfigDialog extends BaseConfig<LandscapeSettings> {
 		) as NodeListOf<HTMLInputElement>
 		meshRadios?.forEach((radio) => {
 			radio.addEventListener("change", () => {
-				this.updateSettings()
+				this.updateConfig()
 			})
 		})
 
@@ -123,7 +121,7 @@ export class LandscapeConfigDialog extends BaseConfig<LandscapeSettings> {
 		) as NodeListOf<HTMLInputElement>
 		cameraRadios?.forEach((radio) => {
 			radio.addEventListener("change", () => {
-				this.updateSettings()
+				this.updateConfig()
 			})
 		})
 
@@ -133,7 +131,7 @@ export class LandscapeConfigDialog extends BaseConfig<LandscapeSettings> {
 		) as HTMLInputElement
 
 		speedSlider?.addEventListener("input", () => {
-			this.updateSettings()
+			this.updateConfig()
 		})
 
 		// Roughness slider
@@ -142,11 +140,11 @@ export class LandscapeConfigDialog extends BaseConfig<LandscapeSettings> {
 		) as HTMLInputElement
 
 		roughnessSlider?.addEventListener("input", () => {
-			this.updateSettings()
+			this.updateConfig()
 		})
 	}
 
-	private updateSettings() {
+	private updateConfig() {
 		const selectedMeshRadio = this.modal?.querySelector(
 			'input[name="mesh"]:checked',
 		) as HTMLInputElement
@@ -166,12 +164,12 @@ export class LandscapeConfigDialog extends BaseConfig<LandscapeSettings> {
 			speedSlider &&
 			roughnessSlider
 		) {
-			this.currentSettings.mesh = selectedMeshRadio.value as LandscapeMesh
-			this.currentSettings.camera = selectedCameraRadio.value as LandscapeCamera
-			this.currentSettings.heightChangeSpeed = parseFloat(speedSlider.value)
-			this.currentSettings.roughness = parseFloat(roughnessSlider.value)
+			this.currentConfig.mesh = selectedMeshRadio.value as LandscapeMesh
+			this.currentConfig.camera = selectedCameraRadio.value as LandscapeCamera
+			this.currentConfig.heightChangeSpeed = parseFloat(speedSlider.value)
+			this.currentConfig.roughness = parseFloat(roughnessSlider.value)
 			this.updateURL()
-			this.onSettingsChange?.(this.currentSettings)
+			this.onConfigChange?.(this.currentConfig)
 		}
 	}
 
@@ -200,21 +198,21 @@ export class LandscapeConfigDialog extends BaseConfig<LandscapeSettings> {
 		}
 	}
 
-	public setOnChange(callback: (settings: LandscapeSettings) => void) {
-		this.onSettingsChange = callback
+	public setOnChange(callback: (config: LandscapeConfig) => void) {
+		this.onConfigChange = callback
 	}
 
-	public getSettings(): LandscapeSettings {
-		return { ...this.currentSettings }
+	public getConfig(): LandscapeConfig {
+		return { ...this.currentConfig }
 	}
 
-	private syncUIWithSettings() {
+	private syncUIWithConfig() {
 		// Update mesh radio buttons
 		const meshRadios = this.modal?.querySelectorAll(
 			'input[name="mesh"]',
 		) as NodeListOf<HTMLInputElement>
 		meshRadios?.forEach((radio) => {
-			radio.checked = radio.value === this.currentSettings.mesh
+			radio.checked = radio.value === this.currentConfig.mesh
 		})
 
 		// Update camera radio buttons
@@ -222,7 +220,7 @@ export class LandscapeConfigDialog extends BaseConfig<LandscapeSettings> {
 			'input[name="camera"]',
 		) as NodeListOf<HTMLInputElement>
 		cameraRadios?.forEach((radio) => {
-			radio.checked = radio.value === this.currentSettings.camera
+			radio.checked = radio.value === this.currentConfig.camera
 		})
 
 		// Update sliders
@@ -230,14 +228,14 @@ export class LandscapeConfigDialog extends BaseConfig<LandscapeSettings> {
 			"#height-speed",
 		) as HTMLInputElement
 		if (speedSlider) {
-			speedSlider.value = this.currentSettings.heightChangeSpeed.toString()
+			speedSlider.value = this.currentConfig.heightChangeSpeed.toString()
 		}
 
 		const roughnessSlider = this.modal?.querySelector(
 			"#roughness",
 		) as HTMLInputElement
 		if (roughnessSlider) {
-			roughnessSlider.value = this.currentSettings.roughness.toString()
+			roughnessSlider.value = this.currentConfig.roughness.toString()
 		}
 	}
 
@@ -248,10 +246,10 @@ export class LandscapeConfigDialog extends BaseConfig<LandscapeSettings> {
 
 	private updateURL() {
 		updateSketchConfig("landscape", {
-			mesh: this.currentSettings.mesh,
-			speed: this.currentSettings.heightChangeSpeed,
-			roughness: this.currentSettings.roughness,
-			camera: this.currentSettings.camera,
+			mesh: this.currentConfig.mesh,
+			speed: this.currentConfig.heightChangeSpeed,
+			roughness: this.currentConfig.roughness,
+			camera: this.currentConfig.camera,
 		})
 	}
 }

@@ -2,7 +2,7 @@ import type p5 from "p5"
 import type {
 	GridColor,
 	InitialCells,
-} from "../configs/cellular-automaton-types"
+} from "../configs/cellular-automaton-config"
 import { updateSketchConfig } from "../utils/url-params"
 
 let currentRule = 30

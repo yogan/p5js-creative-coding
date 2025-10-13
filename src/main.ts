@@ -7,10 +7,10 @@ import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
 import { elementaryCellularAutomaton } from "./sketches/elementary-cellular-automaton"
 import { kochIsland } from "./sketches/koch-island"
-import { landscape, setLandscapeSettings } from "./sketches/landscape"
+import { landscape, setLandscapeConfig } from "./sketches/landscape"
 import {
 	scratchRandomness,
-	setScratchRandomnessSettings,
+	setScratchRandomnessConfig,
 } from "./sketches/scratch-randomness"
 
 import {
@@ -78,12 +78,12 @@ function loadSketch(sketchName: SketchName) {
 		} else if (sketchName === "scratch-randomness") {
 			if (!scratchConfig) {
 				scratchConfig = new ScratchRandomnessConfigDialog(sketchMenu)
-				scratchConfig.setOnChange((settings) => {
-					setScratchRandomnessSettings(settings)
+				scratchConfig.setOnChange((config) => {
+					setScratchRandomnessConfig(config)
 				})
 			}
-			// Apply current settings to sketch
-			setScratchRandomnessSettings(scratchConfig.getSettings())
+			// Apply current config to sketch
+			setScratchRandomnessConfig(scratchConfig.getConfig())
 			scratchConfig.show()
 			if (sketchConfig) {
 				sketchConfig.hide()
@@ -94,12 +94,12 @@ function loadSketch(sketchName: SketchName) {
 		} else if (sketchName === "landscape") {
 			if (!landscapeConfig) {
 				landscapeConfig = new LandscapeConfigDialog(sketchMenu)
-				landscapeConfig.setOnChange((settings) => {
-					setLandscapeSettings(settings)
+				landscapeConfig.setOnChange((config) => {
+					setLandscapeConfig(config)
 				})
 			}
-			// Apply current settings to sketch
-			setLandscapeSettings(landscapeConfig.getSettings())
+			// Apply current config to sketch
+			setLandscapeConfig(landscapeConfig.getConfig())
 			landscapeConfig.show()
 			if (sketchConfig) {
 				sketchConfig.hide()

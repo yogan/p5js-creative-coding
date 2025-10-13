@@ -1,15 +1,15 @@
 import type p5 from "p5"
-import type { LandscapeSettings } from "../configs/landscape-config-dialog"
+import type { LandscapeConfig } from "../configs/landscape-config"
 
-let settings: LandscapeSettings = {
+let config: LandscapeConfig = {
 	mesh: "triangles",
 	heightChangeSpeed: 0.005,
 	roughness: 0.15,
 	camera: "auto",
 }
 
-export const setLandscapeSettings = (newSettings: LandscapeSettings) => {
-	settings = { ...newSettings }
+export const setLandscapeConfig = (newConfig: LandscapeConfig) => {
+	config = { ...newConfig }
 }
 
 export const landscape = (p: p5) => {
@@ -36,7 +36,7 @@ export const landscape = (p: p5) => {
 	p.draw = () => {
 		p.background(0)
 
-		if (settings.camera === "manual") {
+		if (config.camera === "manual") {
 			p.orbitControl()
 		} else {
 			// Set up rotating camera
@@ -70,9 +70,7 @@ export const landscape = (p: p5) => {
 
 		// Draw terrain as mesh
 		for (let y = 0; y < rows - 1; y++) {
-			p.beginShape(
-				settings.mesh === "squares" ? p.QUAD_STRIP : p.TRIANGLE_STRIP,
-			)
+			p.beginShape(config.mesh === "squares" ? p.QUAD_STRIP : p.TRIANGLE_STRIP)
 			for (let x = 0; x < cols; x++) {
 				p.vertex(x * scl, terrain[x][y], y * scl)
 				p.vertex(x * scl, terrain[x][y + 1], (y + 1) * scl)
@@ -90,11 +88,11 @@ export const landscape = (p: p5) => {
 			let yoff = 0
 			for (let x = 0; x < cols; x++) {
 				terrain[x][y] = p.map(p.noise(xoff, yoff, zoff), 0, 1, -100, 300)
-				yoff += settings.roughness
+				yoff += config.roughness
 			}
-			xoff += settings.roughness
+			xoff += config.roughness
 		}
-		zoff += settings.heightChangeSpeed
+		zoff += config.heightChangeSpeed
 	}
 
 	p.windowResized = () => {

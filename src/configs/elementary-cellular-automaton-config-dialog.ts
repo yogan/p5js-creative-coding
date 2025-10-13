@@ -10,7 +10,7 @@ import {
 } from "../sketches/elementary-cellular-automaton"
 import { updateSketchConfig } from "../utils/url-params"
 import { BaseConfig } from "./base-config"
-import type { GridColor, InitialCells } from "./cellular-automaton-types"
+import type { GridColor, InitialCells } from "./cellular-automaton-config"
 import { createConfigButton } from "./config-button"
 
 export class ElementaryCellularAutomatonConfigDialog extends BaseConfig<void> {

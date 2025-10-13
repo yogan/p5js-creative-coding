@@ -4,22 +4,19 @@ import {
 	getScratchRandomnessConfigFromURL,
 	type ScratchRandomnessConfig,
 	type WalkerMode,
-} from "../configs/scratch-randomness-types"
+} from "../configs/scratch-randomness-config"
 
-let currentSettings: ScratchRandomnessConfig =
-	getScratchRandomnessConfigFromURL()
+let currentConfig: ScratchRandomnessConfig = getScratchRandomnessConfigFromURL()
 
-export const setScratchRandomnessSettings = (
-	settings: ScratchRandomnessConfig,
-) => {
-	currentSettings = { ...settings }
+export const setScratchRandomnessConfig = (config: ScratchRandomnessConfig) => {
+	currentConfig = { ...config }
 	if (initializeFunction) {
 		initializeFunction()
 	}
 }
 
-export const getScratchRandomnessSettings = (): ScratchRandomnessConfig => {
-	return { ...currentSettings }
+export const getScratchRandomnessConfig = (): ScratchRandomnessConfig => {
+	return { ...currentConfig }
 }
 
 let initializeFunction: (() => void) | null = null
@@ -56,15 +53,15 @@ export const scratchRandomness = (p: p5) => {
 	}
 
 	p.draw = () => {
-		switch (currentSettings.visualization) {
+		switch (currentConfig.visualization) {
 			case "circles":
-				drawCircles(currentSettings.circleMode)
+				drawCircles(currentConfig.circleMode)
 				break
 			case "bars":
 				bars()
 				break
 			case "walker":
-				drawWalker(currentSettings.walkerMode)
+				drawWalker(currentConfig.walkerMode)
 				break
 			case "pixelNoise":
 				pixelNoise()

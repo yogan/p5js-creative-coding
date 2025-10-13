@@ -5,17 +5,17 @@ import { createConfigButton } from "./config-button"
 import {
 	type CircleMode,
 	getScratchRandomnessConfigFromURL,
-	type ScratchRandomnessConfig as ScratchRandomnessSettings,
+	type ScratchRandomnessConfig,
 	type VisualizationType,
 	type WalkerMode,
-} from "./scratch-randomness-types"
+} from "./scratch-randomness-config"
 
-export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessSettings> {
+export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessConfig> {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
-	private onSettingsChange?: (settings: ScratchRandomnessSettings) => void
+	private onConfigChange?: (config: ScratchRandomnessConfig) => void
 
-	private currentSettings: ScratchRandomnessSettings =
+	private currentConfig: ScratchRandomnessConfig =
 		getScratchRandomnessConfigFromURL()
 
 	constructor(private container: HTMLElement) {
@@ -25,19 +25,19 @@ export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessS
 	}
 
 	private getModeOptions(): string {
-		if (this.currentSettings.visualization === "circles") {
+		if (this.currentConfig.visualization === "circles") {
 			return `
-				<option value="gaussian" ${this.currentSettings.circleMode === "gaussian" ? "selected" : ""}>Gaussian</option>
-				<option value="random" ${this.currentSettings.circleMode === "random" ? "selected" : ""}>Random</option>
-				<option value="mouse" ${this.currentSettings.circleMode === "mouse" ? "selected" : ""}>Follow Mouse</option>
+				<option value="gaussian" ${this.currentConfig.circleMode === "gaussian" ? "selected" : ""}>Gaussian</option>
+				<option value="random" ${this.currentConfig.circleMode === "random" ? "selected" : ""}>Random</option>
+				<option value="mouse" ${this.currentConfig.circleMode === "mouse" ? "selected" : ""}>Follow Mouse</option>
 			`
 		}
-		if (this.currentSettings.visualization === "walker") {
+		if (this.currentConfig.visualization === "walker") {
 			return `
-				<option value="normal" ${this.currentSettings.walkerMode === "normal" ? "selected" : ""}>Normal</option>
-				<option value="gaussian" ${this.currentSettings.walkerMode === "gaussian" ? "selected" : ""}>Gaussian</option>
-				<option value="accept-reject" ${this.currentSettings.walkerMode === "accept-reject" ? "selected" : ""}>Accept-Reject</option>
-				<option value="perlin" ${this.currentSettings.walkerMode === "perlin" ? "selected" : ""}>Perlin Noise</option>
+				<option value="normal" ${this.currentConfig.walkerMode === "normal" ? "selected" : ""}>Normal</option>
+				<option value="gaussian" ${this.currentConfig.walkerMode === "gaussian" ? "selected" : ""}>Gaussian</option>
+				<option value="accept-reject" ${this.currentConfig.walkerMode === "accept-reject" ? "selected" : ""}>Accept-Reject</option>
+				<option value="perlin" ${this.currentConfig.walkerMode === "perlin" ? "selected" : ""}>Perlin Noise</option>
 			`
 		}
 		return ""
@@ -61,26 +61,26 @@ export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessS
 					</div>
 					<div class="radio-group">
 						<label class="radio-label">
-							<input type="radio" name="visualization" value="circles" ${this.currentSettings.visualization === "circles" ? "checked" : ""}>
+							<input type="radio" name="visualization" value="circles" ${this.currentConfig.visualization === "circles" ? "checked" : ""}>
 							<span class="radio-text">Circles</span>
 						</label>
 						<label class="radio-label">
-							<input type="radio" name="visualization" value="bars" ${this.currentSettings.visualization === "bars" ? "checked" : ""}>
+							<input type="radio" name="visualization" value="bars" ${this.currentConfig.visualization === "bars" ? "checked" : ""}>
 							<span class="radio-text">Random Distribution Bars</span>
 						</label>
 						<label class="radio-label">
-							<input type="radio" name="visualization" value="walker" ${this.currentSettings.visualization === "walker" ? "checked" : ""}>
+							<input type="radio" name="visualization" value="walker" ${this.currentConfig.visualization === "walker" ? "checked" : ""}>
 							<span class="radio-text">Random Walker</span>
 						</label>
 						<label class="radio-label">
-							<input type="radio" name="visualization" value="pixelNoise" ${this.currentSettings.visualization === "pixelNoise" ? "checked" : ""}>
+							<input type="radio" name="visualization" value="pixelNoise" ${this.currentConfig.visualization === "pixelNoise" ? "checked" : ""}>
 							<span class="radio-text">Perlin Pixel Noise <em>(slow)</em></span>
 						</label>
 					</div>
 				</div>
-				<div class="input-group" id="mode-group" style="display: ${this.currentSettings.visualization === "circles" || this.currentSettings.visualization === "walker" ? "block" : "none"};">
+				<div class="input-group" id="mode-group" style="display: ${this.currentConfig.visualization === "circles" || this.currentConfig.visualization === "walker" ? "block" : "none"};">
 					<div class="input-header">
-						<span class="input-label" id="mode-label">${this.currentSettings.visualization === "circles" ? "Circle Mode" : "Walker Mode"}</span>
+						<span class="input-label" id="mode-label">${this.currentConfig.visualization === "circles" ? "Circle Mode" : "Walker Mode"}</span>
 					</div>
 					<select id="mode-select" class="grid-select">
 						${this.getModeOptions()}
@@ -125,7 +125,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessS
 			"#mode-select",
 		) as HTMLSelectElement
 		modeSelect?.addEventListener("change", () => {
-			this.updateSettings()
+			this.updateConfig()
 		})
 
 		// Reset button
@@ -144,11 +144,11 @@ export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessS
 		const newVisualization = selectedRadio?.value as VisualizationType
 
 		if (newVisualization) {
-			this.currentSettings.visualization = newVisualization
+			this.currentConfig.visualization = newVisualization
 			this.updateModeDisplay()
 		}
 
-		this.updateSettings()
+		this.updateConfig()
 	}
 
 	private updateModeDisplay() {
@@ -159,16 +159,16 @@ export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessS
 		) as HTMLSelectElement
 
 		const hasMode =
-			this.currentSettings.visualization === "circles" ||
-			this.currentSettings.visualization === "walker"
+			this.currentConfig.visualization === "circles" ||
+			this.currentConfig.visualization === "walker"
 
 		if (modeGroup && modeLabel && modeSelect) {
 			modeGroup.style.display = hasMode ? "block" : "none"
 
 			if (hasMode) {
-				if (this.currentSettings.visualization === "circles") {
+				if (this.currentConfig.visualization === "circles") {
 					modeLabel.textContent = "Circle Mode"
-				} else if (this.currentSettings.visualization === "walker") {
+				} else if (this.currentConfig.visualization === "walker") {
 					modeLabel.textContent = "Walker Mode"
 				}
 				modeSelect.innerHTML = this.getModeOptions()
@@ -176,22 +176,22 @@ export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessS
 		}
 	}
 
-	private updateSettings() {
+	private updateConfig() {
 		const modeSelect = this.modal?.querySelector(
 			"#mode-select",
 		) as HTMLSelectElement
 
-		if (this.currentSettings.visualization === "circles") {
-			this.currentSettings.circleMode =
+		if (this.currentConfig.visualization === "circles") {
+			this.currentConfig.circleMode =
 				(modeSelect?.value as CircleMode) ?? "random"
-		} else if (this.currentSettings.visualization === "walker") {
-			this.currentSettings.walkerMode =
+		} else if (this.currentConfig.visualization === "walker") {
+			this.currentConfig.walkerMode =
 				(modeSelect?.value as WalkerMode) ?? "normal"
 		}
 
 		this.updateURL()
 
-		this.onSettingsChange?.(this.currentSettings)
+		this.onConfigChange?.(this.currentConfig)
 	}
 
 	private openModal() {
@@ -219,12 +219,12 @@ export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessS
 		}
 	}
 
-	public setOnChange(callback: (settings: ScratchRandomnessSettings) => void) {
-		this.onSettingsChange = callback
+	public setOnChange(callback: (config: ScratchRandomnessConfig) => void) {
+		this.onConfigChange = callback
 	}
 
-	public getSettings(): ScratchRandomnessSettings {
-		return { ...this.currentSettings }
+	public getConfig(): ScratchRandomnessConfig {
+		return { ...this.currentConfig }
 	}
 
 	public destroy() {
@@ -234,9 +234,9 @@ export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessS
 
 	private updateURL() {
 		updateSketchConfig("scratch-randomness", {
-			visualization: this.currentSettings.visualization,
-			circleMode: this.currentSettings.circleMode,
-			walkerMode: this.currentSettings.walkerMode,
+			visualization: this.currentConfig.visualization,
+			circleMode: this.currentConfig.circleMode,
+			walkerMode: this.currentConfig.walkerMode,
 		})
 	}
 }

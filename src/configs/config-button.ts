@@ -2,7 +2,7 @@ export function createConfigButton(): HTMLButtonElement {
 	const button = document.createElement("button")
 	button.className = "control-btn"
 	button.id = "control-btn"
-	button.setAttribute("aria-label", "Open settings dialog")
+	button.setAttribute("aria-label", "Open config dialog")
 	button.style.display = "none"
 
 	button.innerHTML = `
