@@ -10,7 +10,7 @@ import {
 	type WalkerMode,
 } from "./scratch-randomness-types"
 
-export class ScratchRandomnessConfigComponent extends BaseConfig<ScratchRandomnessSettings> {
+export class ScratchRandomnessConfigDialog extends BaseConfig<ScratchRandomnessSettings> {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
 	private onSettingsChange?: (settings: ScratchRandomnessSettings) => void

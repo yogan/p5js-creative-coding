@@ -13,7 +13,7 @@ import { BaseConfig } from "./base-config"
 import type { GridColor, InitialCells } from "./cellular-automaton-types"
 import { createConfigButton } from "./config-button"
 
-export class ElementaryCellularAutomatonConfig extends BaseConfig<void> {
+export class ElementaryCellularAutomatonConfigDialog extends BaseConfig<void> {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
 	private ruleInput: HTMLInputElement | null = null

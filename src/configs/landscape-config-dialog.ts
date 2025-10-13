@@ -10,7 +10,7 @@ import {
 
 export type { LandscapeSettings }
 
-export class LandscapeConfig extends BaseConfig<LandscapeSettings> {
+export class LandscapeConfigDialog extends BaseConfig<LandscapeSettings> {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
 	private onSettingsChange?: (settings: LandscapeSettings) => void

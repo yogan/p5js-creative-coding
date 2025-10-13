@@ -1,7 +1,7 @@
 import p5 from "p5"
-import { ElementaryCellularAutomatonConfig } from "./configs/elementary-cellular-automaton-config"
-import { LandscapeConfig } from "./configs/landscape-config"
-import { ScratchRandomnessConfigComponent } from "./configs/scratch-randomness-config"
+import { ElementaryCellularAutomatonConfigDialog } from "./configs/elementary-cellular-automaton-config-dialog"
+import { LandscapeConfigDialog } from "./configs/landscape-config-dialog"
+import { ScratchRandomnessConfigDialog } from "./configs/scratch-randomness-config-dialog"
 import { bouncingBalls3D } from "./sketches/3d-bouncing-balls"
 import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
@@ -39,9 +39,9 @@ const menuOverlay = document.getElementById("menu-overlay")
 const menuDropdown = document.getElementById("menu-dropdown")
 const sketchMenu = document.querySelector(".sketch-menu") as HTMLElement
 
-let sketchConfig: ElementaryCellularAutomatonConfig | null = null
-let scratchConfig: ScratchRandomnessConfigComponent | null = null
-let landscapeConfig: LandscapeConfig | null = null
+let sketchConfig: ElementaryCellularAutomatonConfigDialog | null = null
+let scratchConfig: ScratchRandomnessConfigDialog | null = null
+let landscapeConfig: LandscapeConfigDialog | null = null
 
 function loadSketch(sketchName: SketchName) {
 	if (currentP5Instance) {
@@ -63,7 +63,7 @@ function loadSketch(sketchName: SketchName) {
 
 		if (sketchName === "elementary-cellular-automaton") {
 			if (!sketchConfig) {
-				sketchConfig = new ElementaryCellularAutomatonConfig(sketchMenu)
+				sketchConfig = new ElementaryCellularAutomatonConfigDialog(sketchMenu)
 				sketchConfig.setOnChange(() => {
 					loadSketch(currentSketch as SketchName)
 				})
@@ -77,7 +77,7 @@ function loadSketch(sketchName: SketchName) {
 			}
 		} else if (sketchName === "scratch-randomness") {
 			if (!scratchConfig) {
-				scratchConfig = new ScratchRandomnessConfigComponent(sketchMenu)
+				scratchConfig = new ScratchRandomnessConfigDialog(sketchMenu)
 				scratchConfig.setOnChange((settings) => {
 					setScratchRandomnessSettings(settings)
 				})
@@ -93,7 +93,7 @@ function loadSketch(sketchName: SketchName) {
 			}
 		} else if (sketchName === "landscape") {
 			if (!landscapeConfig) {
-				landscapeConfig = new LandscapeConfig(sketchMenu)
+				landscapeConfig = new LandscapeConfigDialog(sketchMenu)
 				landscapeConfig.setOnChange((settings) => {
 					setLandscapeSettings(settings)
 				})
