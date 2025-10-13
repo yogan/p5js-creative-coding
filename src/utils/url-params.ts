@@ -83,6 +83,32 @@ export function getUrlParams() {
 	return params
 }
 
+export function getStringFromParams<T extends string>(
+	urlParams: URLSearchParams,
+	key: string,
+	validValues: readonly T[],
+	fallback: T,
+): T {
+	const value = urlParams.get(key)
+	return value && validValues.includes(value as T) ? (value as T) : fallback
+}
+
+export function getNumberFromParams(
+	urlParams: URLSearchParams,
+	key: string,
+	min: number,
+	max: number,
+	fallback: number,
+): number {
+	const value = urlParams.get(key)
+	if (!value) return fallback
+
+	const numberValue = parseFloat(value)
+	return !Number.isNaN(numberValue) && numberValue >= min && numberValue <= max
+		? numberValue
+		: fallback
+}
+
 export function setUrlParam(key: string, value: string | number) {
 	const url = new URL(window.location.href)
 	url.searchParams.set(key, value.toString())
