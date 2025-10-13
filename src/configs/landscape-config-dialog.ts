@@ -9,23 +9,26 @@ import {
 } from "./landscape-config"
 
 export class LandscapeConfigDialog extends BaseConfigDialog<LandscapeConfig> {
-	private controlBtn: HTMLElement | null = null
-	private modal: HTMLElement | null = null
-	private onConfigChange?: (config: LandscapeConfig) => void
+	private controlBtn!: HTMLElement
+	private modal!: HTMLElement
+	private meshRadios!: NodeListOf<HTMLInputElement>
+	private cameraRadios!: NodeListOf<HTMLInputElement>
+	private speedSlider!: HTMLInputElement
+	private roughnessSlider!: HTMLInputElement
 
+	private onConfigChange?: (config: LandscapeConfig) => void
 	private currentConfig: LandscapeConfig = getLandscapeConfigFromURL()
 
 	constructor(private container: HTMLElement) {
 		super()
 		this.createElements()
+		this.queryElements()
 		this.attachEventListeners()
 	}
 
 	private createElements() {
-		// Create control button
 		this.controlBtn = createConfigButton()
 
-		// Create modal
 		this.modal = document.createElement("div")
 		this.modal.className = "modal-overlay"
 		this.modal.id = "landscape-modal"
@@ -86,149 +89,105 @@ export class LandscapeConfigDialog extends BaseConfigDialog<LandscapeConfig> {
 			</div>
 		`
 
-		// Add elements to container and document
 		this.container.appendChild(this.controlBtn)
 		document.body.appendChild(this.modal)
 	}
 
+	private queryElements() {
+		this.meshRadios = this.modal.querySelectorAll('input[name="mesh"]')
+		this.cameraRadios = this.modal.querySelectorAll('input[name="camera"]')
+		// biome-ignore-start lint/style/noNonNullAssertion: see createElements()
+		this.speedSlider = this.modal.querySelector("#height-speed")!
+		this.roughnessSlider = this.modal.querySelector("#roughness")!
+		// biome-ignore-end lint/style/noNonNullAssertion: see createElements()
+	}
+
 	private attachEventListeners() {
-		this.controlBtn?.addEventListener("click", (event) => {
+		this.controlBtn.addEventListener("click", (event) => {
 			event.stopPropagation()
 			event.preventDefault()
 			this.openModal()
 		})
 
-		this.modal?.addEventListener("click", (event) => {
+		this.modal.addEventListener("click", (event) => {
 			if (event.target === this.modal) {
 				this.closeModal()
 			}
 		})
 
 		// Mesh radio buttons
-		const meshRadios = this.modal?.querySelectorAll(
-			'input[name="mesh"]',
-		) as NodeListOf<HTMLInputElement>
-		meshRadios?.forEach((radio) => {
+		this.meshRadios.forEach((radio) => {
 			radio.addEventListener("change", () => {
 				this.updateConfig()
 			})
 		})
 
 		// Camera radio buttons
-		const cameraRadios = this.modal?.querySelectorAll(
-			'input[name="camera"]',
-		) as NodeListOf<HTMLInputElement>
-		cameraRadios?.forEach((radio) => {
+		this.cameraRadios.forEach((radio) => {
 			radio.addEventListener("change", () => {
 				this.updateConfig()
 			})
 		})
 
 		// Speed slider
-		const speedSlider = this.modal?.querySelector(
-			"#height-speed",
-		) as HTMLInputElement
-
-		speedSlider?.addEventListener("input", () => {
+		this.speedSlider.addEventListener("input", () => {
 			this.updateConfig()
 		})
 
 		// Roughness slider
-		const roughnessSlider = this.modal?.querySelector(
-			"#roughness",
-		) as HTMLInputElement
-
-		roughnessSlider?.addEventListener("input", () => {
+		this.roughnessSlider.addEventListener("input", () => {
 			this.updateConfig()
 		})
 	}
 
 	private updateConfig() {
-		const selectedMeshRadio = this.modal?.querySelector(
+		const selectedMeshRadio = this.modal.querySelector(
 			'input[name="mesh"]:checked',
 		) as HTMLInputElement
-		const selectedCameraRadio = this.modal?.querySelector(
+		const selectedCameraRadio = this.modal.querySelector(
 			'input[name="camera"]:checked',
 		) as HTMLInputElement
-		const speedSlider = this.modal?.querySelector(
-			"#height-speed",
-		) as HTMLInputElement
-		const roughnessSlider = this.modal?.querySelector(
-			"#roughness",
-		) as HTMLInputElement
 
-		if (
-			selectedMeshRadio &&
-			selectedCameraRadio &&
-			speedSlider &&
-			roughnessSlider
-		) {
-			this.currentConfig.mesh = selectedMeshRadio.value as LandscapeMesh
-			this.currentConfig.camera = selectedCameraRadio.value as LandscapeCamera
-			this.currentConfig.heightChangeSpeed = parseFloat(speedSlider.value)
-			this.currentConfig.roughness = parseFloat(roughnessSlider.value)
-			this.updateURL()
-			this.onConfigChange?.(this.currentConfig)
-		}
+		this.currentConfig.mesh = selectedMeshRadio.value as LandscapeMesh
+		this.currentConfig.camera = selectedCameraRadio.value as LandscapeCamera
+		this.currentConfig.heightChangeSpeed = parseFloat(this.speedSlider.value)
+		this.currentConfig.roughness = parseFloat(this.roughnessSlider.value)
+		this.updateURL()
+		this.onConfigChange?.(this.currentConfig)
 	}
 
 	private openModal() {
-		if (this.modal) {
-			// Update current config from URL
-			this.currentConfig = getLandscapeConfigFromURL()
+		// Update current config from URL
+		this.currentConfig = getLandscapeConfigFromURL()
 
-			// Update mesh radio buttons
-			const meshRadios = this.modal.querySelectorAll(
-				'input[name="mesh"]',
-			) as NodeListOf<HTMLInputElement>
-			meshRadios.forEach((radio) => {
-				radio.checked = radio.value === this.currentConfig.mesh
-			})
+		// Update mesh radio buttons
+		this.meshRadios.forEach((radio) => {
+			radio.checked = radio.value === this.currentConfig.mesh
+		})
 
-			// Update camera radio buttons
-			const cameraRadios = this.modal.querySelectorAll(
-				'input[name="camera"]',
-			) as NodeListOf<HTMLInputElement>
-			cameraRadios.forEach((radio) => {
-				radio.checked = radio.value === this.currentConfig.camera
-			})
+		// Update camera radio buttons
+		this.cameraRadios.forEach((radio) => {
+			radio.checked = radio.value === this.currentConfig.camera
+		})
 
-			// Update sliders
-			const speedSlider = this.modal.querySelector(
-				"#height-speed",
-			) as HTMLInputElement
-			if (speedSlider) {
-				speedSlider.value = this.currentConfig.heightChangeSpeed.toString()
-			}
+		// Update sliders
+		this.speedSlider.value = this.currentConfig.heightChangeSpeed.toString()
+		this.roughnessSlider.value = this.currentConfig.roughness.toString()
 
-			const roughnessSlider = this.modal.querySelector(
-				"#roughness",
-			) as HTMLInputElement
-			if (roughnessSlider) {
-				roughnessSlider.value = this.currentConfig.roughness.toString()
-			}
-
-			this.modal.style.display = "flex"
-		}
+		this.modal.style.display = "flex"
 	}
 
 	private closeModal() {
-		if (this.modal) {
-			this.modal.style.display = "none"
-		}
+		this.modal.style.display = "none"
 	}
 
 	public show() {
-		if (this.controlBtn) {
-			this.controlBtn.style.display = "flex"
-		}
+		this.controlBtn.style.display = "flex"
 		this.updateURL()
 	}
 
 	public hide() {
-		if (this.controlBtn) {
-			this.controlBtn.style.display = "none"
-		}
+		this.controlBtn.style.display = "none"
 	}
 
 	public setOnChange(callback: (config: LandscapeConfig) => void) {
@@ -240,8 +199,8 @@ export class LandscapeConfigDialog extends BaseConfigDialog<LandscapeConfig> {
 	}
 
 	public destroy() {
-		this.controlBtn?.remove()
-		this.modal?.remove()
+		this.controlBtn.remove()
+		this.modal.remove()
 	}
 
 	private updateURL() {

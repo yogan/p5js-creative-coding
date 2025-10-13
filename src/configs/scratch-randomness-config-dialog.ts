@@ -11,16 +11,22 @@ import {
 } from "./scratch-randomness-config"
 
 export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRandomnessConfig> {
-	private controlBtn: HTMLElement | null = null
-	private modal: HTMLElement | null = null
-	private onConfigChange?: (config: ScratchRandomnessConfig) => void
+	private controlBtn!: HTMLElement
+	private modal!: HTMLElement
+	private radioButtons!: NodeListOf<HTMLInputElement>
+	private modeSelect!: HTMLSelectElement
+	private resetBtn!: HTMLButtonElement
+	private modeGroup!: HTMLElement
+	private modeLabel!: HTMLElement
 
+	private onConfigChange?: (config: ScratchRandomnessConfig) => void
 	private currentConfig: ScratchRandomnessConfig =
 		getScratchRandomnessConfigFromURL()
 
 	constructor(private container: HTMLElement) {
 		super()
 		this.createElements()
+		this.queryElements()
 		this.attachEventListeners()
 	}
 
@@ -83,158 +89,132 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 		document.body.appendChild(this.modal)
 	}
 
+	private queryElements() {
+		this.radioButtons = this.modal.querySelectorAll(
+			'input[name="visualization"]',
+		)
+		// biome-ignore-start lint/style/noNonNullAssertion: see createElements()
+		this.modeSelect = this.modal.querySelector("#mode-select")!
+		this.resetBtn = this.modal.querySelector("#reset-btn")!
+		this.modeGroup = this.modal.querySelector("#mode-group")!
+		this.modeLabel = this.modal.querySelector("#mode-label")!
+		// biome-ignore-end lint/style/noNonNullAssertion: see createElements()
+	}
+
 	private attachEventListeners() {
-		this.controlBtn?.addEventListener("click", (event) => {
+		this.controlBtn.addEventListener("click", (event) => {
 			event.stopPropagation()
 			event.preventDefault()
 			this.openModal()
 		})
 
-		this.modal?.addEventListener("click", (event) => {
+		this.modal.addEventListener("click", (event) => {
 			if (event.target === this.modal) {
 				this.closeModal()
 			}
 		})
 
 		// Add event listeners for radio buttons
-		const radioButtons = this.modal?.querySelectorAll(
-			'input[name="visualization"]',
-		) as NodeListOf<HTMLInputElement>
-		radioButtons?.forEach((radio) => {
+		this.radioButtons.forEach((radio) => {
 			radio.addEventListener("change", () => {
 				this.updateVisualizationAndMode()
 			})
 		})
 
 		// Mode select
-		const modeSelect = this.modal?.querySelector(
-			"#mode-select",
-		) as HTMLSelectElement
-		modeSelect?.addEventListener("change", () => {
+		this.modeSelect.addEventListener("change", () => {
 			this.updateConfig()
 		})
 
 		// Reset button
-		const resetBtn = this.modal?.querySelector(
-			"#reset-btn",
-		) as HTMLButtonElement
-		resetBtn?.addEventListener("click", () => {
+		this.resetBtn.addEventListener("click", () => {
 			restartScratchRandomness()
 		})
 	}
 
 	private updateVisualizationAndMode() {
-		const selectedRadio = this.modal?.querySelector(
+		const selectedRadio = this.modal.querySelector(
 			'input[name="visualization"]:checked',
 		) as HTMLInputElement
-		const newVisualization = selectedRadio?.value as VisualizationType
+		const newVisualization = selectedRadio.value as VisualizationType
 
-		if (newVisualization) {
-			this.currentConfig.visualization = newVisualization
-			this.updateModeDisplay()
-		}
-
+		this.currentConfig.visualization = newVisualization
+		this.updateModeDisplay()
 		this.updateConfig()
 	}
 
 	private updateModeDisplay() {
-		const modeGroup = this.modal?.querySelector("#mode-group") as HTMLElement
-		const modeLabel = this.modal?.querySelector("#mode-label") as HTMLElement
-		const modeSelect = this.modal?.querySelector(
-			"#mode-select",
-		) as HTMLSelectElement
-
 		const hasMode =
 			this.currentConfig.visualization === "circles" ||
 			this.currentConfig.visualization === "walker"
 
-		if (modeGroup && modeLabel && modeSelect) {
-			modeGroup.style.display = hasMode ? "block" : "none"
+		this.modeGroup.style.display = hasMode ? "block" : "none"
 
-			if (hasMode) {
-				if (this.currentConfig.visualization === "circles") {
-					modeLabel.textContent = "Circle Mode"
-				} else if (this.currentConfig.visualization === "walker") {
-					modeLabel.textContent = "Walker Mode"
-				}
+		if (hasMode) {
+			if (this.currentConfig.visualization === "circles") {
+				this.modeLabel.textContent = "Circle Mode"
+			} else if (this.currentConfig.visualization === "walker") {
+				this.modeLabel.textContent = "Walker Mode"
+			}
 
-				// Show/hide options based on visualization type
-				const options = modeSelect.querySelectorAll(
-					"option",
-				) as NodeListOf<HTMLOptionElement>
-				options.forEach((option) => {
-					const visualizationType = option.getAttribute("data-visualization")
-					option.style.display =
-						visualizationType === this.currentConfig.visualization
-							? "block"
-							: "none"
-				})
+			// Show/hide options based on visualization type
+			const options = this.modeSelect.querySelectorAll(
+				"option",
+			) as NodeListOf<HTMLOptionElement>
+			options.forEach((option) => {
+				const visualizationType = option.getAttribute("data-visualization")
+				option.style.display =
+					visualizationType === this.currentConfig.visualization
+						? "block"
+						: "none"
+			})
 
-				// Set selected value
-				if (this.currentConfig.visualization === "circles") {
-					modeSelect.value = this.currentConfig.circleMode || "random"
-				} else if (this.currentConfig.visualization === "walker") {
-					modeSelect.value = this.currentConfig.walkerMode || "normal"
-				}
+			// Set selected value
+			if (this.currentConfig.visualization === "circles") {
+				this.modeSelect.value = this.currentConfig.circleMode || "random"
+			} else if (this.currentConfig.visualization === "walker") {
+				this.modeSelect.value = this.currentConfig.walkerMode || "normal"
 			}
 		}
 	}
 
 	private updateConfig() {
-		const modeSelect = this.modal?.querySelector(
-			"#mode-select",
-		) as HTMLSelectElement
-
 		if (this.currentConfig.visualization === "circles") {
-			this.currentConfig.circleMode =
-				(modeSelect?.value as CircleMode) ?? "random"
+			this.currentConfig.circleMode = this.modeSelect.value as CircleMode
 		} else if (this.currentConfig.visualization === "walker") {
-			this.currentConfig.walkerMode =
-				(modeSelect?.value as WalkerMode) ?? "normal"
+			this.currentConfig.walkerMode = this.modeSelect.value as WalkerMode
 		}
 
 		this.updateURL()
-
 		this.onConfigChange?.(this.currentConfig)
 	}
 
 	private openModal() {
-		if (this.modal) {
-			// Update current config from URL
-			this.currentConfig = getScratchRandomnessConfigFromURL()
+		// Update current config from URL
+		this.currentConfig = getScratchRandomnessConfigFromURL()
 
-			// Update visualization radio buttons
-			const radioButtons = this.modal.querySelectorAll(
-				'input[name="visualization"]',
-			) as NodeListOf<HTMLInputElement>
-			radioButtons.forEach((radio) => {
-				radio.checked = radio.value === this.currentConfig.visualization
-			})
+		// Update visualization radio buttons
+		this.radioButtons.forEach((radio) => {
+			radio.checked = radio.value === this.currentConfig.visualization
+		})
 
-			// Update mode display
-			this.updateModeDisplay()
+		// Update mode display
+		this.updateModeDisplay()
 
-			this.modal.style.display = "flex"
-		}
+		this.modal.style.display = "flex"
 	}
 
 	private closeModal() {
-		if (this.modal) {
-			this.modal.style.display = "none"
-		}
+		this.modal.style.display = "none"
 	}
 
 	public show() {
-		if (this.controlBtn) {
-			this.controlBtn.style.display = "flex"
-		}
+		this.controlBtn.style.display = "flex"
 		this.updateURL()
 	}
 
 	public hide() {
-		if (this.controlBtn) {
-			this.controlBtn.style.display = "none"
-		}
+		this.controlBtn.style.display = "none"
 	}
 
 	public setOnChange(callback: (config: ScratchRandomnessConfig) => void) {
@@ -246,8 +226,8 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 	}
 
 	public destroy() {
-		this.controlBtn?.remove()
-		this.modal?.remove()
+		this.controlBtn.remove()
+		this.modal.remove()
 	}
 
 	private updateURL() {
