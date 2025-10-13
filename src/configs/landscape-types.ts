@@ -1,7 +1,10 @@
 import { getNumberFromParams, getStringFromParams } from "../utils/url-params"
 
-export type LandscapeMesh = "triangles" | "squares"
-export type LandscapeCamera = "auto" | "manual"
+export const LANDSCAPE_MESH = ["triangles", "squares"] as const
+export const LANDSCAPE_CAMERA = ["auto", "manual"] as const
+
+export type LandscapeMesh = (typeof LANDSCAPE_MESH)[number]
+export type LandscapeCamera = (typeof LANDSCAPE_CAMERA)[number]
 
 export type LandscapeConfig = {
 	mesh: LandscapeMesh
@@ -22,12 +25,7 @@ export function getLandscapeConfigFromURL(): LandscapeConfig {
 	const defaults = DEFAULT_LANDSCAPE_CONFIG
 
 	return {
-		mesh: getStringFromParams(
-			urlParams,
-			"mesh",
-			["triangles", "squares"] as const,
-			defaults.mesh,
-		),
+		mesh: getStringFromParams(urlParams, "mesh", LANDSCAPE_MESH, defaults.mesh),
 		heightChangeSpeed: getNumberFromParams(
 			urlParams,
 			"speed",
@@ -45,7 +43,7 @@ export function getLandscapeConfigFromURL(): LandscapeConfig {
 		camera: getStringFromParams(
 			urlParams,
 			"camera",
-			["auto", "manual"] as const,
+			LANDSCAPE_CAMERA,
 			defaults.camera,
 		),
 	}

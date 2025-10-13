@@ -1,8 +1,22 @@
 import { getStringFromParams } from "../utils/url-params"
 
-export type CircleMode = "gaussian" | "random" | "mouse"
-export type WalkerMode = "normal" | "gaussian" | "accept-reject" | "perlin"
-export type VisualizationType = "circles" | "bars" | "walker" | "pixelNoise"
+export const CIRCLE_MODES = ["gaussian", "random", "mouse"] as const
+export const WALKER_MODES = [
+	"normal",
+	"gaussian",
+	"accept-reject",
+	"perlin",
+] as const
+export const VISUALIZATION_TYPES = [
+	"circles",
+	"bars",
+	"walker",
+	"pixelNoise",
+] as const
+
+export type CircleMode = (typeof CIRCLE_MODES)[number]
+export type WalkerMode = (typeof WALKER_MODES)[number]
+export type VisualizationType = (typeof VISUALIZATION_TYPES)[number]
 
 export type ScratchRandomnessConfig = {
 	visualization: VisualizationType
@@ -24,19 +38,19 @@ export function getScratchRandomnessConfigFromURL(): ScratchRandomnessConfig {
 		visualization: getStringFromParams(
 			urlParams,
 			"visualization",
-			["circles", "bars", "walker", "pixelNoise"] as const,
+			VISUALIZATION_TYPES,
 			defaults.visualization,
 		),
 		circleMode: getStringFromParams(
 			urlParams,
 			"circleMode",
-			["gaussian", "random", "mouse"] as const,
+			CIRCLE_MODES,
 			defaults.circleMode,
 		),
 		walkerMode: getStringFromParams(
 			urlParams,
 			"walkerMode",
-			["normal", "gaussian", "accept-reject", "perlin"] as const,
+			WALKER_MODES,
 			defaults.walkerMode,
 		),
 	}

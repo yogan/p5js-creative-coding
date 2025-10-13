@@ -1,7 +1,10 @@
 import { getNumberFromParams, getStringFromParams } from "../utils/url-params"
 
-export type GridColor = "off" | "light" | "dark" | "black"
-export type InitialCells = "middle" | "alternating" | "random"
+export const GRID_COLORS = ["off", "light", "dark", "black"] as const
+export const INITIAL_CELLS = ["middle", "alternating", "random"] as const
+
+export type GridColor = (typeof GRID_COLORS)[number]
+export type InitialCells = (typeof INITIAL_CELLS)[number]
 
 export type CellularAutomatonConfig = {
 	rule: number
@@ -24,16 +27,11 @@ export function getCellularAutomatonConfigFromURL(): CellularAutomatonConfig {
 	return {
 		rule: getNumberFromParams(urlParams, "rule", 0, 255, defaults.rule),
 		width: getNumberFromParams(urlParams, "width", 2, 100, defaults.width),
-		grid: getStringFromParams(
-			urlParams,
-			"grid",
-			["off", "light", "dark", "black"] as const,
-			defaults.grid,
-		),
+		grid: getStringFromParams(urlParams, "grid", GRID_COLORS, defaults.grid),
 		start: getStringFromParams(
 			urlParams,
 			"start",
-			["middle", "alternating", "random"] as const,
+			INITIAL_CELLS,
 			defaults.start,
 		),
 	}
