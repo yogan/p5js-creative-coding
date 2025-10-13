@@ -1,12 +1,12 @@
+import { updateSketchConfig } from "../utils/url-params"
+import { BaseConfig } from "./base-config"
+import { createConfigButton } from "./config-button"
 import {
 	getLandscapeConfigFromURL,
 	type LandscapeCamera,
 	type LandscapeMesh,
 	type LandscapeConfig as LandscapeSettings,
-	updateLandscapeURL,
-} from "../utils/url-params"
-import { BaseConfig } from "./base-config"
-import { createConfigButton } from "./config-button"
+} from "./landscape-types"
 
 export type { LandscapeSettings }
 
@@ -170,15 +170,7 @@ export class LandscapeConfig extends BaseConfig<LandscapeSettings> {
 			this.currentSettings.camera = selectedCameraRadio.value as LandscapeCamera
 			this.currentSettings.heightChangeSpeed = parseFloat(speedSlider.value)
 			this.currentSettings.roughness = parseFloat(roughnessSlider.value)
-
-			// Update URL with new settings
-			updateLandscapeURL(
-				this.currentSettings.mesh,
-				this.currentSettings.heightChangeSpeed,
-				this.currentSettings.roughness,
-				this.currentSettings.camera,
-			)
-
+			this.updateURL()
 			this.onSettingsChange?.(this.currentSettings)
 		}
 	}
@@ -199,12 +191,7 @@ export class LandscapeConfig extends BaseConfig<LandscapeSettings> {
 		if (this.controlBtn) {
 			this.controlBtn.style.display = "flex"
 		}
-		updateLandscapeURL(
-			this.currentSettings.mesh,
-			this.currentSettings.heightChangeSpeed,
-			this.currentSettings.roughness,
-			this.currentSettings.camera,
-		)
+		this.updateURL()
 	}
 
 	public hide() {
@@ -257,5 +244,14 @@ export class LandscapeConfig extends BaseConfig<LandscapeSettings> {
 	public destroy() {
 		this.controlBtn?.remove()
 		this.modal?.remove()
+	}
+
+	private updateURL() {
+		updateSketchConfig("landscape", {
+			mesh: this.currentSettings.mesh,
+			speed: this.currentSettings.heightChangeSpeed,
+			roughness: this.currentSettings.roughness,
+			camera: this.currentSettings.camera,
+		})
 	}
 }

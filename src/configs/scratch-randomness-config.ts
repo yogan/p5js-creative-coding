@@ -1,14 +1,14 @@
 import { resetScratchRandomness } from "../sketches/scratch-randomness"
+import { updateSketchConfig } from "../utils/url-params"
+import { BaseConfig } from "./base-config"
+import { createConfigButton } from "./config-button"
 import {
 	type CircleMode,
 	getScratchRandomnessConfigFromURL,
 	type ScratchRandomnessConfig as ScratchRandomnessSettings,
-	updateScratchRandomnessURL,
 	type VisualizationType,
 	type WalkerMode,
-} from "../utils/url-params"
-import { BaseConfig } from "./base-config"
-import { createConfigButton } from "./config-button"
+} from "./scratch-randomness-types"
 
 export class ScratchRandomnessConfigComponent extends BaseConfig<ScratchRandomnessSettings> {
 	private controlBtn: HTMLElement | null = null
@@ -189,12 +189,7 @@ export class ScratchRandomnessConfigComponent extends BaseConfig<ScratchRandomne
 				(modeSelect?.value as WalkerMode) ?? "normal"
 		}
 
-		// Update URL with new settings
-		updateScratchRandomnessURL(
-			this.currentSettings.visualization,
-			this.currentSettings.circleMode,
-			this.currentSettings.walkerMode,
-		)
+		this.updateURL()
 
 		this.onSettingsChange?.(this.currentSettings)
 	}
@@ -215,11 +210,7 @@ export class ScratchRandomnessConfigComponent extends BaseConfig<ScratchRandomne
 		if (this.controlBtn) {
 			this.controlBtn.style.display = "flex"
 		}
-		updateScratchRandomnessURL(
-			this.currentSettings.visualization,
-			this.currentSettings.circleMode,
-			this.currentSettings.walkerMode,
-		)
+		this.updateURL()
 	}
 
 	public hide() {
@@ -239,5 +230,13 @@ export class ScratchRandomnessConfigComponent extends BaseConfig<ScratchRandomne
 	public destroy() {
 		this.controlBtn?.remove()
 		this.modal?.remove()
+	}
+
+	private updateURL() {
+		updateSketchConfig("scratch-randomness", {
+			visualization: this.currentSettings.visualization,
+			circleMode: this.currentSettings.circleMode,
+			walkerMode: this.currentSettings.walkerMode,
+		})
 	}
 }

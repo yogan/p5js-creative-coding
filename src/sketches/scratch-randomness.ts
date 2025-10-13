@@ -4,7 +4,7 @@ import {
 	getScratchRandomnessConfigFromURL,
 	type ScratchRandomnessConfig,
 	type WalkerMode,
-} from "../utils/url-params"
+} from "../configs/scratch-randomness-types"
 
 let currentSettings: ScratchRandomnessConfig =
 	getScratchRandomnessConfigFromURL()

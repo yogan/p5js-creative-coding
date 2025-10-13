@@ -8,12 +8,9 @@ import {
 	setRule,
 	setWidth,
 } from "../sketches/elementary-cellular-automaton"
-import {
-	type GridColor,
-	type InitialCells,
-	updateCellularAutomatonURL,
-} from "../utils/url-params"
+import { updateSketchConfig } from "../utils/url-params"
 import { BaseConfig } from "./base-config"
+import type { GridColor, InitialCells } from "./cellular-automaton-types"
 import { createConfigButton } from "./config-button"
 
 export class ElementaryCellularAutomatonConfig extends BaseConfig<void> {
@@ -268,34 +265,26 @@ export class ElementaryCellularAutomatonConfig extends BaseConfig<void> {
 			this.gridSelect &&
 			this.startSelect
 		) {
-			const newRule = parseInt(this.ruleInput.value, 10)
-			const newWidth = parseInt(this.widthInput.value, 10)
-			const gridColor = this.gridSelect.value as GridColor
-			const initialCells = this.startSelect.value as InitialCells
-			setRule(newRule)
-			setWidth(newWidth)
-			setGridColor(gridColor)
-			setInitialCells(initialCells)
-			updateCellularAutomatonURL(newRule, newWidth, gridColor, initialCells)
+			const rule = parseInt(this.ruleInput.value, 10)
+			const width = parseInt(this.widthInput.value, 10)
+			const grid = this.gridSelect.value as GridColor
+			const start = this.startSelect.value as InitialCells
+			setRule(rule)
+			setWidth(width)
+			setGridColor(grid)
+			setInitialCells(start)
+			this.updateURL()
 			this.onRuleChange?.()
 		}
 	}
 
 	public show() {
-		if (this.controlBtn) {
-			this.controlBtn.style.display = "flex"
-		}
-		const rule = getCurrentRule()
-		const width = getCurrentWidth()
-		const gridColor = getGridColor()
-		const initialCells = getInitialCells()
-		updateCellularAutomatonURL(rule, width, gridColor, initialCells)
+		if (this.controlBtn) this.controlBtn.style.display = "flex"
+		this.updateURL()
 	}
 
 	public hide() {
-		if (this.controlBtn) {
-			this.controlBtn.style.display = "none"
-		}
+		if (this.controlBtn) this.controlBtn.style.display = "none"
 	}
 
 	public setOnChange(callback: () => void) {
@@ -305,5 +294,14 @@ export class ElementaryCellularAutomatonConfig extends BaseConfig<void> {
 	public destroy() {
 		this.controlBtn?.remove()
 		this.modal?.remove()
+	}
+
+	private updateURL() {
+		updateSketchConfig("elementary-cellular-automaton", {
+			rule: getCurrentRule(),
+			width: getCurrentWidth(),
+			grid: getGridColor(),
+			start: getInitialCells(),
+		})
 	}
 }

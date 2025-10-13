@@ -1,9 +1,9 @@
 import type p5 from "p5"
-import {
-	type GridColor,
-	type InitialCells,
-	updateCellularAutomatonURL,
-} from "../utils/url-params"
+import type {
+	GridColor,
+	InitialCells,
+} from "../configs/cellular-automaton-types"
+import { updateSketchConfig } from "../utils/url-params"
 
 let currentRule = 30
 let currentWidth = 10
@@ -190,13 +190,14 @@ export const elementaryCellularAutomaton = (p: p5) => {
 	}
 
 	const restart = ({ updateUrl = false } = {}) => {
-		if (updateUrl)
-			updateCellularAutomatonURL(
-				getCurrentRule(),
-				getCurrentWidth(),
-				getGridColor(),
-				getInitialCells(),
-			)
+		if (updateUrl) {
+			updateSketchConfig("elementary-cellular-automaton", {
+				rule: getCurrentRule(),
+				width: getCurrentWidth(),
+				grid: getGridColor(),
+				start: getInitialCells(),
+			})
+		}
 
 		p.setup() // reinitialize everything
 		p.loop() // restart the draw loop
