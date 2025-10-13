@@ -304,6 +304,15 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 		this.onRuleChange = callback
 	}
 
+	public getConfig(): CellularAutomatonConfig {
+		return {
+			rule: getCurrentRule(),
+			width: getCurrentWidth(),
+			grid: getGridColor(),
+			start: getInitialCells(),
+		}
+	}
+
 	public destroy() {
 		this.controlBtn?.remove()
 		this.modal?.remove()

@@ -1,4 +1,4 @@
-export abstract class BaseConfigDialog<TConfig = void> {
+export abstract class BaseConfigDialog<TConfig> {
 	abstract show(): void
 	abstract hide(): void
 	abstract destroy(): void
@@ -7,5 +7,5 @@ export abstract class BaseConfigDialog<TConfig = void> {
 		callback: TConfig extends void ? () => void : (config: TConfig) => void,
 	): void
 
-	getConfig?(): TConfig
+	abstract getConfig(): TConfig
 }

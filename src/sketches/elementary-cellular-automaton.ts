@@ -37,14 +37,6 @@ export const getInitialCells = (): InitialCells => initialCells
 
 let restartFunction: (() => void) | null = null
 
-export const getElementaryCellularAutomatonConfig =
-	(): CellularAutomatonConfig => ({
-		rule: getCurrentRule(),
-		width: getCurrentWidth(),
-		grid: getGridColor(),
-		start: getInitialCells(),
-	})
-
 export const setElementaryCellularAutomatonConfig = (
 	config: CellularAutomatonConfig,
 ) => {
@@ -52,9 +44,7 @@ export const setElementaryCellularAutomatonConfig = (
 	setWidth(config.width)
 	setGridColor(config.grid)
 	setInitialCells(config.start)
-	if (restartFunction) {
-		restartFunction()
-	}
+	restartFunction?.()
 }
 
 export const elementaryCellularAutomaton = (p: p5) => {

@@ -10,25 +10,17 @@ let currentConfig: ScratchRandomnessConfig = getScratchRandomnessConfigFromURL()
 
 export const setScratchRandomnessConfig = (config: ScratchRandomnessConfig) => {
 	currentConfig = { ...config }
-	if (initializeFunction) {
-		initializeFunction()
-	}
+	restartScratchRandomness()
 }
 
-export const getScratchRandomnessConfig = (): ScratchRandomnessConfig => {
-	return { ...currentConfig }
-}
-
-let initializeFunction: (() => void) | null = null
+let restartFn: (() => void) | null = null
 
 export const setScratchRandomnessInitialize = (initFn: () => void) => {
-	initializeFunction = initFn
+	restartFn = initFn
 }
 
-export const resetScratchRandomness = () => {
-	if (initializeFunction) {
-		initializeFunction()
-	}
+export const restartScratchRandomness = () => {
+	restartFn?.()
 }
 
 export const scratchRandomness = (p: p5) => {

@@ -8,7 +8,6 @@ import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
 import {
 	elementaryCellularAutomaton,
-	getElementaryCellularAutomatonConfig,
 	setElementaryCellularAutomatonConfig,
 } from "./sketches/elementary-cellular-automaton"
 import { kochIsland } from "./sketches/koch-island"
@@ -34,7 +33,7 @@ const sketches: Record<SketchName, (p: p5) => void> = {
 }
 
 let currentP5Instance: p5 | null = null
-let currentSketch = "koch-island"
+let currentSketch: SketchName = "koch-island"
 
 const sketchContainer = document.getElementById("sketch-container")
 const menuButtons = document.querySelectorAll(".sketch-btn")
@@ -82,7 +81,7 @@ function initElementaryCellularAutomatonConfigDialog() {
 			setElementaryCellularAutomatonConfig(config)
 		})
 	}
-	setElementaryCellularAutomatonConfig(getElementaryCellularAutomatonConfig())
+	setElementaryCellularAutomatonConfig(cellularAutomaton.getConfig())
 	return cellularAutomaton
 }
 
@@ -108,7 +107,7 @@ function initLandscapeConfigDialog() {
 	return landscapeConfig
 }
 
-function showConfigDialog(dialog: BaseConfigDialog) {
+function showConfigDialog<T>(dialog: BaseConfigDialog<T>) {
 	hideAllConfigDialogs()
 	dialog.show()
 }

@@ -1,4 +1,4 @@
-import { resetScratchRandomness } from "../sketches/scratch-randomness"
+import { restartScratchRandomness } from "../sketches/scratch-randomness"
 import { updateSketchConfig } from "../utils/url-params"
 import { BaseConfigDialog } from "./base-config-dialog"
 import { createConfigButton } from "./config-button"
@@ -119,7 +119,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 			"#reset-btn",
 		) as HTMLButtonElement
 		resetBtn?.addEventListener("click", () => {
-			resetScratchRandomness()
+			restartScratchRandomness()
 		})
 	}
 
