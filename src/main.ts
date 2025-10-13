@@ -1,9 +1,13 @@
 import p5 from "p5"
 import type { BaseConfigDialog } from "./configs/base-config-dialog"
+import { BouncingBallsConfigDialog } from "./configs/bouncing-balls-config-dialog"
 import { ElementaryCellularAutomatonConfigDialog } from "./configs/elementary-cellular-automaton-config-dialog"
 import { LandscapeConfigDialog } from "./configs/landscape-config-dialog"
 import { ScratchRandomnessConfigDialog } from "./configs/scratch-randomness-config-dialog"
-import { bouncingBalls3D } from "./sketches/3d-bouncing-balls"
+import {
+	bouncingBalls3D,
+	setBouncingBallsConfig,
+} from "./sketches/3d-bouncing-balls"
 import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
 import {
@@ -42,6 +46,7 @@ const menuOverlay = document.getElementById("menu-overlay")
 const menuDropdown = document.getElementById("menu-dropdown")
 const sketchMenu = document.querySelector(".sketch-menu") as HTMLElement
 
+let bouncingBallsConfig: BouncingBallsConfigDialog | null = null
 let cellularAutomaton: ElementaryCellularAutomatonConfigDialog | null = null
 let scratchConfig: ScratchRandomnessConfigDialog | null = null
 let landscapeConfig: LandscapeConfigDialog | null = null
@@ -62,7 +67,9 @@ function loadSketch(sketchName: SketchName) {
 		)
 	})
 
-	if (sketchName === "elementary-cellular-automaton") {
+	if (sketchName === "3d-bouncing-balls") {
+		showConfigDialog(initBouncingBallsConfigDialog())
+	} else if (sketchName === "elementary-cellular-automaton") {
 		showConfigDialog(initElementaryCellularAutomatonConfigDialog())
 	} else if (sketchName === "scratch-randomness") {
 		showConfigDialog(initScratchRandomnessConfigDialog())
@@ -96,6 +103,17 @@ function initScratchRandomnessConfigDialog() {
 	return scratchConfig
 }
 
+function initBouncingBallsConfigDialog() {
+	if (!bouncingBallsConfig) {
+		bouncingBallsConfig = new BouncingBallsConfigDialog(sketchMenu)
+		bouncingBallsConfig.setOnChange((config) => {
+			setBouncingBallsConfig(config)
+		})
+	}
+	setBouncingBallsConfig(bouncingBallsConfig.getConfig())
+	return bouncingBallsConfig
+}
+
 function initLandscapeConfigDialog() {
 	if (!landscapeConfig) {
 		landscapeConfig = new LandscapeConfigDialog(sketchMenu)
@@ -113,6 +131,7 @@ function showConfigDialog<T>(dialog: BaseConfigDialog<T>) {
 }
 
 function hideAllConfigDialogs() {
+	bouncingBallsConfig?.hide()
 	cellularAutomaton?.hide()
 	scratchConfig?.hide()
 	landscapeConfig?.hide()

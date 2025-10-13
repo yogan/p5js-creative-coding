@@ -1,4 +1,21 @@
 import type p5 from "p5"
+import {
+	type BouncingBallsConfig,
+	getBouncingBallsConfigFromURL,
+} from "../configs/bouncing-balls-config"
+
+let bouncingBallsConfig: BouncingBallsConfig = getBouncingBallsConfigFromURL()
+let recreateBouncingBalls: (() => void) | null = null
+
+export function setBouncingBallsConfig(config: BouncingBallsConfig) {
+	bouncingBallsConfig = config
+	recreateBouncingBalls?.()
+}
+
+export function restartBouncingBalls() {
+	bouncingBallsConfig = getBouncingBallsConfigFromURL()
+	recreateBouncingBalls?.()
+}
 
 export const bouncingBalls3D = (p: p5) => {
 	let boundingBox: BoundingBox
@@ -88,13 +105,19 @@ export const bouncingBalls3D = (p: p5) => {
 		}
 	}
 
+	const recreateBalls = () => {
+		balls.length = 0 // Clear existing balls
+		for (let i = 0; i < bouncingBallsConfig.ballCount; i++) {
+			balls.push(createBall(boundingBox, balls))
+		}
+	}
+
 	p.setup = () => {
 		p.createCanvas(p.windowWidth, p.windowHeight, p.WEBGL)
 		setupCamera()
 		boundingBox = createBoundingBox()
-		balls.push(createBall(boundingBox, balls))
-		balls.push(createBall(boundingBox, balls))
-		balls.push(createBall(boundingBox, balls))
+		recreateBouncingBalls = recreateBalls
+		recreateBalls()
 	}
 
 	p.draw = () => {

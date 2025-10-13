@@ -48,6 +48,7 @@ export function updateSketchConfig(
 			"visualization",
 			"circleMode",
 			"walkerMode",
+			"ballCount",
 		]
 		for (const key of allConfigKeys) {
 			url.searchParams.delete(key)
