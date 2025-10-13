@@ -10,10 +10,14 @@ import {
 } from "../sketches/elementary-cellular-automaton"
 import { updateSketchConfig } from "../utils/url-params"
 import { BaseConfig } from "./base-config"
-import type { GridColor, InitialCells } from "./cellular-automaton-config"
+import type {
+	CellularAutomatonConfig,
+	GridColor,
+	InitialCells,
+} from "./cellular-automaton-config"
 import { createConfigButton } from "./config-button"
 
-export class ElementaryCellularAutomatonConfigDialog extends BaseConfig<void> {
+export class ElementaryCellularAutomatonConfigDialog extends BaseConfig<CellularAutomatonConfig> {
 	private controlBtn: HTMLElement | null = null
 	private modal: HTMLElement | null = null
 	private ruleInput: HTMLInputElement | null = null
@@ -27,7 +31,7 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfig<void> {
 	private widthMinusBtn: HTMLElement | null = null
 	private gridSelect: HTMLSelectElement | null = null
 	private startSelect: HTMLSelectElement | null = null
-	private onRuleChange?: () => void
+	private onRuleChange?: (config: CellularAutomatonConfig) => void
 
 	constructor(private container: HTMLElement) {
 		super()
@@ -274,7 +278,12 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfig<void> {
 			setGridColor(grid)
 			setInitialCells(start)
 			this.updateURL()
-			this.onRuleChange?.()
+			this.onRuleChange?.({
+				rule,
+				width,
+				grid,
+				start,
+			})
 		}
 	}
 
@@ -291,7 +300,7 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfig<void> {
 		}
 	}
 
-	public setOnChange(callback: () => void) {
+	public setOnChange(callback: (config: CellularAutomatonConfig) => void) {
 		this.onRuleChange = callback
 	}
 

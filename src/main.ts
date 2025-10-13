@@ -5,7 +5,11 @@ import { ScratchRandomnessConfigDialog } from "./configs/scratch-randomness-conf
 import { bouncingBalls3D } from "./sketches/3d-bouncing-balls"
 import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
-import { elementaryCellularAutomaton } from "./sketches/elementary-cellular-automaton"
+import {
+	elementaryCellularAutomaton,
+	getElementaryCellularAutomatonConfig,
+	setElementaryCellularAutomatonConfig,
+} from "./sketches/elementary-cellular-automaton"
 import { kochIsland } from "./sketches/koch-island"
 import { landscape, setLandscapeConfig } from "./sketches/landscape"
 import {
@@ -39,7 +43,7 @@ const menuOverlay = document.getElementById("menu-overlay")
 const menuDropdown = document.getElementById("menu-dropdown")
 const sketchMenu = document.querySelector(".sketch-menu") as HTMLElement
 
-let sketchConfig: ElementaryCellularAutomatonConfigDialog | null = null
+let cellularAutomaton: ElementaryCellularAutomatonConfigDialog | null = null
 let scratchConfig: ScratchRandomnessConfigDialog | null = null
 let landscapeConfig: LandscapeConfigDialog | null = null
 
@@ -62,13 +66,18 @@ function loadSketch(sketchName: SketchName) {
 		})
 
 		if (sketchName === "elementary-cellular-automaton") {
-			if (!sketchConfig) {
-				sketchConfig = new ElementaryCellularAutomatonConfigDialog(sketchMenu)
-				sketchConfig.setOnChange(() => {
-					loadSketch(currentSketch as SketchName)
+			if (!cellularAutomaton) {
+				cellularAutomaton = new ElementaryCellularAutomatonConfigDialog(
+					sketchMenu,
+				)
+				cellularAutomaton.setOnChange((config) => {
+					setElementaryCellularAutomatonConfig(config)
 				})
 			}
-			sketchConfig.show()
+			setElementaryCellularAutomatonConfig(
+				getElementaryCellularAutomatonConfig(),
+			)
+			cellularAutomaton.show()
 			if (scratchConfig) {
 				scratchConfig.hide()
 			}
@@ -82,11 +91,10 @@ function loadSketch(sketchName: SketchName) {
 					setScratchRandomnessConfig(config)
 				})
 			}
-			// Apply current config to sketch
 			setScratchRandomnessConfig(scratchConfig.getConfig())
 			scratchConfig.show()
-			if (sketchConfig) {
-				sketchConfig.hide()
+			if (cellularAutomaton) {
+				cellularAutomaton.hide()
 			}
 			if (landscapeConfig) {
 				landscapeConfig.hide()
@@ -98,19 +106,18 @@ function loadSketch(sketchName: SketchName) {
 					setLandscapeConfig(config)
 				})
 			}
-			// Apply current config to sketch
 			setLandscapeConfig(landscapeConfig.getConfig())
 			landscapeConfig.show()
-			if (sketchConfig) {
-				sketchConfig.hide()
+			if (cellularAutomaton) {
+				cellularAutomaton.hide()
 			}
 			if (scratchConfig) {
 				scratchConfig.hide()
 			}
 		} else {
 			updateSketchConfig(sketchName, {})
-			if (sketchConfig) {
-				sketchConfig.hide()
+			if (cellularAutomaton) {
+				cellularAutomaton.hide()
 			}
 			if (scratchConfig) {
 				scratchConfig.hide()

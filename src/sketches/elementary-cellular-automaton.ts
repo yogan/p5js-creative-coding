@@ -1,5 +1,6 @@
 import type p5 from "p5"
 import type {
+	CellularAutomatonConfig,
 	GridColor,
 	InitialCells,
 } from "../configs/cellular-automaton-config"
@@ -33,6 +34,28 @@ export const setInitialCells = (config: InitialCells) => {
 }
 
 export const getInitialCells = (): InitialCells => initialCells
+
+let restartFunction: (() => void) | null = null
+
+export const getElementaryCellularAutomatonConfig =
+	(): CellularAutomatonConfig => ({
+		rule: getCurrentRule(),
+		width: getCurrentWidth(),
+		grid: getGridColor(),
+		start: getInitialCells(),
+	})
+
+export const setElementaryCellularAutomatonConfig = (
+	config: CellularAutomatonConfig,
+) => {
+	setRule(config.rule)
+	setWidth(config.width)
+	setGridColor(config.grid)
+	setInitialCells(config.start)
+	if (restartFunction) {
+		restartFunction()
+	}
+}
 
 export const elementaryCellularAutomaton = (p: p5) => {
 	const padding = p.windowWidth < 600 ? 2 : 10
@@ -202,6 +225,9 @@ export const elementaryCellularAutomaton = (p: p5) => {
 		p.setup() // reinitialize everything
 		p.loop() // restart the draw loop
 	}
+
+	// Make restart function available globally
+	restartFunction = () => restart()
 
 	const nextGeneration = (current: number[]): number[] => {
 		const next = new Array(current.length).fill(0)
