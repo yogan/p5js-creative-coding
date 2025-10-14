@@ -116,21 +116,9 @@ export const scratchRandomness = (p: p5) => {
 	}
 
 	const drawWalker = (mode: WalkerMode) => {
-		switch (mode) {
-			case "mouse":
-				walker.step()
-				break
-			case "gaussian":
-				walker.gaussianStep()
-				break
-			case "accept-reject":
-				walker.accpetRejectStep()
-				break
-			case "perlin":
-				walker.perlinStep()
-				break
-		}
-		p.background(240, 5)
+		p.background(240, 5) // slight trail effect
+		walker.step(mode)
+		walker.move()
 		walker.show()
 	}
 
@@ -166,64 +154,94 @@ export const scratchRandomness = (p: p5) => {
 	}
 
 	class Walker {
-		private tx = 0
-		private ty = 100_000
+		private position: p5.Vector
+		private velocity: p5.Vector
+		private acceleration: p5.Vector
+		private timeOffset: p5.Vector
 
-		constructor(
-			private x: number,
-			private y: number,
-		) {}
+		constructor(x: number, y: number) {
+			this.position = p.createVector(x, y)
+			this.velocity = p.createVector(0, 0)
+			this.acceleration = p.createVector(0, 0)
+			this.timeOffset = p.createVector(0, 100_000)
+		}
+
+		step(mode: WalkerMode) {
+			switch (mode) {
+				case "mouse":
+					if (p.random() < 0.5) {
+						this.velocity = p.createVector(
+							p.mouseX < this.position.x ? -1 : 1,
+							p.mouseY < this.position.y ? -1 : 1,
+						)
+					} else {
+						this.velocity = p.createVector(
+							p.random([-1, -1, 0, 1, 1]),
+							p.random([-1, 0, 1]),
+						)
+					}
+					break
+
+				case "gaussian":
+					this.velocity = p.createVector(
+						p.randomGaussian(0, 16),
+						p.randomGaussian(0, 9),
+					)
+					break
+
+				case "accept-reject": {
+					let r1: number, r2: number, prop: number
+					do {
+						r1 = p.random(100)
+						r2 = p.random(100)
+						prop = r1 * r1
+					} while (r2 < prop)
+					this.velocity = p.createVector(p.random(-r1, r1), p.random(-r1, r1))
+					break
+				}
+
+				case "perlin":
+					this.velocity = p.createVector(
+						p.map(p.noise(this.timeOffset.x), 0, 1, -2, 2),
+						p.map(p.noise(this.timeOffset.y), 0, 1, -2, 2),
+					)
+					this.timeOffset.add(p.createVector(0.01, 0.02))
+					break
+
+				case "perlin-accelerated":
+					this.acceleration = p.createVector(
+						p.map(p.noise(this.timeOffset.x), 0, 1, -1, 1),
+						p.map(p.noise(this.timeOffset.y), 0, 1, -1, 1),
+					)
+					this.velocity.add(this.acceleration)
+					this.velocity.limit(3)
+					this.timeOffset.add(p.createVector(0.05, 0.05))
+					break
+			}
+		}
+
+		move() {
+			this.position.add(this.velocity)
+
+			// Wrap around horizontally
+			if (this.position.x >= p.width) {
+				this.position.x = 0
+			} else if (this.position.x < 0) {
+				this.position.x = p.width - 1
+			}
+
+			// Wrap around vertically
+			if (this.position.y >= p.height) {
+				this.position.y = 0
+			} else if (this.position.y < 0) {
+				this.position.y = p.height - 1
+			}
+		}
 
 		show() {
 			p.stroke(0, 200)
 			p.fill(200, 100)
-			p.circle(this.x, this.y, 50)
-		}
-
-		step() {
-			if (p.random() < 0.5) {
-				// move to mouse
-				this.x += p.mouseX < this.x ? -1 : 1
-				this.y += p.mouseY < this.y ? -1 : 1
-				return
-			}
-
-			this.x += p.random([-1, -1, 0, 1, 1])
-			this.y += p.random([-1, 0, 1])
-			this.x = p.constrain(this.x, 0, p.width - 1)
-			this.y = p.constrain(this.y, 0, p.height - 1)
-		}
-
-		gaussianStep() {
-			this.x += p.randomGaussian(0, 16)
-			this.y += p.randomGaussian(0, 9)
-			this.x = p.constrain(this.x, 0, p.width - 1)
-			this.y = p.constrain(this.y, 0, p.height - 1)
-		}
-
-		accpetRejectStep() {
-			let r1: number, r2: number, prop: number
-			do {
-				r1 = p.random(100)
-				r2 = p.random(100)
-				prop = r1 * r1
-			} while (r2 < prop)
-
-			const stepX = p.random(-r1, r1)
-			const stepY = p.random(-r1, r1)
-			this.x += stepX
-			this.y += stepY
-		}
-
-		perlinStep() {
-			const stepX = p.map(p.noise(this.tx), 0, 1, -2, 2)
-			const stepY = p.map(p.noise(this.ty), 0, 1, -2, 2)
-
-			this.x += stepX
-			this.y += stepY
-
-			this.tx += 0.02
-			this.ty += 0.01
+			p.circle(this.position.x, this.position.y, 50)
 		}
 	}
 }

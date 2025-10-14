@@ -64,6 +64,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 						<option value="mouse" data-visualization="circles">Follow Mouse</option>
 						<!-- Walker mode options -->
 						<option value="perlin" data-visualization="walker">Perlin Noise</option>
+						<option value="perlin-accelerated" data-visualization="walker">Perlin Noise (Accelerated)</option>
 						<option value="gaussian" data-visualization="walker">Gaussian</option>
 						<option value="accept-reject" data-visualization="walker">Accept-Reject</option>
 						<option value="mouse" data-visualization="walker">Follow Mouse</option>

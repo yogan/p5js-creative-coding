@@ -3,6 +3,7 @@ import { getStringFromParams } from "../utils/url-params"
 export const CIRCLE_MODES = ["gaussian", "random", "mouse"] as const
 export const WALKER_MODES = [
 	"perlin",
+	"perlin-accelerated",
 	"gaussian",
 	"accept-reject",
 	"mouse",
