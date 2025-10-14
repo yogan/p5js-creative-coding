@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test"
 import { sketchNames } from "../src/utils/url-params"
+import { createPageLocators } from "./page-objects"
 
 // Configuration: sketches that have config dialogs and should show the control button
 const sketchConfig = {
@@ -12,75 +13,86 @@ const sketchConfig = {
 	"random-circles": { hasConfig: true },
 } as const
 
-// Page object helper for common locators
-const createPageLocators = (page: any) => ({
-	canvas: page.locator("#sketch-container canvas"),
-	menuButton: page.locator("#hamburger-btn"),
-	controlButton: page.locator("#control-btn"),
-	menuDropdown: page.locator("#menu-dropdown"),
-	menuOverlay: page.locator("#menu-overlay"),
-	menuItem: (sketchName: string) =>
-		page.locator(`button[data-sketch="${sketchName}"]`),
-	highlightedMenuItem: (sketchName: string) =>
-		page.locator(`button[data-sketch="${sketchName}"].active`),
-})
-
 test("menu navigation, highlighting, and button visibility", async ({
 	page,
 }) => {
-	// Start on home page
-	await page.goto("/")
-
-	const locators = createPageLocators(page)
+	const loc = createPageLocators(page)
 
 	// Wait for page to load
-	await expect(locators.canvas).toBeVisible()
+	await page.goto("/")
+	await expect(loc.canvas).toBeVisible()
 
 	// Check that the hamburger menu button is always visible
-	await expect(locators.menuButton).toBeVisible()
+	await expect(loc.menuButton).toBeVisible()
 
 	for (const sketchName of sketchNames) {
 		// Open menu
-		await locators.menuButton.click()
-		await expect(locators.menuDropdown).toBeVisible()
+		await loc.menuButton.click()
+		await expect(loc.menuDropdown).toBeVisible()
 
 		// Click on menu entry (button with data-sketch attribute)
-		const menuItem = locators.menuItem(sketchName)
+		const menuItem = loc.menuItem(sketchName)
 		await expect(menuItem).toBeVisible()
 		await menuItem.click()
 
 		// Check that menu is hidden after click
-		await expect(locators.menuDropdown).toBeHidden()
+		await expect(loc.menuDropdown).toBeHidden()
 
 		// Check that URL has correct sketch parameter
-		const url = new URL(page.url())
-		expect(url.searchParams.get("sketch")).toBe(sketchName)
+		expect(new URL(page.url()).searchParams.get("sketch")).toBe(sketchName)
 
 		// Wait for sketch to load
-		await expect(locators.canvas).toBeVisible()
+		await expect(loc.canvas).toBeVisible()
 
 		// Check control button visibility based on sketch config
-		await expect(locators.controlButton).toBeAttached() // Always exists in DOM
-		const config = sketchConfig[sketchName as keyof typeof sketchConfig]
-
-		if (config.hasConfig) {
+		if (sketchConfig[sketchName].hasConfig) {
 			// Should be visible for sketches with config
-			await expect(locators.controlButton).toBeVisible()
+			await expect(loc.controlButton).toBeVisible()
 		} else {
 			// Should be hidden for sketches without config
-			await expect(locators.controlButton).toBeHidden()
+			await expect(loc.controlButton).toBeHidden()
 		}
 
 		// Open menu again and check highlighting
-		await locators.menuButton.click()
-		await expect(locators.menuDropdown).toBeVisible()
+		await loc.menuButton.click()
+		await expect(loc.menuDropdown).toBeVisible()
 
 		// Check that the current sketch is highlighted
-		const highlightedItem = locators.highlightedMenuItem(sketchName)
+		const highlightedItem = loc.highlightedMenuItem(sketchName)
 		await expect(highlightedItem).toBeVisible()
 
 		// Close menu by clicking outside (click on menu overlay)
-		await locators.menuOverlay.click()
-		await expect(locators.menuDropdown).toBeHidden()
+		await loc.menuOverlay.click()
+		await expect(loc.menuDropdown).toBeHidden()
+	}
+})
+
+test("config dialog functionality", async ({ page }) => {
+	// Test only sketches that have configuration dialogs
+	const sketchesWithConfigs = Object.entries(sketchConfig)
+		.filter(([, config]) => config.hasConfig)
+		.map(([sketchName]) => sketchName)
+
+	for (const sketchName of sketchesWithConfigs) {
+		// Navigate directly to the sketch
+		await page.goto(`/?sketch=${sketchName}`)
+
+		const loc = createPageLocators(page)
+
+		// Wait for sketch to load and config button to be visible
+		await expect(loc.canvas).toBeVisible()
+		await expect(loc.controlButton).toBeVisible()
+
+		// Click the config button to open dialog
+		await loc.controlButton.click()
+
+		// Check that the modal overlay is visible
+		await expect(loc.modalOverlay).toBeVisible()
+
+		// Close the dialog by clicking on the overlay (outside the modal content)
+		await loc.modalOverlay.click()
+
+		// Check that dialog is no longer visible
+		await expect(loc.modalOverlay).toBeHidden()
 	}
 })
