@@ -27,12 +27,15 @@ export const scratchRandomness = (p: p5) => {
 	const totalCounts = 20
 	let randomCounts = Array.from({ length: totalCounts }, () => 0)
 	let w: number
-	let walker: Walker
+	let walkers: Walker[]
 	let zOff = 0.0
 
 	const initialize = () => {
 		p.background(240)
-		walker = new Walker(p.width / 2, p.height / 2)
+		walkers = []
+		for (let i = 0; i < currentConfig.walkerCount; i++) {
+			walkers.push(new Walker(p.random(p.width), p.random(p.height)))
+		}
 		randomCounts = Array.from({ length: totalCounts }, () => 0)
 		zOff = 0.0
 	}
@@ -117,9 +120,11 @@ export const scratchRandomness = (p: p5) => {
 
 	const drawWalker = (mode: WalkerMode) => {
 		p.background(240, 5) // slight trail effect
-		walker.step(mode)
-		walker.move()
-		walker.show()
+		for (const walker of walkers) {
+			walker.step(mode)
+			walker.move()
+			walker.show()
+		}
 	}
 
 	const pixelNoise = () => {

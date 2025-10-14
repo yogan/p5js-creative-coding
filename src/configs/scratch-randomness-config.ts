@@ -1,4 +1,4 @@
-import { getStringFromParams } from "../utils/url-params"
+import { getNumberFromParams, getStringFromParams } from "../utils/url-params"
 
 export const CIRCLE_MODES = ["gaussian", "random", "mouse"] as const
 export const WALKER_MODES = [
@@ -23,12 +23,14 @@ export type ScratchRandomnessConfig = {
 	visualization: VisualizationType
 	circleMode: CircleMode
 	walkerMode: WalkerMode
+	walkerCount: number
 }
 
 export const DEFAULT_SCRATCH_RANDOMNESS_CONFIG: ScratchRandomnessConfig = {
 	visualization: "circles",
 	circleMode: "gaussian",
 	walkerMode: "perlin",
+	walkerCount: 10,
 }
 
 export function getScratchRandomnessConfigFromURL(): ScratchRandomnessConfig {
@@ -53,6 +55,13 @@ export function getScratchRandomnessConfigFromURL(): ScratchRandomnessConfig {
 			"walkerMode",
 			WALKER_MODES,
 			defaults.walkerMode,
+		),
+		walkerCount: getNumberFromParams(
+			urlParams,
+			"walkerCount",
+			1,
+			25,
+			defaults.walkerCount,
 		),
 	}
 }

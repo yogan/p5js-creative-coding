@@ -16,6 +16,9 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 	private resetBtn!: HTMLButtonElement
 	private modeGroup!: HTMLElement
 	private modeLabel!: HTMLElement
+	private walkerCountGroup!: HTMLElement
+	private walkerCountSlider!: HTMLInputElement
+	private walkerCountValue!: HTMLElement
 
 	private onConfigChange?: (config: ScratchRandomnessConfig) => void
 	private currentConfig: ScratchRandomnessConfig =
@@ -45,7 +48,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 						</label>
 						<label class="radio-label">
 							<input type="radio" name="visualization" value="walker">
-							<span class="radio-text">Random Walker</span>
+							<span class="radio-text">Random Walkers</span>
 						</label>
 						<label class="radio-label">
 							<input type="radio" name="visualization" value="pixelNoise">
@@ -70,6 +73,13 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 						<option value="mouse" data-visualization="walker">Follow Mouse</option>
 					</select>
 				</div>
+				<div class="input-group" id="walker-count-group">
+					<div class="input-header">
+						<span class="input-label">Walker Count </span>
+						<span class="input-value" id="walker-count-value">10</span>
+					</div>
+					<input type="range" id="walker-count-slider" min="1" max="25" value="10" class="range-slider" style="width: 100%;">
+				</div>
 				<div class="button-group">
 					<button id="reset-btn" class="reset-btn">Reset</button>
 				</div>
@@ -86,6 +96,9 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 		this.resetBtn = this.modal.querySelector("#reset-btn")!
 		this.modeGroup = this.modal.querySelector("#mode-group")!
 		this.modeLabel = this.modal.querySelector("#mode-label")!
+		this.walkerCountGroup = this.modal.querySelector("#walker-count-group")!
+		this.walkerCountSlider = this.modal.querySelector("#walker-count-slider")!
+		this.walkerCountValue = this.modal.querySelector("#walker-count-value")!
 		// biome-ignore-end lint/style/noNonNullAssertion: see getModalContent()
 	}
 
@@ -114,6 +127,14 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 			this.updateConfig()
 		})
 
+		// Walker count slider
+		this.walkerCountSlider.addEventListener("input", () => {
+			const count = Number.parseInt(this.walkerCountSlider.value, 10)
+			this.walkerCountValue.textContent = count.toString()
+			this.currentConfig.walkerCount = count
+			this.updateConfig()
+		})
+
 		// Reset button
 		this.resetBtn.addEventListener("click", () => {
 			restartScratchRandomness()
@@ -137,6 +158,10 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 			this.currentConfig.visualization === "walker"
 
 		this.modeGroup.style.display = hasMode ? "block" : "none"
+
+		// Show walker count only for walker visualization
+		const showWalkerCount = this.currentConfig.visualization === "walker"
+		this.walkerCountGroup.style.display = showWalkerCount ? "block" : "none"
 
 		if (hasMode) {
 			if (this.currentConfig.visualization === "circles") {
@@ -186,6 +211,11 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 			radio.checked = radio.value === this.currentConfig.visualization
 		})
 
+		// Update walker count slider and display
+		this.walkerCountSlider.value = this.currentConfig.walkerCount.toString()
+		this.walkerCountValue.textContent =
+			this.currentConfig.walkerCount.toString()
+
 		// Update mode display
 		this.updateModeDisplay()
 
@@ -205,6 +235,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 			visualization: this.currentConfig.visualization,
 			circleMode: this.currentConfig.circleMode,
 			walkerMode: this.currentConfig.walkerMode,
+			walkerCount: this.currentConfig.walkerCount,
 		})
 	}
 }

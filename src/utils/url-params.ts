@@ -48,6 +48,7 @@ export function updateSketchConfig(
 			"visualization",
 			"circleMode",
 			"walkerMode",
+			"walkerCount",
 			"ballCount",
 		]
 		for (const key of allConfigKeys) {
