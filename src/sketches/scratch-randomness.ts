@@ -159,6 +159,8 @@ export const scratchRandomness = (p: p5) => {
 	}
 
 	class Walker {
+		private static walkerId = 0
+
 		private position: p5.Vector
 		private velocity: p5.Vector
 		private acceleration: p5.Vector
@@ -168,7 +170,15 @@ export const scratchRandomness = (p: p5) => {
 			this.position = p.createVector(x, y)
 			this.velocity = p.createVector(0, 0)
 			this.acceleration = p.createVector(0, 0)
-			this.timeOffset = p.createVector(0, 100_000)
+
+			// Without a walker-specific offset, all walkers that use perlin
+			// noise would move the same way.
+			const perlinOffset = 100_000
+			this.timeOffset = p.createVector(
+				Walker.walkerId * perlinOffset,
+				(Walker.walkerId + 1) * perlinOffset,
+			)
+			Walker.walkerId++
 		}
 
 		step(mode: WalkerMode) {
