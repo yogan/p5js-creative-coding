@@ -44,11 +44,11 @@ export const scratchRandomness = (p: p5) => {
 
 	p.draw = () => {
 		switch (currentConfig.visualization) {
-			case "circles":
+			case "static":
 				drawCircles(currentConfig.circleMode)
 				break
 
-			case "walker":
+			case "moving":
 				drawWalker()
 				break
 		}

@@ -41,58 +41,58 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 				<h3>Configure Randomness Sketch</h3>
 				<div class="input-group">
 					<div class="input-header">
-						<span class="input-label">Visualization Type</span>
+						<span class="input-label">Circle Type</span>
 					</div>
-					<div class="radio-group">
+					<div class="radio-group horizontal">
 						<label class="radio-label">
-							<input type="radio" name="visualization" value="circles">
-							<span class="radio-text">Circles</span>
+							<input type="radio" name="visualization" value="static">
+							<span class="radio-text">Static</span>
 						</label>
 
 						<label class="radio-label">
-							<input type="radio" name="visualization" value="walker">
-							<span class="radio-text">Random Walkers</span>
+							<input type="radio" name="visualization" value="moving">
+							<span class="radio-text">Moving</span>
 						</label>
 
 					</div>
-				</div>
-				<div class="input-group" id="walker-count-group">
-					<div class="input-header">
-						<span class="input-label">Walker Count </span>
-						<span class="input-value" id="walker-count-value">10</span>
-					</div>
-					<input type="range" id="walker-count-slider" min="1" max="25" value="10" class="range-slider" style="width: 100%;">
 				</div>
 				<div class="input-group" id="mode-group">
 					<div class="input-header">
 						<span class="input-label" id="mode-label">Mode</span>
 					</div>
 					<select id="mode-select" class="grid-select">
-						<!-- Circle mode options -->
-						<option value="gaussian" data-visualization="circles">Gaussian</option>
-						<option value="random" data-visualization="circles">Random</option>
-						<option value="mouse" data-visualization="circles">Follow Mouse</option>
-						<!-- Walker mode options -->
-						<option value="perlin" data-visualization="walker">Perlin Noise</option>
-						<option value="perlin-accelerated" data-visualization="walker">Perlin Noise (Accelerated)</option>
-						<option value="gaussian" data-visualization="walker">Gaussian</option>
-						<option value="accept-reject" data-visualization="walker">Accept-Reject</option>
-						<option value="mouse" data-visualization="walker">Follow Mouse</option>
+						<!-- Static circle options -->
+						<option value="gaussian" data-visualization="static">Gaussian</option>
+						<option value="random" data-visualization="static">Random</option>
+						<option value="mouse" data-visualization="static">Follow Mouse</option>
+						<!-- Moving circle options -->
+						<option value="perlin" data-visualization="moving">Perlin Noise</option>
+						<option value="perlin-accelerated" data-visualization="moving">Perlin Noise (Accelerated)</option>
+						<option value="gaussian" data-visualization="moving">Gaussian</option>
+						<option value="accept-reject" data-visualization="moving">Accept-Reject</option>
+						<option value="mouse" data-visualization="moving">Follow Mouse</option>
 					</select>
 				</div>
 				<div class="input-group" id="mouse-attraction-group">
 					<div class="input-header">
 						<span class="input-label">Attraction </span>
-						<span class="input-value" id="mouse-attraction-value">10</span>
+						<span class="input-value" id="mouse-attraction-value">10%</span>
 					</div>
 					<input type="range" id="mouse-attraction-slider" min="1" max="100" value="10" class="range-slider" style="width: 100%;">
 				</div>
 				<div class="input-group" id="mouse-max-speed-group">
 					<div class="input-header">
-						<span class="input-label">Max Speed </span>
+						<span class="input-label">Speed </span>
 						<span class="input-value" id="mouse-max-speed-value">5</span>
 					</div>
 					<input type="range" id="mouse-max-speed-slider" min="1" max="20" value="5" class="range-slider" style="width: 100%;">
+				</div>
+				<div class="input-group" id="walker-count-group">
+					<div class="input-header">
+						<span class="input-label">Number of Circles </span>
+						<span class="input-value" id="walker-count-value">10</span>
+					</div>
+					<input type="range" id="walker-count-slider" min="1" max="25" value="10" class="range-slider" style="width: 100%;">
 				</div>
 				<div class="button-group">
 					<button id="reset-btn" class="reset-btn">Reset</button>
@@ -170,7 +170,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 		// Mouse attraction slider
 		this.mouseAttractionSlider.addEventListener("input", () => {
 			const attraction = Number.parseFloat(this.mouseAttractionSlider.value)
-			this.mouseAttractionValue.textContent = attraction.toString()
+			this.mouseAttractionValue.textContent = `${attraction}%`
 			this.currentConfig.mouseAttraction = attraction
 			this.updateConfig()
 		})
@@ -202,18 +202,18 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 
 	private updateModeDisplay() {
 		const hasMode =
-			this.currentConfig.visualization === "circles" ||
-			this.currentConfig.visualization === "walker"
+			this.currentConfig.visualization === "static" ||
+			this.currentConfig.visualization === "moving"
 
 		this.modeGroup.style.display = hasMode ? "block" : "none"
 
-		// Show walker count only for walker visualization
-		const showWalkerCount = this.currentConfig.visualization === "walker"
+		// Show walker count only for moving visualization
+		const showWalkerCount = this.currentConfig.visualization === "moving"
 		this.walkerCountGroup.style.display = showWalkerCount ? "block" : "none"
 
-		// Show mouse-specific controls only for walker visualization with mouse mode
+		// Show mouse-specific controls only for moving visualization with mouse mode
 		const showMouseControls =
-			this.currentConfig.visualization === "walker" &&
+			this.currentConfig.visualization === "moving" &&
 			this.currentConfig.walkerMode === "mouse"
 		this.mouseAttractionGroup.style.display = showMouseControls
 			? "block"
@@ -221,10 +221,10 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 		this.mouseMaxSpeedGroup.style.display = showMouseControls ? "block" : "none"
 
 		if (hasMode) {
-			if (this.currentConfig.visualization === "circles") {
-				this.modeLabel.textContent = "Circle Mode"
-			} else if (this.currentConfig.visualization === "walker") {
-				this.modeLabel.textContent = "Walker Mode"
+			if (this.currentConfig.visualization === "static") {
+				this.modeLabel.textContent = "Placement"
+			} else if (this.currentConfig.visualization === "moving") {
+				this.modeLabel.textContent = "Behavior"
 			}
 
 			// Show/hide options based on visualization type
@@ -240,18 +240,18 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 			})
 
 			// Set selected value
-			if (this.currentConfig.visualization === "circles") {
+			if (this.currentConfig.visualization === "static") {
 				this.modeSelect.value = this.currentConfig.circleMode || "random"
-			} else if (this.currentConfig.visualization === "walker") {
+			} else if (this.currentConfig.visualization === "moving") {
 				this.modeSelect.value = this.currentConfig.walkerMode || "perlin"
 			}
 		}
 	}
 
 	private updateConfig() {
-		if (this.currentConfig.visualization === "circles") {
+		if (this.currentConfig.visualization === "static") {
 			this.currentConfig.circleMode = this.modeSelect.value as CircleMode
-		} else if (this.currentConfig.visualization === "walker") {
+		} else if (this.currentConfig.visualization === "moving") {
 			this.currentConfig.walkerMode = this.modeSelect.value as WalkerMode
 		}
 
@@ -279,8 +279,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 		// Update mouse sliders and display
 		this.mouseAttractionSlider.value =
 			this.currentConfig.mouseAttraction.toString()
-		this.mouseAttractionValue.textContent =
-			this.currentConfig.mouseAttraction.toString()
+		this.mouseAttractionValue.textContent = `${this.currentConfig.mouseAttraction}%`
 		this.mouseMaxSpeedSlider.value = this.currentConfig.mouseMaxSpeed.toString()
 		this.mouseMaxSpeedValue.textContent =
 			this.currentConfig.mouseMaxSpeed.toString()

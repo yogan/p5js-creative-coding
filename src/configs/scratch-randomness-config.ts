@@ -8,7 +8,7 @@ const WALKER_MODES = [
 	"accept-reject",
 	"mouse",
 ] as const
-const VISUALIZATION_TYPES = ["circles", "walker"] as const
+const VISUALIZATION_TYPES = ["static", "moving"] as const
 
 export type CircleMode = (typeof CIRCLE_MODES)[number]
 export type WalkerMode = (typeof WALKER_MODES)[number]
@@ -24,7 +24,7 @@ export type ScratchRandomnessConfig = {
 }
 
 const DEFAULT_SCRATCH_RANDOMNESS_CONFIG: ScratchRandomnessConfig = {
-	visualization: "circles",
+	visualization: "static",
 	circleMode: "gaussian",
 	walkerMode: "perlin",
 	walkerCount: 10,
