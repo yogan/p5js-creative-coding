@@ -1,4 +1,3 @@
-import { getElementaryCellularAutomatonConfig } from "../sketches/elementary-cellular-automaton"
 import { updateSketchConfig } from "../utils/url-params"
 import { BaseConfigDialog } from "./base-config-dialog"
 import type {
@@ -6,6 +5,7 @@ import type {
 	GridColor,
 	InitialCells,
 } from "./cellular-automaton-config"
+import { getCellularAutomatonConfigFromURL } from "./cellular-automaton-config"
 
 export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<CellularAutomatonConfig> {
 	private ruleInput!: HTMLInputElement
@@ -20,6 +20,8 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 	private startSelect!: HTMLSelectElement
 
 	private onRuleChange?: (config: CellularAutomatonConfig) => void
+	private currentConfig: CellularAutomatonConfig =
+		getCellularAutomatonConfigFromURL()
 
 	constructor(container: HTMLElement) {
 		super(container)
@@ -151,13 +153,15 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 	}
 
 	protected openModal() {
-		const config = getElementaryCellularAutomatonConfig()
-		this.ruleInput.value = config.rule.toString()
-		this.rulePreview.textContent = config.rule.toString()
-		this.widthInput.value = config.width.toString()
-		this.widthPreview.textContent = `${config.width} px`
-		this.gridSelect.value = config.grid
-		this.startSelect.value = config.start
+		// Update current config from URL
+		this.currentConfig = getCellularAutomatonConfigFromURL()
+
+		this.ruleInput.value = this.currentConfig.rule.toString()
+		this.rulePreview.textContent = this.currentConfig.rule.toString()
+		this.widthInput.value = this.currentConfig.width.toString()
+		this.widthPreview.textContent = `${this.currentConfig.width} px`
+		this.gridSelect.value = this.currentConfig.grid
+		this.startSelect.value = this.currentConfig.start
 		this.modal.style.display = "flex"
 	}
 
@@ -202,12 +206,12 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 	}
 
 	private applyChanges() {
-		const rule = parseInt(this.ruleInput.value, 10)
-		const width = parseInt(this.widthInput.value, 10)
-		const grid = this.gridSelect.value as GridColor
-		const start = this.startSelect.value as InitialCells
+		this.currentConfig.rule = parseInt(this.ruleInput.value, 10)
+		this.currentConfig.width = parseInt(this.widthInput.value, 10)
+		this.currentConfig.grid = this.gridSelect.value as GridColor
+		this.currentConfig.start = this.startSelect.value as InitialCells
 		this.updateURL()
-		this.onRuleChange?.({ rule, width, grid, start })
+		this.onRuleChange?.(this.currentConfig)
 	}
 
 	public setOnChange(callback: (config: CellularAutomatonConfig) => void) {
@@ -215,13 +219,10 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 	}
 
 	public getConfig(): CellularAutomatonConfig {
-		return getElementaryCellularAutomatonConfig()
+		return { ...this.currentConfig }
 	}
 
 	protected updateURL() {
-		updateSketchConfig(
-			"elementary-cellular-automaton",
-			getElementaryCellularAutomatonConfig(),
-		)
+		updateSketchConfig("elementary-cellular-automaton", this.currentConfig)
 	}
 }

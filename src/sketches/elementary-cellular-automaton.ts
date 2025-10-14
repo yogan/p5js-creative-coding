@@ -11,9 +11,6 @@ let config: CellularAutomatonConfig = {
 
 let restartFunction: (() => void) | null = null
 
-export const getElementaryCellularAutomatonConfig =
-	(): CellularAutomatonConfig => config
-
 export const setElementaryCellularAutomatonConfig = (
 	newConfig: CellularAutomatonConfig,
 ) => {
