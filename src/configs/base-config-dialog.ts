@@ -1,4 +1,9 @@
-import { createConfigButton } from "./config-button"
+import {
+	getConfigButton,
+	hideConfigButton,
+	setConfigButtonHandler,
+	showConfigButton,
+} from "./config-button"
 
 export abstract class BaseConfigDialog<TConfig> {
 	protected controlBtn!: HTMLElement
@@ -28,14 +33,13 @@ export abstract class BaseConfigDialog<TConfig> {
 
 	// Concrete implementations shared by all subclasses
 	protected createElements(): void {
-		this.controlBtn = createConfigButton()
+		this.controlBtn = getConfigButton()
 
 		this.modal = document.createElement("div")
 		this.modal.className = "modal-overlay"
 		this.modal.style.display = "none"
 		this.modal.innerHTML = this.getModalContent()
 
-		this.container.appendChild(this.controlBtn)
 		document.body.appendChild(this.modal)
 	}
 
@@ -44,16 +48,17 @@ export abstract class BaseConfigDialog<TConfig> {
 	}
 
 	public show(): void {
-		this.controlBtn.style.display = "flex"
+		showConfigButton()
+		setConfigButtonHandler(() => this.openModal())
 		this.updateURL()
 	}
 
 	public hide(): void {
-		this.controlBtn.style.display = "none"
+		hideConfigButton()
 	}
 
 	public destroy(): void {
-		this.controlBtn.remove()
+		hideConfigButton()
 		this.modal.remove()
 	}
 }
