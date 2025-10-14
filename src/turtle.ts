@@ -10,7 +10,7 @@ export interface Point {
 	y: number
 }
 
-export class Turtle {
+class Turtle {
 	x: number
 	y: number
 	angle: number

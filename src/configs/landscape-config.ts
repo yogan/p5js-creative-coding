@@ -1,7 +1,7 @@
 import { getNumberFromParams, getStringFromParams } from "../utils/url-params"
 
-export const LANDSCAPE_MESH = ["triangles", "squares"] as const
-export const LANDSCAPE_CAMERA = ["auto", "manual"] as const
+const LANDSCAPE_MESH = ["triangles", "squares"] as const
+const LANDSCAPE_CAMERA = ["auto", "manual"] as const
 
 export type LandscapeMesh = (typeof LANDSCAPE_MESH)[number]
 export type LandscapeCamera = (typeof LANDSCAPE_CAMERA)[number]
@@ -13,7 +13,7 @@ export type LandscapeConfig = {
 	camera: LandscapeCamera
 }
 
-export const DEFAULT_LANDSCAPE_CONFIG: LandscapeConfig = {
+const DEFAULT_LANDSCAPE_CONFIG: LandscapeConfig = {
 	mesh: "triangles",
 	heightChangeSpeed: 0.005,
 	roughness: 0.15,

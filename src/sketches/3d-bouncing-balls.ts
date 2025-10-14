@@ -13,11 +13,6 @@ export function setBouncingBallsConfig(config: BouncingBallsConfig) {
 	recreateBouncingBalls?.()
 }
 
-export function restartBouncingBalls() {
-	bouncingBallsConfig = getBouncingBallsConfigFromURL()
-	recreateBouncingBalls?.()
-}
-
 export function disableOrbitalControls() {
 	orbitalControlsEnabled = false
 }

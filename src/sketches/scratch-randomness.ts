@@ -14,7 +14,7 @@ export const setScratchRandomnessConfig = (config: ScratchRandomnessConfig) => {
 
 let restartFn: (() => void) | null = null
 
-export const setScratchRandomnessInitialize = (initFn: () => void) => {
+const setScratchRandomnessInitialize = (initFn: () => void) => {
 	restartFn = initFn
 }
 

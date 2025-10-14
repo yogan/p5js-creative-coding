@@ -112,9 +112,3 @@ export function getNumberFromParams(
 		? numberValue
 		: fallback
 }
-
-export function setUrlParam(key: string, value: string | number) {
-	const url = new URL(window.location.href)
-	url.searchParams.set(key, value.toString())
-	window.history.replaceState({}, "", url)
-}
