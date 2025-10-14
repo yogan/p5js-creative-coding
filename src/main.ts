@@ -3,7 +3,7 @@ import type { BaseConfigDialog } from "./configs/base-config-dialog"
 import { BouncingBallsConfigDialog } from "./configs/bouncing-balls-config-dialog"
 import { ElementaryCellularAutomatonConfigDialog } from "./configs/elementary-cellular-automaton-config-dialog"
 import { LandscapeConfigDialog } from "./configs/landscape-config-dialog"
-import { ScratchRandomnessConfigDialog } from "./configs/scratch-randomness-config-dialog"
+import { RandomCirclesConfigDialog } from "./configs/random-circles-config-dialog"
 import {
 	bouncingBalls3D,
 	setBouncingBallsConfig,
@@ -17,9 +17,9 @@ import {
 import { kochIsland } from "./sketches/koch-island"
 import { landscape, setLandscapeConfig } from "./sketches/landscape"
 import {
-	scratchRandomness,
-	setScratchRandomnessConfig,
-} from "./sketches/scratch-randomness"
+	randomCircles,
+	setRandomCirclesConfig,
+} from "./sketches/random-circles"
 import {
 	getSketchFromURL,
 	type SketchName,
@@ -33,7 +33,7 @@ const sketches: Record<SketchName, (p: p5) => void> = {
 	"elementary-cellular-automaton": elementaryCellularAutomaton,
 	"koch-island": kochIsland,
 	landscape: landscape,
-	"scratch-randomness": scratchRandomness,
+	"random-circles": randomCircles,
 }
 
 let currentP5Instance: p5 | null = null
@@ -48,7 +48,7 @@ const sketchMenu = document.querySelector(".sketch-menu") as HTMLElement
 
 let bouncingBallsConfig: BouncingBallsConfigDialog | null = null
 let cellularAutomaton: ElementaryCellularAutomatonConfigDialog | null = null
-let scratchConfig: ScratchRandomnessConfigDialog | null = null
+let randomCirclesConfig: RandomCirclesConfigDialog | null = null
 let landscapeConfig: LandscapeConfigDialog | null = null
 
 function loadSketch(sketchName: SketchName) {
@@ -71,8 +71,8 @@ function loadSketch(sketchName: SketchName) {
 		showConfigDialog(initBouncingBallsConfigDialog())
 	} else if (sketchName === "elementary-cellular-automaton") {
 		showConfigDialog(initElementaryCellularAutomatonConfigDialog())
-	} else if (sketchName === "scratch-randomness") {
-		showConfigDialog(initScratchRandomnessConfigDialog())
+	} else if (sketchName === "random-circles") {
+		showConfigDialog(initRandomCirclesConfigDialog())
 	} else if (sketchName === "landscape") {
 		showConfigDialog(initLandscapeConfigDialog())
 	} else {
@@ -92,15 +92,15 @@ function initElementaryCellularAutomatonConfigDialog() {
 	return cellularAutomaton
 }
 
-function initScratchRandomnessConfigDialog() {
-	if (!scratchConfig) {
-		scratchConfig = new ScratchRandomnessConfigDialog(sketchMenu)
-		scratchConfig.setOnChange((config) => {
-			setScratchRandomnessConfig(config)
+function initRandomCirclesConfigDialog() {
+	if (!randomCirclesConfig) {
+		randomCirclesConfig = new RandomCirclesConfigDialog(sketchMenu)
+		randomCirclesConfig.setOnChange((config) => {
+			setRandomCirclesConfig(config)
 		})
 	}
-	setScratchRandomnessConfig(scratchConfig.getConfig())
-	return scratchConfig
+	setRandomCirclesConfig(randomCirclesConfig.getConfig())
+	return randomCirclesConfig
 }
 
 function initBouncingBallsConfigDialog() {
@@ -133,7 +133,7 @@ function showConfigDialog<T>(dialog: BaseConfigDialog<T>) {
 function hideAllConfigDialogs() {
 	bouncingBallsConfig?.hide()
 	cellularAutomaton?.hide()
-	scratchConfig?.hide()
+	randomCirclesConfig?.hide()
 	landscapeConfig?.hide()
 }
 

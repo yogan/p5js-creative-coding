@@ -7,7 +7,7 @@ export type SketchName =
 	| "elementary-cellular-automaton"
 	| "koch-island"
 	| "landscape"
-	| "scratch-randomness"
+	| "random-circles"
 
 export function getSketchFromURL(): SketchName {
 	const urlParams = new URLSearchParams(window.location.search)
@@ -19,7 +19,7 @@ export function getSketchFromURL(): SketchName {
 		"elementary-cellular-automaton",
 		"koch-island",
 		"landscape",
-		"scratch-randomness",
+		"random-circles",
 	]
 	return sketch && validSketches.includes(sketch) ? sketch : "koch-island"
 }

@@ -14,7 +14,7 @@ export type CircleMode = (typeof CIRCLE_MODES)[number]
 export type WalkerMode = (typeof WALKER_MODES)[number]
 export type VisualizationType = (typeof VISUALIZATION_TYPES)[number]
 
-export type ScratchRandomnessConfig = {
+export type RandomCirclesConfig = {
 	visualization: VisualizationType
 	circleMode: CircleMode
 	walkerMode: WalkerMode
@@ -23,7 +23,7 @@ export type ScratchRandomnessConfig = {
 	mouseMaxSpeed: number
 }
 
-const DEFAULT_SCRATCH_RANDOMNESS_CONFIG: ScratchRandomnessConfig = {
+const DEFAULT_RANDOM_CIRCLES_CONFIG: RandomCirclesConfig = {
 	visualization: "static",
 	circleMode: "gaussian",
 	walkerMode: "perlin",
@@ -32,9 +32,9 @@ const DEFAULT_SCRATCH_RANDOMNESS_CONFIG: ScratchRandomnessConfig = {
 	mouseMaxSpeed: 5,
 }
 
-export function getScratchRandomnessConfigFromURL(): ScratchRandomnessConfig {
+export function getRandomCirclesConfigFromURL(): RandomCirclesConfig {
 	const urlParams = new URLSearchParams(window.location.search)
-	const defaults = DEFAULT_SCRATCH_RANDOMNESS_CONFIG
+	const defaults = DEFAULT_RANDOM_CIRCLES_CONFIG
 
 	return {
 		visualization: getStringFromParams(

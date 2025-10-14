@@ -1,28 +1,28 @@
 import p5 from "p5"
 import {
 	type CircleMode,
-	getScratchRandomnessConfigFromURL,
-	type ScratchRandomnessConfig,
-} from "../configs/scratch-randomness-config"
+	getRandomCirclesConfigFromURL,
+	type RandomCirclesConfig,
+} from "../configs/random-circles-config"
 
-let currentConfig: ScratchRandomnessConfig = getScratchRandomnessConfigFromURL()
+let currentConfig: RandomCirclesConfig = getRandomCirclesConfigFromURL()
 
-export const setScratchRandomnessConfig = (config: ScratchRandomnessConfig) => {
+export const setRandomCirclesConfig = (config: RandomCirclesConfig) => {
 	currentConfig = { ...config }
-	restartScratchRandomness()
+	restartRandomCircles()
 }
 
 let restartFn: (() => void) | null = null
 
-const setScratchRandomnessInitialize = (initFn: () => void) => {
+const setRandomCirclesInitialize = (initFn: () => void) => {
 	restartFn = initFn
 }
 
-export const restartScratchRandomness = () => {
+export const restartRandomCircles = () => {
 	restartFn?.()
 }
 
-export const scratchRandomness = (p: p5) => {
+export const randomCircles = (p: p5) => {
 	let walkers: Walker[]
 
 	const initialize = () => {
@@ -39,7 +39,7 @@ export const scratchRandomness = (p: p5) => {
 		p.createCanvas(p.windowWidth, p.windowHeight)
 
 		initialize()
-		setScratchRandomnessInitialize(initialize)
+		setRandomCirclesInitialize(initialize)
 	}
 
 	p.draw = () => {
@@ -110,9 +110,9 @@ export const scratchRandomness = (p: p5) => {
 		private velocity: p5.Vector
 		private acceleration: p5.Vector
 		private timeOffset: p5.Vector
-		private config: ScratchRandomnessConfig
+		private config: RandomCirclesConfig
 
-		constructor(x: number, y: number, config: ScratchRandomnessConfig) {
+		constructor(x: number, y: number, config: RandomCirclesConfig) {
 			this.position = p.createVector(x, y)
 			this.velocity = p.createVector(0, 0)
 			this.acceleration = p.createVector(0, 0)

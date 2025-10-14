@@ -1,16 +1,16 @@
-import { restartScratchRandomness } from "../sketches/scratch-randomness"
+import { restartRandomCircles } from "../sketches/random-circles"
 import { updateSketchConfig } from "../utils/url-params"
 import { BaseConfigDialog } from "./base-config-dialog"
 
 import {
 	type CircleMode,
-	getScratchRandomnessConfigFromURL,
-	type ScratchRandomnessConfig,
+	getRandomCirclesConfigFromURL,
+	type RandomCirclesConfig,
 	type VisualizationType,
 	type WalkerMode,
-} from "./scratch-randomness-config"
+} from "./random-circles-config"
 
-export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRandomnessConfig> {
+export class RandomCirclesConfigDialog extends BaseConfigDialog<RandomCirclesConfig> {
 	private radioButtons!: NodeListOf<HTMLInputElement>
 	private modeSelect!: HTMLSelectElement
 	private resetBtn!: HTMLButtonElement
@@ -26,9 +26,8 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 	private mouseMaxSpeedSlider!: HTMLInputElement
 	private mouseMaxSpeedValue!: HTMLElement
 
-	private onConfigChange?: (config: ScratchRandomnessConfig) => void
-	private currentConfig: ScratchRandomnessConfig =
-		getScratchRandomnessConfigFromURL()
+	private onConfigChange?: (config: RandomCirclesConfig) => void
+	private currentConfig: RandomCirclesConfig = getRandomCirclesConfigFromURL()
 
 	constructor(container: HTMLElement) {
 		super(container)
@@ -38,7 +37,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 	protected getModalContent(): string {
 		return `
 			<div class="modal-content">
-				<h3>Configure Randomness Sketch</h3>
+				<h3>Configure Random Circles</h3>
 				<div class="input-group">
 					<div class="input-header">
 						<span class="input-label">Circle Type</span>
@@ -185,7 +184,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 
 		// Reset button
 		this.resetBtn.addEventListener("click", () => {
-			restartScratchRandomness()
+			restartRandomCircles()
 		})
 	}
 
@@ -264,7 +263,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 
 	protected openModal() {
 		// Update current config from URL
-		this.currentConfig = getScratchRandomnessConfigFromURL()
+		this.currentConfig = getRandomCirclesConfigFromURL()
 
 		// Update visualization radio buttons
 		this.radioButtons.forEach((radio) => {
@@ -290,16 +289,16 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 		this.modal.style.display = "flex"
 	}
 
-	public setOnChange(callback: (config: ScratchRandomnessConfig) => void) {
+	public setOnChange(callback: (config: RandomCirclesConfig) => void) {
 		this.onConfigChange = callback
 	}
 
-	public getConfig(): ScratchRandomnessConfig {
+	public getConfig(): RandomCirclesConfig {
 		return { ...this.currentConfig }
 	}
 
 	protected updateURL() {
-		updateSketchConfig("scratch-randomness", {
+		updateSketchConfig("random-circles", {
 			visualization: this.currentConfig.visualization,
 			circleMode: this.currentConfig.circleMode,
 			walkerMode: this.currentConfig.walkerMode,
