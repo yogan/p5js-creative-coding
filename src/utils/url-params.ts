@@ -3,7 +3,7 @@ import type { CellularAutomatonConfig } from "../configs/cellular-automaton-conf
 import type { LandscapeConfig } from "../configs/landscape-config"
 import type { RandomCirclesConfig } from "../configs/random-circles-config"
 
-const sketchNames = [
+export const sketchNames = [
 	"3d-bouncing-balls",
 	"dragon-curve",
 	"dragon-curve-anim",

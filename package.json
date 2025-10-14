@@ -13,13 +13,16 @@
 		"format": "biome format --write .",
 		"knip": "knip",
 		"knip:fix": "knip --fix",
-		"typecheck": "tsc"
+		"typecheck": "tsc",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui"
 	},
 	"dependencies": {
 		"p5": "^2.0.5"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.2.5",
+		"@playwright/test": "^1.56.0",
 		"@types/node": "^24.7.2",
 		"@types/p5": "^1.7.6",
 		"knip": "^5.65.0",
