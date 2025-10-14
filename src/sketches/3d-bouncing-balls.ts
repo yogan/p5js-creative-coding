@@ -111,7 +111,7 @@ export const bouncingBalls3D = (p: p5) => {
 
 	const recreateBalls = () => {
 		balls.length = 0 // Clear existing balls
-		for (let i = 0; i < bouncingBallsConfig.ballCount; i++) {
+		for (let i = 0; i < bouncingBallsConfig.count; i++) {
 			balls.push(createBall(boundingBox, balls))
 		}
 	}

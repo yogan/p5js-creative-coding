@@ -1,4 +1,7 @@
-// Centralized URL parameter handling for all sketches
+import type { BouncingBallsConfig } from "../configs/bouncing-balls-config"
+import type { CellularAutomatonConfig } from "../configs/cellular-automaton-config"
+import type { LandscapeConfig } from "../configs/landscape-config"
+import type { RandomCirclesConfig } from "../configs/random-circles-config"
 
 const sketchNames = [
 	"3d-bouncing-balls",
@@ -12,17 +15,21 @@ const sketchNames = [
 
 export type SketchName = (typeof sketchNames)[number]
 
+type SketchConfig =
+	| BouncingBallsConfig
+	| CellularAutomatonConfig
+	| LandscapeConfig
+	| RandomCirclesConfig
+
 export function getSketchFromURL(): SketchName {
 	const urlParams = new URLSearchParams(window.location.search)
 	const sketch = urlParams.get("sketch") as SketchName
 	return sketch && sketchNames.includes(sketch) ? sketch : "koch-island"
 }
 
-type ConfigValue = string | number | boolean
-
 export function updateSketchConfig(
 	sketchName: SketchName,
-	config: Record<string, ConfigValue> = {},
+	config?: SketchConfig,
 ) {
 	const url = new URL(window.location.href)
 
@@ -31,7 +38,7 @@ export function updateSketchConfig(
 	url.searchParams.set("sketch", sketchName)
 
 	// Set config parameters for current sketch
-	for (const [key, value] of Object.entries(config)) {
+	for (const [key, value] of Object.entries(config ?? {})) {
 		if (value !== undefined) {
 			if (key === "mesh" && typeof value === "string") {
 				url.searchParams.set(key, value.toLowerCase())
@@ -42,21 +49,6 @@ export function updateSketchConfig(
 	}
 
 	window.history.replaceState({}, "", url)
-}
-
-// Generic URL parameter functions
-export function getUrlParams() {
-	const urlParams = new URLSearchParams(window.location.search)
-	const params: Record<string, string | number> = {}
-
-	// Convert all params to appropriate types
-	for (const [key, value] of urlParams.entries()) {
-		// Try to convert to number if it looks like a number
-		const numValue = Number(value)
-		params[key] = !Number.isNaN(numValue) ? numValue : value
-	}
-
-	return params
 }
 
 export function getStringFromParams<T extends string>(

@@ -173,11 +173,6 @@ export class LandscapeConfigDialog extends BaseConfigDialog<LandscapeConfig> {
 	}
 
 	protected updateURL() {
-		updateSketchConfig("landscape", {
-			mesh: this.currentConfig.mesh,
-			speed: this.currentConfig.heightChangeSpeed,
-			roughness: this.currentConfig.roughness,
-			camera: this.currentConfig.camera,
-		})
+		updateSketchConfig("landscape", this.currentConfig)
 	}
 }

@@ -1,19 +1,21 @@
-import { getUrlParams } from "../utils/url-params"
+import { getNumberFromParams } from "../utils/url-params"
 
 export interface BouncingBallsConfig {
-	ballCount: number
+	count: number
 }
 
 const DEFAULT_CONFIG: BouncingBallsConfig = {
-	ballCount: 8,
+	count: 8,
 }
 
 export function getBouncingBallsConfigFromURL(): BouncingBallsConfig {
-	const params = getUrlParams()
 	return {
-		ballCount: Math.max(
+		count: getNumberFromParams(
+			new URLSearchParams(window.location.search),
+			"count",
 			2,
-			Math.min(15, Number(params.ballCount) || DEFAULT_CONFIG.ballCount),
+			15,
+			DEFAULT_CONFIG.count,
 		),
 	}
 }

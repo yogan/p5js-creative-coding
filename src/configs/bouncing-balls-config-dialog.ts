@@ -10,8 +10,8 @@ import {
 } from "./bouncing-balls-config"
 
 export class BouncingBallsConfigDialog extends BaseConfigDialog<BouncingBallsConfig> {
-	private ballCountSlider!: HTMLInputElement
-	private ballCountValue!: HTMLElement
+	private countSlider!: HTMLInputElement
+	private countValue!: HTMLElement
 
 	private onConfigChange?: (config: BouncingBallsConfig) => void
 	private currentConfig: BouncingBallsConfig = getBouncingBallsConfigFromURL()
@@ -28,11 +28,11 @@ export class BouncingBallsConfigDialog extends BaseConfigDialog<BouncingBallsCon
 				<div class="input-group">
 					<div class="input-header">
 						<span class="input-label">Number of Balls</span>
-						<span id="ball-count-value" class="input-value">${this.currentConfig.ballCount}</span>
+						<span id="ball-count-value" class="input-value">${this.currentConfig.count}</span>
 					</div>
 					<div class="slider-container">
 						<span class="slider-label">2</span>
-						<input type="range" id="ball-count-slider" min="2" max="15" step="1" value="${this.currentConfig.ballCount}" class="range-slider">
+						<input type="range" id="ball-count-slider" min="2" max="15" step="1" value="${this.currentConfig.count}" class="range-slider">
 						<span class="slider-label">15</span>
 					</div>
 				</div>
@@ -42,8 +42,8 @@ export class BouncingBallsConfigDialog extends BaseConfigDialog<BouncingBallsCon
 
 	protected queryElements() {
 		// biome-ignore-start lint/style/noNonNullAssertion: see getModalContent()
-		this.ballCountSlider = this.modal.querySelector("#ball-count-slider")!
-		this.ballCountValue = this.modal.querySelector("#ball-count-value")!
+		this.countSlider = this.modal.querySelector("#ball-count-slider")!
+		this.countValue = this.modal.querySelector("#ball-count-value")!
 		// biome-ignore-end lint/style/noNonNullAssertion: see getModalContent()
 	}
 
@@ -61,14 +61,14 @@ export class BouncingBallsConfigDialog extends BaseConfigDialog<BouncingBallsCon
 		})
 
 		// Ball count slider
-		this.ballCountSlider.addEventListener("input", () => {
+		this.countSlider.addEventListener("input", () => {
 			this.updateConfig()
 		})
 	}
 
 	private updateConfig() {
-		this.currentConfig.ballCount = parseInt(this.ballCountSlider.value, 10)
-		this.ballCountValue.textContent = this.currentConfig.ballCount.toString()
+		this.currentConfig.count = parseInt(this.countSlider.value, 10)
+		this.countValue.textContent = this.currentConfig.count.toString()
 		this.updateURL()
 		this.onConfigChange?.(this.currentConfig)
 	}
@@ -78,8 +78,8 @@ export class BouncingBallsConfigDialog extends BaseConfigDialog<BouncingBallsCon
 		this.currentConfig = getBouncingBallsConfigFromURL()
 
 		// Update slider and display
-		this.ballCountSlider.value = this.currentConfig.ballCount.toString()
-		this.ballCountValue.textContent = this.currentConfig.ballCount.toString()
+		this.countSlider.value = this.currentConfig.count.toString()
+		this.countValue.textContent = this.currentConfig.count.toString()
 
 		// Disable orbital controls to prevent camera movement while using slider
 		disableOrbitalControls()
@@ -101,8 +101,6 @@ export class BouncingBallsConfigDialog extends BaseConfigDialog<BouncingBallsCon
 	}
 
 	protected updateURL() {
-		updateSketchConfig("3d-bouncing-balls", {
-			ballCount: this.currentConfig.ballCount,
-		})
+		updateSketchConfig("3d-bouncing-balls", this.currentConfig)
 	}
 }
