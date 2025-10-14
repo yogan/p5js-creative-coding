@@ -117,7 +117,7 @@ export const scratchRandomness = (p: p5) => {
 
 	const drawWalker = (mode: WalkerMode) => {
 		switch (mode) {
-			case "normal":
+			case "mouse":
 				walker.step()
 				break
 			case "gaussian":
@@ -130,6 +130,7 @@ export const scratchRandomness = (p: p5) => {
 				walker.perlinStep()
 				break
 		}
+		p.background(240, 5)
 		walker.show()
 	}
 
@@ -174,8 +175,9 @@ export const scratchRandomness = (p: p5) => {
 		) {}
 
 		show() {
-			p.stroke(0)
-			p.point(this.x, this.y)
+			p.stroke(0, 200)
+			p.fill(200, 100)
+			p.circle(this.x, this.y, 50)
 		}
 
 		step() {

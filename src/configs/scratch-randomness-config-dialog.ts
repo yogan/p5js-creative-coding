@@ -63,10 +63,10 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 						<option value="random" data-visualization="circles">Random</option>
 						<option value="mouse" data-visualization="circles">Follow Mouse</option>
 						<!-- Walker mode options -->
-						<option value="normal" data-visualization="walker">Normal</option>
+						<option value="perlin" data-visualization="walker">Perlin Noise</option>
 						<option value="gaussian" data-visualization="walker">Gaussian</option>
 						<option value="accept-reject" data-visualization="walker">Accept-Reject</option>
-						<option value="perlin" data-visualization="walker">Perlin Noise</option>
+						<option value="mouse" data-visualization="walker">Follow Mouse</option>
 					</select>
 				</div>
 				<div class="button-group">
@@ -160,7 +160,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 			if (this.currentConfig.visualization === "circles") {
 				this.modeSelect.value = this.currentConfig.circleMode || "random"
 			} else if (this.currentConfig.visualization === "walker") {
-				this.modeSelect.value = this.currentConfig.walkerMode || "normal"
+				this.modeSelect.value = this.currentConfig.walkerMode || "perlin"
 			}
 		}
 	}
