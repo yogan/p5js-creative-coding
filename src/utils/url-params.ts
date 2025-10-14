@@ -1,27 +1,21 @@
 // Centralized URL parameter handling for all sketches
 
-export type SketchName =
-	| "3d-bouncing-balls"
-	| "dragon-curve"
-	| "dragon-curve-anim"
-	| "elementary-cellular-automaton"
-	| "koch-island"
-	| "landscape"
-	| "random-circles"
+const sketchNames = [
+	"3d-bouncing-balls",
+	"dragon-curve",
+	"dragon-curve-anim",
+	"elementary-cellular-automaton",
+	"koch-island",
+	"landscape",
+	"random-circles",
+] as const
+
+export type SketchName = (typeof sketchNames)[number]
 
 export function getSketchFromURL(): SketchName {
 	const urlParams = new URLSearchParams(window.location.search)
 	const sketch = urlParams.get("sketch") as SketchName
-	const validSketches: SketchName[] = [
-		"3d-bouncing-balls",
-		"dragon-curve",
-		"dragon-curve-anim",
-		"elementary-cellular-automaton",
-		"koch-island",
-		"landscape",
-		"random-circles",
-	]
-	return sketch && validSketches.includes(sketch) ? sketch : "koch-island"
+	return sketch && sketchNames.includes(sketch) ? sketch : "koch-island"
 }
 
 type ConfigValue = string | number | boolean
@@ -31,39 +25,18 @@ export function updateSketchConfig(
 	config: Record<string, ConfigValue> = {},
 ) {
 	const url = new URL(window.location.href)
+
+	// Clear existing params, then set sketch param
+	url.search = ""
 	url.searchParams.set("sketch", sketchName)
 
-	// Only clear parameters when explicitly providing config
-	if (config !== undefined) {
-		// Clear all potential config parameters first
-		const allConfigKeys = [
-			"rule",
-			"width",
-			"grid",
-			"start",
-			"mesh",
-			"speed",
-			"roughness",
-			"camera",
-			"type",
-			"placement",
-			"behavior",
-			"count",
-			"attraction",
-			"ballCount",
-		]
-		for (const key of allConfigKeys) {
-			url.searchParams.delete(key)
-		}
-
-		// Set config parameters for current sketch
-		for (const [key, value] of Object.entries(config)) {
-			if (value !== undefined) {
-				if (key === "mesh" && typeof value === "string") {
-					url.searchParams.set(key, value.toLowerCase())
-				} else {
-					url.searchParams.set(key, value.toString())
-				}
+	// Set config parameters for current sketch
+	for (const [key, value] of Object.entries(config)) {
+		if (value !== undefined) {
+			if (key === "mesh" && typeof value === "string") {
+				url.searchParams.set(key, value.toLowerCase())
+			} else {
+				url.searchParams.set(key, value.toString())
 			}
 		}
 	}
