@@ -48,10 +48,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 							<input type="radio" name="visualization" value="circles">
 							<span class="radio-text">Circles</span>
 						</label>
-						<label class="radio-label">
-							<input type="radio" name="visualization" value="bars">
-							<span class="radio-text">Random Distribution Bars</span>
-						</label>
+
 						<label class="radio-label">
 							<input type="radio" name="visualization" value="walker">
 							<span class="radio-text">Random Walkers</span>

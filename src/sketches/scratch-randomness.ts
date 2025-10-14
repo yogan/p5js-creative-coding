@@ -23,9 +23,6 @@ export const restartScratchRandomness = () => {
 }
 
 export const scratchRandomness = (p: p5) => {
-	const totalCounts = 20
-	let randomCounts = Array.from({ length: totalCounts }, () => 0)
-	let w: number
 	let walkers: Walker[]
 	let zOff = 0.0
 
@@ -37,13 +34,13 @@ export const scratchRandomness = (p: p5) => {
 				new Walker(p.random(p.width), p.random(p.height), currentConfig),
 			)
 		}
-		randomCounts = Array.from({ length: totalCounts }, () => 0)
+
 		zOff = 0.0
 	}
 
 	p.setup = () => {
 		p.createCanvas(p.windowWidth, p.windowHeight)
-		w = p.width / totalCounts
+
 		initialize()
 		setScratchRandomnessInitialize(initialize)
 	}
@@ -53,9 +50,7 @@ export const scratchRandomness = (p: p5) => {
 			case "circles":
 				drawCircles(currentConfig.circleMode)
 				break
-			case "bars":
-				bars()
-				break
+
 			case "walker":
 				drawWalker()
 				break
@@ -97,25 +92,6 @@ export const scratchRandomness = (p: p5) => {
 				p.circle(mouseX, mouseY, p.random(10, 50))
 				break
 			}
-		}
-	}
-
-	const bars = () => {
-		let r1: number, r2: number, prop: number
-		do {
-			r1 = p.random(totalCounts)
-			r2 = p.random(totalCounts)
-			prop = r1
-		} while (r2 < prop)
-
-		const index = Math.floor(r1)
-		randomCounts[index]++
-
-		p.stroke(0)
-		p.fill(127)
-
-		for (let x = 0; x < totalCounts; x++) {
-			p.rect(x * w, p.height - randomCounts[x], w - 1, randomCounts[x])
 		}
 	}
 
