@@ -7,7 +7,8 @@
 - `npm run format` - Format code with Biome
 - `npm run knip` - Check for unused code or package inconsistencies
 - `npm run typecheck` - TypeScript type checking
-- No test framework configured
+- `npm run test:e2e` - Run Playwright E2E tests
+- `npm run test:e2e:ui` - Run Playwright tests with UI mode
 
 ## Forbidden Actions
 - Do NOT start a dev server
@@ -26,3 +27,9 @@
 - RGB color mode for p5.js animations
 - Responsive canvas sizing with windowResized handler
 - No comments added unless explicitly requested
+
+## E2E Testing Guidelines
+- Use page locators for all element interactions
+- Have all page locators in a single location
+- The test cases may only use the defined locators
+- Do not put timeouts in the code unless explicitly requested
