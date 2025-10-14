@@ -53,10 +53,7 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 							<input type="radio" name="visualization" value="walker">
 							<span class="radio-text">Random Walkers</span>
 						</label>
-						<label class="radio-label">
-							<input type="radio" name="visualization" value="pixelNoise">
-							<span class="radio-text">Perlin Pixel Noise <em>(slow)</em></span>
-						</label>
+
 					</div>
 				</div>
 				<div class="input-group" id="walker-count-group">

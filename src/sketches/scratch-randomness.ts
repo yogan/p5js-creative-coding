@@ -24,7 +24,6 @@ export const restartScratchRandomness = () => {
 
 export const scratchRandomness = (p: p5) => {
 	let walkers: Walker[]
-	let zOff = 0.0
 
 	const initialize = () => {
 		p.background(240)
@@ -34,8 +33,6 @@ export const scratchRandomness = (p: p5) => {
 				new Walker(p.random(p.width), p.random(p.height), currentConfig),
 			)
 		}
-
-		zOff = 0.0
 	}
 
 	p.setup = () => {
@@ -53,9 +50,6 @@ export const scratchRandomness = (p: p5) => {
 
 			case "walker":
 				drawWalker()
-				break
-			case "pixelNoise":
-				pixelNoise()
 				break
 		}
 	}
@@ -102,32 +96,6 @@ export const scratchRandomness = (p: p5) => {
 			walker.move()
 			walker.show()
 		}
-	}
-
-	const pixelNoise = () => {
-		p.loadPixels()
-		const d = p.pixelDensity()
-
-		p.noiseDetail(5, 0.5)
-
-		let xOff = 0.0
-		for (let x = 0; x < p.width * d; x++) {
-			let yOff = 0.0
-			for (let y = 0; y < p.height * d; y++) {
-				const index = (x + y * p.width * d) * 4
-				const bright = p.noise(xOff, yOff, zOff) * 255
-				p.pixels[index + 0] = bright
-				p.pixels[index + 1] = bright
-				p.pixels[index + 2] = bright
-				p.pixels[index + 3] = 255 // alpha
-				yOff += 0.01
-			}
-			xOff += 0.01
-		}
-
-		p.updatePixels()
-
-		zOff += 0.05
 	}
 
 	p.windowResized = () => {

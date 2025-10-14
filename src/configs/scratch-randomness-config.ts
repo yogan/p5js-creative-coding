@@ -8,7 +8,7 @@ const WALKER_MODES = [
 	"accept-reject",
 	"mouse",
 ] as const
-const VISUALIZATION_TYPES = ["circles", "walker", "pixelNoise"] as const
+const VISUALIZATION_TYPES = ["circles", "walker"] as const
 
 export type CircleMode = (typeof CIRCLE_MODES)[number]
 export type WalkerMode = (typeof WALKER_MODES)[number]
