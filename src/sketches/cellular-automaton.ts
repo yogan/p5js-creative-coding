@@ -11,7 +11,7 @@ let config: CellularAutomatonConfig = {
 
 let restartFunction: (() => void) | null = null
 
-export const setElementaryCellularAutomatonConfig = (
+export const setCellularAutomatonConfig = (
 	newConfig: CellularAutomatonConfig,
 ) => {
 	config = {
@@ -22,7 +22,7 @@ export const setElementaryCellularAutomatonConfig = (
 	restartFunction?.()
 }
 
-export const elementaryCellularAutomaton = (p: p5) => {
+export const cellularAutomaton = (p: p5) => {
 	const padding = p.windowWidth < 600 ? 2 : 10
 	let cells: number[] = []
 	let y = 0
@@ -122,13 +122,13 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 	p.keyPressed = (event: KeyboardEvent) => {
 		if (event.code === "ArrowLeft") {
-			setElementaryCellularAutomatonConfig({
+			setCellularAutomatonConfig({
 				...config,
 				rule: (config.rule + 255) % 256,
 			})
 			restart({ updateUrl: true })
 		} else if (event.code === "ArrowRight") {
-			setElementaryCellularAutomatonConfig({
+			setCellularAutomatonConfig({
 				...config,
 				rule: (config.rule + 1) % 256,
 			})
@@ -136,7 +136,7 @@ export const elementaryCellularAutomaton = (p: p5) => {
 		} else if (event.code === "ArrowUp") {
 			const nextWidth = getNextWidth(config.width)
 			if (nextWidth !== config.width) {
-				setElementaryCellularAutomatonConfig({
+				setCellularAutomatonConfig({
 					...config,
 					width: nextWidth,
 				})
@@ -145,7 +145,7 @@ export const elementaryCellularAutomaton = (p: p5) => {
 		} else if (event.code === "ArrowDown") {
 			const previousWidth = getPreviousWidth(config.width)
 			if (previousWidth !== config.width) {
-				setElementaryCellularAutomatonConfig({
+				setCellularAutomatonConfig({
 					...config,
 					width: previousWidth,
 				})
@@ -189,7 +189,7 @@ export const elementaryCellularAutomaton = (p: p5) => {
 
 	const restart = ({ updateUrl = false } = {}) => {
 		if (updateUrl) {
-			updateSketchConfig("elementary-cellular-automaton", config)
+			updateSketchConfig("cellular-automaton", config)
 		}
 
 		p.setup() // reinitialize everything

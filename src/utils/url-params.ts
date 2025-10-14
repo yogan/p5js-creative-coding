@@ -7,7 +7,7 @@ const sketchNames = [
 	"3d-bouncing-balls",
 	"dragon-curve",
 	"dragon-curve-anim",
-	"elementary-cellular-automaton",
+	"cellular-automaton",
 	"koch-island",
 	"landscape",
 	"random-circles",

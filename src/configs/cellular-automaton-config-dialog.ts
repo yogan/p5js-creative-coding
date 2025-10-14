@@ -7,7 +7,7 @@ import type {
 } from "./cellular-automaton-config"
 import { getCellularAutomatonConfigFromURL } from "./cellular-automaton-config"
 
-export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<CellularAutomatonConfig> {
+export class CellularAutomatonConfigDialog extends BaseConfigDialog<CellularAutomatonConfig> {
 	private ruleInput!: HTMLInputElement
 	private rulePreview!: HTMLElement
 	private widthInput!: HTMLInputElement
@@ -223,6 +223,6 @@ export class ElementaryCellularAutomatonConfigDialog extends BaseConfigDialog<Ce
 	}
 
 	protected updateURL() {
-		updateSketchConfig("elementary-cellular-automaton", this.currentConfig)
+		updateSketchConfig("cellular-automaton", this.currentConfig)
 	}
 }
