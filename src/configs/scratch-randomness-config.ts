@@ -24,6 +24,8 @@ export type ScratchRandomnessConfig = {
 	circleMode: CircleMode
 	walkerMode: WalkerMode
 	walkerCount: number
+	mouseAttraction: number
+	mouseMaxSpeed: number
 }
 
 export const DEFAULT_SCRATCH_RANDOMNESS_CONFIG: ScratchRandomnessConfig = {
@@ -31,6 +33,8 @@ export const DEFAULT_SCRATCH_RANDOMNESS_CONFIG: ScratchRandomnessConfig = {
 	circleMode: "gaussian",
 	walkerMode: "perlin",
 	walkerCount: 10,
+	mouseAttraction: 0.1,
+	mouseMaxSpeed: 5,
 }
 
 export function getScratchRandomnessConfigFromURL(): ScratchRandomnessConfig {
@@ -62,6 +66,20 @@ export function getScratchRandomnessConfigFromURL(): ScratchRandomnessConfig {
 			1,
 			25,
 			defaults.walkerCount,
+		),
+		mouseAttraction: getNumberFromParams(
+			urlParams,
+			"attraction",
+			0.01,
+			1.0,
+			defaults.mouseAttraction,
+		),
+		mouseMaxSpeed: getNumberFromParams(
+			urlParams,
+			"maxSpeed",
+			1,
+			20,
+			defaults.mouseMaxSpeed,
 		),
 	}
 }

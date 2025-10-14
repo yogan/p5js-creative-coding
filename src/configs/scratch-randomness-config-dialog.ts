@@ -19,6 +19,12 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 	private walkerCountGroup!: HTMLElement
 	private walkerCountSlider!: HTMLInputElement
 	private walkerCountValue!: HTMLElement
+	private mouseAttractionGroup!: HTMLElement
+	private mouseAttractionSlider!: HTMLInputElement
+	private mouseAttractionValue!: HTMLElement
+	private mouseMaxSpeedGroup!: HTMLElement
+	private mouseMaxSpeedSlider!: HTMLInputElement
+	private mouseMaxSpeedValue!: HTMLElement
 
 	private onConfigChange?: (config: ScratchRandomnessConfig) => void
 	private currentConfig: ScratchRandomnessConfig =
@@ -56,6 +62,13 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 						</label>
 					</div>
 				</div>
+				<div class="input-group" id="walker-count-group">
+					<div class="input-header">
+						<span class="input-label">Walker Count </span>
+						<span class="input-value" id="walker-count-value">10</span>
+					</div>
+					<input type="range" id="walker-count-slider" min="1" max="25" value="10" class="range-slider" style="width: 100%;">
+				</div>
 				<div class="input-group" id="mode-group">
 					<div class="input-header">
 						<span class="input-label" id="mode-label">Mode</span>
@@ -73,12 +86,19 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 						<option value="mouse" data-visualization="walker">Follow Mouse</option>
 					</select>
 				</div>
-				<div class="input-group" id="walker-count-group">
+				<div class="input-group" id="mouse-attraction-group">
 					<div class="input-header">
-						<span class="input-label">Walker Count </span>
-						<span class="input-value" id="walker-count-value">10</span>
+						<span class="input-label">Attraction </span>
+						<span class="input-value" id="mouse-attraction-value">0.1</span>
 					</div>
-					<input type="range" id="walker-count-slider" min="1" max="25" value="10" class="range-slider" style="width: 100%;">
+					<input type="range" id="mouse-attraction-slider" min="0.01" max="1.0" step="0.01" value="0.1" class="range-slider" style="width: 100%;">
+				</div>
+				<div class="input-group" id="mouse-max-speed-group">
+					<div class="input-header">
+						<span class="input-label">Max Speed </span>
+						<span class="input-value" id="mouse-max-speed-value">5</span>
+					</div>
+					<input type="range" id="mouse-max-speed-slider" min="1" max="20" value="5" class="range-slider" style="width: 100%;">
 				</div>
 				<div class="button-group">
 					<button id="reset-btn" class="reset-btn">Reset</button>
@@ -99,6 +119,24 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 		this.walkerCountGroup = this.modal.querySelector("#walker-count-group")!
 		this.walkerCountSlider = this.modal.querySelector("#walker-count-slider")!
 		this.walkerCountValue = this.modal.querySelector("#walker-count-value")!
+		this.mouseAttractionGroup = this.modal.querySelector(
+			"#mouse-attraction-group",
+		)!
+		this.mouseAttractionSlider = this.modal.querySelector(
+			"#mouse-attraction-slider",
+		)!
+		this.mouseAttractionValue = this.modal.querySelector(
+			"#mouse-attraction-value",
+		)!
+		this.mouseMaxSpeedGroup = this.modal.querySelector(
+			"#mouse-max-speed-group",
+		)!
+		this.mouseMaxSpeedSlider = this.modal.querySelector(
+			"#mouse-max-speed-slider",
+		)!
+		this.mouseMaxSpeedValue = this.modal.querySelector(
+			"#mouse-max-speed-value",
+		)!
 		// biome-ignore-end lint/style/noNonNullAssertion: see getModalContent()
 	}
 
@@ -135,6 +173,22 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 			this.updateConfig()
 		})
 
+		// Mouse attraction slider
+		this.mouseAttractionSlider.addEventListener("input", () => {
+			const attraction = Number.parseFloat(this.mouseAttractionSlider.value)
+			this.mouseAttractionValue.textContent = attraction.toString()
+			this.currentConfig.mouseAttraction = attraction
+			this.updateConfig()
+		})
+
+		// Mouse max speed slider
+		this.mouseMaxSpeedSlider.addEventListener("input", () => {
+			const maxSpeed = Number.parseFloat(this.mouseMaxSpeedSlider.value)
+			this.mouseMaxSpeedValue.textContent = maxSpeed.toString()
+			this.currentConfig.mouseMaxSpeed = maxSpeed
+			this.updateConfig()
+		})
+
 		// Reset button
 		this.resetBtn.addEventListener("click", () => {
 			restartScratchRandomness()
@@ -162,6 +216,15 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 		// Show walker count only for walker visualization
 		const showWalkerCount = this.currentConfig.visualization === "walker"
 		this.walkerCountGroup.style.display = showWalkerCount ? "block" : "none"
+
+		// Show mouse-specific controls only for walker visualization with mouse mode
+		const showMouseControls =
+			this.currentConfig.visualization === "walker" &&
+			this.currentConfig.walkerMode === "mouse"
+		this.mouseAttractionGroup.style.display = showMouseControls
+			? "block"
+			: "none"
+		this.mouseMaxSpeedGroup.style.display = showMouseControls ? "block" : "none"
 
 		if (hasMode) {
 			if (this.currentConfig.visualization === "circles") {
@@ -198,6 +261,9 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 			this.currentConfig.walkerMode = this.modeSelect.value as WalkerMode
 		}
 
+		// Update visibility after mode changes
+		this.updateModeDisplay()
+
 		this.updateURL()
 		this.onConfigChange?.(this.currentConfig)
 	}
@@ -215,6 +281,15 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 		this.walkerCountSlider.value = this.currentConfig.walkerCount.toString()
 		this.walkerCountValue.textContent =
 			this.currentConfig.walkerCount.toString()
+
+		// Update mouse sliders and display
+		this.mouseAttractionSlider.value =
+			this.currentConfig.mouseAttraction.toString()
+		this.mouseAttractionValue.textContent =
+			this.currentConfig.mouseAttraction.toString()
+		this.mouseMaxSpeedSlider.value = this.currentConfig.mouseMaxSpeed.toString()
+		this.mouseMaxSpeedValue.textContent =
+			this.currentConfig.mouseMaxSpeed.toString()
 
 		// Update mode display
 		this.updateModeDisplay()
@@ -236,6 +311,8 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 			circleMode: this.currentConfig.circleMode,
 			walkerMode: this.currentConfig.walkerMode,
 			walkerCount: this.currentConfig.walkerCount,
+			attraction: this.currentConfig.mouseAttraction,
+			maxSpeed: this.currentConfig.mouseMaxSpeed,
 		})
 	}
 }

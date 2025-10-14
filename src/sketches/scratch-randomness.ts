@@ -1,4 +1,4 @@
-import type p5 from "p5"
+import p5 from "p5"
 import {
 	type CircleMode,
 	getScratchRandomnessConfigFromURL,
@@ -35,11 +35,7 @@ export const scratchRandomness = (p: p5) => {
 		walkers = []
 		for (let i = 0; i < currentConfig.walkerCount; i++) {
 			walkers.push(
-				new Walker(
-					p.random(p.width),
-					p.random(p.height),
-					currentConfig.walkerMode,
-				),
+				new Walker(p.random(p.width), p.random(p.height), currentConfig),
 			)
 		}
 		randomCounts = Array.from({ length: totalCounts }, () => 0)
@@ -171,13 +167,13 @@ export const scratchRandomness = (p: p5) => {
 		private velocity: p5.Vector
 		private acceleration: p5.Vector
 		private timeOffset: p5.Vector
-		private mode: WalkerMode
+		private config: ScratchRandomnessConfig
 
-		constructor(x: number, y: number, mode: WalkerMode) {
+		constructor(x: number, y: number, config: ScratchRandomnessConfig) {
 			this.position = p.createVector(x, y)
 			this.velocity = p.createVector(0, 0)
 			this.acceleration = p.createVector(0, 0)
-			this.mode = mode
+			this.config = config
 
 			// Without a walker-specific offset, all walkers that use perlin
 			// noise would move the same way.
@@ -190,20 +186,16 @@ export const scratchRandomness = (p: p5) => {
 		}
 
 		step() {
-			switch (this.mode) {
-				case "mouse":
-					if (p.random() < 0.5) {
-						this.velocity = p.createVector(
-							p.mouseX < this.position.x ? -1 : 1,
-							p.mouseY < this.position.y ? -1 : 1,
-						)
-					} else {
-						this.velocity = p.createVector(
-							p.random([-1, -1, 0, 1, 1]),
-							p.random([-1, 0, 1]),
-						)
-					}
+			switch (this.config.walkerMode) {
+				case "mouse": {
+					const mouse = p.createVector(p.mouseX, p.mouseY)
+					this.acceleration = p5.Vector.sub(mouse, this.position).setMag(
+						this.config.mouseAttraction,
+					)
+					this.velocity.add(this.acceleration)
+					this.velocity.limit(this.config.mouseMaxSpeed)
 					break
+				}
 
 				case "gaussian":
 					this.velocity = p.createVector(
@@ -246,7 +238,7 @@ export const scratchRandomness = (p: p5) => {
 		move() {
 			this.position.add(this.velocity)
 
-			if (this.mode === "mouse") {
+			if (this.config.walkerMode === "mouse") {
 				// Keep within bounds
 				this.position.x = p.constrain(this.position.x, 0, p.width - 1)
 				this.position.y = p.constrain(this.position.y, 0, p.height - 1)
