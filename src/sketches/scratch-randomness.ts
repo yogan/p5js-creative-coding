@@ -34,7 +34,13 @@ export const scratchRandomness = (p: p5) => {
 		p.background(240)
 		walkers = []
 		for (let i = 0; i < currentConfig.walkerCount; i++) {
-			walkers.push(new Walker(p.random(p.width), p.random(p.height)))
+			walkers.push(
+				new Walker(
+					p.random(p.width),
+					p.random(p.height),
+					currentConfig.walkerMode,
+				),
+			)
 		}
 		randomCounts = Array.from({ length: totalCounts }, () => 0)
 		zOff = 0.0
@@ -56,7 +62,7 @@ export const scratchRandomness = (p: p5) => {
 				bars()
 				break
 			case "walker":
-				drawWalker(currentConfig.walkerMode)
+				drawWalker()
 				break
 			case "pixelNoise":
 				pixelNoise()
@@ -118,10 +124,10 @@ export const scratchRandomness = (p: p5) => {
 		}
 	}
 
-	const drawWalker = (mode: WalkerMode) => {
+	const drawWalker = () => {
 		p.background(240, 5) // slight trail effect
 		for (const walker of walkers) {
-			walker.step(mode)
+			walker.step()
 			walker.move()
 			walker.show()
 		}
@@ -165,11 +171,13 @@ export const scratchRandomness = (p: p5) => {
 		private velocity: p5.Vector
 		private acceleration: p5.Vector
 		private timeOffset: p5.Vector
+		private mode: WalkerMode
 
-		constructor(x: number, y: number) {
+		constructor(x: number, y: number, mode: WalkerMode) {
 			this.position = p.createVector(x, y)
 			this.velocity = p.createVector(0, 0)
 			this.acceleration = p.createVector(0, 0)
+			this.mode = mode
 
 			// Without a walker-specific offset, all walkers that use perlin
 			// noise would move the same way.
@@ -181,8 +189,8 @@ export const scratchRandomness = (p: p5) => {
 			Walker.walkerId++
 		}
 
-		step(mode: WalkerMode) {
-			switch (mode) {
+		step() {
+			switch (this.mode) {
 				case "mouse":
 					if (p.random() < 0.5) {
 						this.velocity = p.createVector(
@@ -237,6 +245,13 @@ export const scratchRandomness = (p: p5) => {
 
 		move() {
 			this.position.add(this.velocity)
+
+			if (this.mode === "mouse") {
+				// Keep within bounds
+				this.position.x = p.constrain(this.position.x, 0, p.width - 1)
+				this.position.y = p.constrain(this.position.y, 0, p.height - 1)
+				return
+			}
 
 			// Wrap around horizontally
 			if (this.position.x >= p.width) {
