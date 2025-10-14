@@ -45,12 +45,11 @@ export function updateSketchConfig(
 			"speed",
 			"roughness",
 			"camera",
-			"visualization",
-			"circleMode",
-			"walkerMode",
-			"walkerCount",
-			"mouseAttraction",
-			"mouseMaxSpeed",
+			"type",
+			"placement",
+			"behavior",
+			"count",
+			"attraction",
 			"ballCount",
 		]
 		for (const key of allConfigKeys) {

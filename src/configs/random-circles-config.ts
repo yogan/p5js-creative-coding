@@ -15,21 +15,21 @@ export type WalkerMode = (typeof WALKER_MODES)[number]
 export type VisualizationType = (typeof VISUALIZATION_TYPES)[number]
 
 export type RandomCirclesConfig = {
-	visualization: VisualizationType
-	circleMode: CircleMode
-	walkerMode: WalkerMode
-	walkerCount: number
-	mouseAttraction: number
-	mouseMaxSpeed: number
+	type: VisualizationType
+	placement: CircleMode
+	behavior: WalkerMode
+	count: number
+	attraction: number
+	speed: number
 }
 
 const DEFAULT_RANDOM_CIRCLES_CONFIG: RandomCirclesConfig = {
-	visualization: "static",
-	circleMode: "gaussian",
-	walkerMode: "perlin",
-	walkerCount: 10,
-	mouseAttraction: 10,
-	mouseMaxSpeed: 5,
+	type: "static",
+	placement: "gaussian",
+	behavior: "perlin",
+	count: 10,
+	attraction: 10,
+	speed: 5,
 }
 
 export function getRandomCirclesConfigFromURL(): RandomCirclesConfig {
@@ -37,44 +37,32 @@ export function getRandomCirclesConfigFromURL(): RandomCirclesConfig {
 	const defaults = DEFAULT_RANDOM_CIRCLES_CONFIG
 
 	return {
-		visualization: getStringFromParams(
+		type: getStringFromParams(
 			urlParams,
-			"visualization",
+			"type",
 			VISUALIZATION_TYPES,
-			defaults.visualization,
+			defaults.type,
 		),
-		circleMode: getStringFromParams(
+		placement: getStringFromParams(
 			urlParams,
-			"circleMode",
+			"placement",
 			CIRCLE_MODES,
-			defaults.circleMode,
+			defaults.placement,
 		),
-		walkerMode: getStringFromParams(
+		behavior: getStringFromParams(
 			urlParams,
-			"walkerMode",
+			"behavior",
 			WALKER_MODES,
-			defaults.walkerMode,
+			defaults.behavior,
 		),
-		walkerCount: getNumberFromParams(
-			urlParams,
-			"walkerCount",
-			1,
-			25,
-			defaults.walkerCount,
-		),
-		mouseAttraction: getNumberFromParams(
+		count: getNumberFromParams(urlParams, "count", 1, 25, defaults.count),
+		attraction: getNumberFromParams(
 			urlParams,
 			"attraction",
 			1,
 			100,
-			defaults.mouseAttraction,
+			defaults.attraction,
 		),
-		mouseMaxSpeed: getNumberFromParams(
-			urlParams,
-			"maxSpeed",
-			1,
-			20,
-			defaults.mouseMaxSpeed,
-		),
+		speed: getNumberFromParams(urlParams, "speed", 1, 20, defaults.speed),
 	}
 }

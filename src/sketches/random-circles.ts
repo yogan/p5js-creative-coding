@@ -28,7 +28,7 @@ export const randomCircles = (p: p5) => {
 	const initialize = () => {
 		p.background(240)
 		walkers = []
-		for (let i = 0; i < currentConfig.walkerCount; i++) {
+		for (let i = 0; i < currentConfig.count; i++) {
 			walkers.push(
 				new Walker(p.random(p.width), p.random(p.height), currentConfig),
 			)
@@ -43,9 +43,9 @@ export const randomCircles = (p: p5) => {
 	}
 
 	p.draw = () => {
-		switch (currentConfig.visualization) {
+		switch (currentConfig.type) {
 			case "static":
-				drawCircles(currentConfig.circleMode)
+				drawCircles(currentConfig.placement)
 				break
 
 			case "moving":
@@ -129,7 +129,7 @@ export const randomCircles = (p: p5) => {
 		}
 
 		step() {
-			switch (this.config.walkerMode) {
+			switch (this.config.behavior) {
 				case "mouse": {
 					const direction = p5.Vector.sub(
 						p.createVector(p.mouseX, p.mouseY),
@@ -142,12 +142,12 @@ export const randomCircles = (p: p5) => {
 							0,
 							Math.min(p.width, p.height),
 							0,
-							this.config.mouseAttraction / 10,
+							this.config.attraction / 10,
 						),
 					)
 
 					this.velocity.add(this.acceleration)
-					this.velocity.limit(this.config.mouseMaxSpeed)
+					this.velocity.limit(this.config.speed)
 					break
 				}
 
@@ -192,7 +192,7 @@ export const randomCircles = (p: p5) => {
 		move() {
 			this.position.add(this.velocity)
 
-			if (this.config.walkerMode === "mouse") {
+			if (this.config.behavior === "mouse") {
 				// Keep within bounds
 				this.position.x = p.constrain(this.position.x, 0, p.width - 1)
 				this.position.y = p.constrain(this.position.y, 0, p.height - 1)

@@ -162,7 +162,7 @@ export class RandomCirclesConfigDialog extends BaseConfigDialog<RandomCirclesCon
 		this.walkerCountSlider.addEventListener("input", () => {
 			const count = Number.parseInt(this.walkerCountSlider.value, 10)
 			this.walkerCountValue.textContent = count.toString()
-			this.currentConfig.walkerCount = count
+			this.currentConfig.count = count
 			this.updateConfig()
 		})
 
@@ -170,7 +170,7 @@ export class RandomCirclesConfigDialog extends BaseConfigDialog<RandomCirclesCon
 		this.mouseAttractionSlider.addEventListener("input", () => {
 			const attraction = Number.parseFloat(this.mouseAttractionSlider.value)
 			this.mouseAttractionValue.textContent = `${attraction}%`
-			this.currentConfig.mouseAttraction = attraction
+			this.currentConfig.attraction = attraction
 			this.updateConfig()
 		})
 
@@ -178,7 +178,7 @@ export class RandomCirclesConfigDialog extends BaseConfigDialog<RandomCirclesCon
 		this.mouseMaxSpeedSlider.addEventListener("input", () => {
 			const maxSpeed = Number.parseFloat(this.mouseMaxSpeedSlider.value)
 			this.mouseMaxSpeedValue.textContent = maxSpeed.toString()
-			this.currentConfig.mouseMaxSpeed = maxSpeed
+			this.currentConfig.speed = maxSpeed
 			this.updateConfig()
 		})
 
@@ -194,35 +194,35 @@ export class RandomCirclesConfigDialog extends BaseConfigDialog<RandomCirclesCon
 		) as HTMLInputElement
 		const newVisualization = selectedRadio.value as VisualizationType
 
-		this.currentConfig.visualization = newVisualization
+		this.currentConfig.type = newVisualization
 		this.updateModeDisplay()
 		this.updateConfig()
 	}
 
 	private updateModeDisplay() {
 		const hasMode =
-			this.currentConfig.visualization === "static" ||
-			this.currentConfig.visualization === "moving"
+			this.currentConfig.type === "static" ||
+			this.currentConfig.type === "moving"
 
 		this.modeGroup.style.display = hasMode ? "block" : "none"
 
 		// Show walker count only for moving visualization
-		const showWalkerCount = this.currentConfig.visualization === "moving"
+		const showWalkerCount = this.currentConfig.type === "moving"
 		this.walkerCountGroup.style.display = showWalkerCount ? "block" : "none"
 
 		// Show mouse-specific controls only for moving visualization with mouse mode
 		const showMouseControls =
-			this.currentConfig.visualization === "moving" &&
-			this.currentConfig.walkerMode === "mouse"
+			this.currentConfig.type === "moving" &&
+			this.currentConfig.behavior === "mouse"
 		this.mouseAttractionGroup.style.display = showMouseControls
 			? "block"
 			: "none"
 		this.mouseMaxSpeedGroup.style.display = showMouseControls ? "block" : "none"
 
 		if (hasMode) {
-			if (this.currentConfig.visualization === "static") {
+			if (this.currentConfig.type === "static") {
 				this.modeLabel.textContent = "Placement"
-			} else if (this.currentConfig.visualization === "moving") {
+			} else if (this.currentConfig.type === "moving") {
 				this.modeLabel.textContent = "Behavior"
 			}
 
@@ -233,25 +233,23 @@ export class RandomCirclesConfigDialog extends BaseConfigDialog<RandomCirclesCon
 			options.forEach((option) => {
 				const visualizationType = option.getAttribute("data-visualization")
 				option.style.display =
-					visualizationType === this.currentConfig.visualization
-						? "block"
-						: "none"
+					visualizationType === this.currentConfig.type ? "block" : "none"
 			})
 
 			// Set selected value
-			if (this.currentConfig.visualization === "static") {
-				this.modeSelect.value = this.currentConfig.circleMode || "random"
-			} else if (this.currentConfig.visualization === "moving") {
-				this.modeSelect.value = this.currentConfig.walkerMode || "perlin"
+			if (this.currentConfig.type === "static") {
+				this.modeSelect.value = this.currentConfig.placement || "random"
+			} else if (this.currentConfig.type === "moving") {
+				this.modeSelect.value = this.currentConfig.behavior || "perlin"
 			}
 		}
 	}
 
 	private updateConfig() {
-		if (this.currentConfig.visualization === "static") {
-			this.currentConfig.circleMode = this.modeSelect.value as CircleMode
-		} else if (this.currentConfig.visualization === "moving") {
-			this.currentConfig.walkerMode = this.modeSelect.value as WalkerMode
+		if (this.currentConfig.type === "static") {
+			this.currentConfig.placement = this.modeSelect.value as CircleMode
+		} else if (this.currentConfig.type === "moving") {
+			this.currentConfig.behavior = this.modeSelect.value as WalkerMode
 		}
 
 		// Update visibility after mode changes
@@ -267,21 +265,18 @@ export class RandomCirclesConfigDialog extends BaseConfigDialog<RandomCirclesCon
 
 		// Update visualization radio buttons
 		this.radioButtons.forEach((radio) => {
-			radio.checked = radio.value === this.currentConfig.visualization
+			radio.checked = radio.value === this.currentConfig.type
 		})
 
 		// Update walker count slider and display
-		this.walkerCountSlider.value = this.currentConfig.walkerCount.toString()
-		this.walkerCountValue.textContent =
-			this.currentConfig.walkerCount.toString()
+		this.walkerCountSlider.value = this.currentConfig.count.toString()
+		this.walkerCountValue.textContent = this.currentConfig.count.toString()
 
 		// Update mouse sliders and display
-		this.mouseAttractionSlider.value =
-			this.currentConfig.mouseAttraction.toString()
-		this.mouseAttractionValue.textContent = `${this.currentConfig.mouseAttraction}%`
-		this.mouseMaxSpeedSlider.value = this.currentConfig.mouseMaxSpeed.toString()
-		this.mouseMaxSpeedValue.textContent =
-			this.currentConfig.mouseMaxSpeed.toString()
+		this.mouseAttractionSlider.value = this.currentConfig.attraction.toString()
+		this.mouseAttractionValue.textContent = `${this.currentConfig.attraction}%`
+		this.mouseMaxSpeedSlider.value = this.currentConfig.speed.toString()
+		this.mouseMaxSpeedValue.textContent = this.currentConfig.speed.toString()
 
 		// Update mode display
 		this.updateModeDisplay()
@@ -298,13 +293,6 @@ export class RandomCirclesConfigDialog extends BaseConfigDialog<RandomCirclesCon
 	}
 
 	protected updateURL() {
-		updateSketchConfig("random-circles", {
-			visualization: this.currentConfig.visualization,
-			circleMode: this.currentConfig.circleMode,
-			walkerMode: this.currentConfig.walkerMode,
-			walkerCount: this.currentConfig.walkerCount,
-			attraction: this.currentConfig.mouseAttraction,
-			maxSpeed: this.currentConfig.mouseMaxSpeed,
-		})
+		updateSketchConfig("random-circles", this.currentConfig)
 	}
 }
