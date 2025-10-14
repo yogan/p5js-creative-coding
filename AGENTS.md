@@ -5,6 +5,8 @@
 - `npm run lint` - Check code with Biome
 - `npm run lint:fix` - Fix linting issues automatically
 - `npm run format` - Format code with Biome
+- `npm run knip` - Check for unused code or package inconsistencies
+- `npm run typecheck` - TypeScript type checking
 - No test framework configured
 
 ## Forbidden Actions
