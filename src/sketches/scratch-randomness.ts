@@ -3,7 +3,6 @@ import {
 	type CircleMode,
 	getScratchRandomnessConfigFromURL,
 	type ScratchRandomnessConfig,
-	type WalkerMode,
 } from "../configs/scratch-randomness-config"
 
 let currentConfig: ScratchRandomnessConfig = getScratchRandomnessConfigFromURL()
@@ -188,10 +187,21 @@ export const scratchRandomness = (p: p5) => {
 		step() {
 			switch (this.config.walkerMode) {
 				case "mouse": {
-					const mouse = p.createVector(p.mouseX, p.mouseY)
-					this.acceleration = p5.Vector.sub(mouse, this.position).setMag(
-						this.config.mouseAttraction,
+					const direction = p5.Vector.sub(
+						p.createVector(p.mouseX, p.mouseY),
+						this.position,
 					)
+
+					this.acceleration = direction.setMag(
+						p.map(
+							direction.mag(),
+							0,
+							Math.min(p.width, p.height),
+							0,
+							this.config.mouseAttraction / 10,
+						),
+					)
+
 					this.velocity.add(this.acceleration)
 					this.velocity.limit(this.config.mouseMaxSpeed)
 					break

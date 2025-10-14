@@ -89,9 +89,9 @@ export class ScratchRandomnessConfigDialog extends BaseConfigDialog<ScratchRando
 				<div class="input-group" id="mouse-attraction-group">
 					<div class="input-header">
 						<span class="input-label">Attraction </span>
-						<span class="input-value" id="mouse-attraction-value">0.1</span>
+						<span class="input-value" id="mouse-attraction-value">10</span>
 					</div>
-					<input type="range" id="mouse-attraction-slider" min="0.01" max="1.0" step="0.01" value="0.1" class="range-slider" style="width: 100%;">
+					<input type="range" id="mouse-attraction-slider" min="1" max="100" value="10" class="range-slider" style="width: 100%;">
 				</div>
 				<div class="input-group" id="mouse-max-speed-group">
 					<div class="input-header">
