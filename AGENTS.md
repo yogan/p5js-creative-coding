@@ -29,7 +29,7 @@
 - No comments added unless explicitly requested
 
 ## E2E Testing Guidelines
-- Use page locators for all element interactions
-- Have all page locators in a single location
-- The test cases may only use the defined locators
+- Use page locators for element selection
+- The page locators may only be placed in `tests/page-objects.ts`
+- Each test should start with: `const loc = createPageLocators(page)`
 - Do not put timeouts in the code unless explicitly requested

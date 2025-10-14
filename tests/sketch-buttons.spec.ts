@@ -2,8 +2,7 @@ import { expect, test } from "@playwright/test"
 import { sketchNames } from "../src/utils/url-params"
 import { createPageLocators } from "./page-objects"
 
-// Configuration: sketches that have config dialogs and should show the control button
-const sketchConfig = {
+const sketches = {
 	"3d-bouncing-balls": { hasConfig: true },
 	"cellular-automaton": { hasConfig: true },
 	"dragon-curve": { hasConfig: false },
@@ -13,9 +12,11 @@ const sketchConfig = {
 	"random-circles": { hasConfig: true },
 } as const
 
-test("menu navigation, highlighting, and button visibility", async ({
-	page,
-}) => {
+const sketchesWithConfigs = Object.entries(sketches)
+	.filter(([, config]) => config.hasConfig)
+	.map(([sketchName]) => sketchName)
+
+test("Menu navigation and button visibility", async ({ page }) => {
 	const loc = createPageLocators(page)
 
 	// Wait for page to load
@@ -45,7 +46,7 @@ test("menu navigation, highlighting, and button visibility", async ({
 		await expect(loc.canvas).toBeVisible()
 
 		// Check control button visibility based on sketch config
-		if (sketchConfig[sketchName].hasConfig) {
+		if (sketches[sketchName].hasConfig) {
 			// Should be visible for sketches with config
 			await expect(loc.controlButton).toBeVisible()
 		} else {
@@ -67,17 +68,12 @@ test("menu navigation, highlighting, and button visibility", async ({
 	}
 })
 
-test("config dialog functionality", async ({ page }) => {
-	// Test only sketches that have configuration dialogs
-	const sketchesWithConfigs = Object.entries(sketchConfig)
-		.filter(([, config]) => config.hasConfig)
-		.map(([sketchName]) => sketchName)
+sketchesWithConfigs.forEach((sketchName) => {
+	test(`Config dialog for ${sketchName}`, async ({ page }) => {
+		const loc = createPageLocators(page)
 
-	for (const sketchName of sketchesWithConfigs) {
 		// Navigate directly to the sketch
 		await page.goto(`/?sketch=${sketchName}`)
-
-		const loc = createPageLocators(page)
 
 		// Wait for sketch to load and config button to be visible
 		await expect(loc.canvas).toBeVisible()
@@ -94,5 +90,5 @@ test("config dialog functionality", async ({ page }) => {
 
 		// Check that dialog is no longer visible
 		await expect(loc.modalOverlay).toBeHidden()
-	}
+	})
 })
