@@ -1,6 +1,14 @@
+import type { Page } from "@playwright/test"
 import { expect, test } from "@playwright/test"
+import { DEFAULT_BOUNCING_BALLS_CONFIG } from "../src/configs/bouncing-balls-config"
+import { DEFAULT_CELLULAR_AUTOMATON_CONFIG } from "../src/configs/cellular-automaton-config"
+import { DEFAULT_LANDSCAPE_CONFIG } from "../src/configs/landscape-config"
+import { DEFAULT_RANDOM_CIRCLES_CONFIG } from "../src/configs/random-circles-config"
 import { allSketches, DEFAULT_SKETCH } from "../src/sketches"
 import { createPageLocators } from "./page-objects"
+
+const getQueryParam = (page: Page, param: string): string | null =>
+	new URL(page.url()).searchParams.get(param)
 
 test("Menu navigation and button visibility", async ({ page }) => {
 	const loc = createPageLocators(page)
@@ -35,7 +43,7 @@ test("Menu navigation and button visibility", async ({ page }) => {
 		await expect(loc.menuDropdown).toBeHidden()
 
 		// Check that URL has correct sketch parameter
-		expect(new URL(page.url()).searchParams.get("sketch")).toBe(sketchId)
+		expect(getQueryParam(page, "sketch")).toBe(sketchId)
 
 		// Wait for sketch to load
 		await expect(loc.canvas).toBeVisible()
@@ -76,9 +84,14 @@ test("3D Bouncing Balls config controls", async ({ page }) => {
 	await expect(loc.modalOverlay).toBeVisible()
 	await expect(loc.modalHeading).toHaveText("Configure 3D Bouncing Balls")
 
+	// Test initial values match defaults
+	await expect(loc.ballCountSlider).toHaveValue(
+		DEFAULT_BOUNCING_BALLS_CONFIG.count.toString(),
+	)
+
 	// Test ball count slider - move to value 10
 	await loc.ballCountSlider.fill("10")
-	expect(new URL(page.url()).searchParams.get("count")).toBe("10")
+	expect(getQueryParam(page, "count")).toBe("10")
 
 	// Close and reopen to verify persistence
 	await loc.modalOverlay.click()
@@ -104,35 +117,49 @@ test("Cellular Automaton config controls", async ({ page }) => {
 		"Configure Elementary Cellular Automaton",
 	)
 
+	// Test initial values match defaults
+	await expect(loc.ruleSlider).toHaveValue(
+		DEFAULT_CELLULAR_AUTOMATON_CONFIG.rule.toString(),
+	)
+	await expect(loc.widthSlider).toHaveValue(
+		DEFAULT_CELLULAR_AUTOMATON_CONFIG.width.toString(),
+	)
+	await expect(loc.gridSelect).toHaveValue(
+		DEFAULT_CELLULAR_AUTOMATON_CONFIG.grid,
+	)
+	await expect(loc.startSelect).toHaveValue(
+		DEFAULT_CELLULAR_AUTOMATON_CONFIG.start,
+	)
+
 	// Test rule slider - move to value 90
 	await loc.ruleSlider.fill("90")
-	expect(new URL(page.url()).searchParams.get("rule")).toBe("90")
+	expect(getQueryParam(page, "rule")).toBe("90")
 
 	// Test rule plus button
 	await loc.rulePlusBtn.click()
-	expect(new URL(page.url()).searchParams.get("rule")).toBe("91")
+	expect(getQueryParam(page, "rule")).toBe("91")
 
 	// Test rule minus button
 	await loc.ruleMinusBtn.click()
-	expect(new URL(page.url()).searchParams.get("rule")).toBe("90")
+	expect(getQueryParam(page, "rule")).toBe("90")
 
 	// Test width slider - move to value 5
 	await loc.widthSlider.fill("5")
-	expect(new URL(page.url()).searchParams.get("width")).toBe("5")
+	expect(getQueryParam(page, "width")).toBe("5")
 
 	// Test width plus/minus buttons
 	await loc.widthPlusBtn.click()
-	expect(new URL(page.url()).searchParams.get("width")).toBe("6")
+	expect(getQueryParam(page, "width")).toBe("6")
 	await loc.widthMinusBtn.click()
-	expect(new URL(page.url()).searchParams.get("width")).toBe("5")
+	expect(getQueryParam(page, "width")).toBe("5")
 
 	// Test grid select dropdown
 	await loc.gridSelect.selectOption("dark")
-	expect(new URL(page.url()).searchParams.get("grid")).toBe("dark")
+	expect(getQueryParam(page, "grid")).toBe("dark")
 
 	// Test start select dropdown
 	await loc.startSelect.selectOption("random")
-	expect(new URL(page.url()).searchParams.get("start")).toBe("random")
+	expect(getQueryParam(page, "start")).toBe("random")
 
 	// Close and reopen to verify persistence
 	await loc.modalOverlay.click()
@@ -159,23 +186,31 @@ test("Landscape config controls", async ({ page }) => {
 	await expect(loc.modalOverlay).toBeVisible()
 	await expect(loc.modalHeading).toHaveText("Configure Landscape")
 
+	// Test initial values match defaults
+	await expect(loc.meshRadio(DEFAULT_LANDSCAPE_CONFIG.mesh)).toBeChecked()
+	await expect(loc.cameraRadio(DEFAULT_LANDSCAPE_CONFIG.camera)).toBeChecked()
+	await expect(loc.heightSpeedSlider).toHaveValue(
+		DEFAULT_LANDSCAPE_CONFIG.heightChangeSpeed.toString(),
+	)
+	await expect(loc.roughnessSlider).toHaveValue(
+		DEFAULT_LANDSCAPE_CONFIG.roughness.toString(),
+	)
+
 	// Test mesh radio buttons
 	await loc.meshRadio("squares").click()
-	expect(new URL(page.url()).searchParams.get("mesh")).toBe("squares")
+	expect(getQueryParam(page, "mesh")).toBe("squares")
 
 	// Test camera radio buttons
 	await loc.cameraRadio("manual").click()
-	expect(new URL(page.url()).searchParams.get("camera")).toBe("manual")
+	expect(getQueryParam(page, "camera")).toBe("manual")
 
 	// Test height speed slider - move to value 0.007
 	await loc.heightSpeedSlider.fill("0.007")
-	expect(new URL(page.url()).searchParams.get("heightChangeSpeed")).toBe(
-		"0.007",
-	)
+	expect(getQueryParam(page, "heightChangeSpeed")).toBe("0.007")
 
 	// Test roughness slider - move to value 0.2
 	await loc.roughnessSlider.fill("0.2")
-	expect(new URL(page.url()).searchParams.get("roughness")).toBe("0.2")
+	expect(getQueryParam(page, "roughness")).toBe("0.2")
 
 	// Close and reopen to verify persistence
 	await loc.modalOverlay.click()
@@ -202,37 +237,48 @@ test("Random Circles config controls", async ({ page }) => {
 	await expect(loc.modalOverlay).toBeVisible()
 	await expect(loc.modalHeading).toHaveText("Configure Random Circles")
 
+	// Test initial values match defaults
+	await expect(
+		loc.visualizationRadio(DEFAULT_RANDOM_CIRCLES_CONFIG.type),
+	).toBeChecked()
+	await expect(loc.modeSelect).toHaveValue(
+		DEFAULT_RANDOM_CIRCLES_CONFIG.placement,
+	)
+	await expect(loc.walkerCountSlider).toHaveValue(
+		DEFAULT_RANDOM_CIRCLES_CONFIG.count.toString(),
+	)
+
 	// Test visualization type radio - switch to moving
 	await loc.visualizationRadio("moving").click()
-	expect(new URL(page.url()).searchParams.get("type")).toBe("moving")
+	expect(getQueryParam(page, "type")).toBe("moving")
 
 	// Test mode select (behavior for moving)
 	await loc.modeSelect.selectOption("gaussian")
-	expect(new URL(page.url()).searchParams.get("behavior")).toBe("gaussian")
+	expect(getQueryParam(page, "behavior")).toBe("gaussian")
 
 	// Test walker count slider - move to value 15
 	await loc.walkerCountSlider.fill("15")
-	expect(new URL(page.url()).searchParams.get("count")).toBe("15")
+	expect(getQueryParam(page, "count")).toBe("15")
 
 	// Switch to mouse mode to test mouse-specific controls
 	await loc.modeSelect.selectOption("mouse")
-	expect(new URL(page.url()).searchParams.get("behavior")).toBe("mouse")
+	expect(getQueryParam(page, "behavior")).toBe("mouse")
 
 	// Test mouse attraction slider - move to value 25
 	await loc.mouseAttractionSlider.fill("25")
-	expect(new URL(page.url()).searchParams.get("attraction")).toBe("25")
+	expect(getQueryParam(page, "attraction")).toBe("25")
 
 	// Test mouse max speed slider - move to value 8
 	await loc.mouseMaxSpeedSlider.fill("8")
-	expect(new URL(page.url()).searchParams.get("speed")).toBe("8")
+	expect(getQueryParam(page, "speed")).toBe("8")
 
 	// Test switching back to static
 	await loc.visualizationRadio("static").click()
-	expect(new URL(page.url()).searchParams.get("type")).toBe("static")
+	expect(getQueryParam(page, "type")).toBe("static")
 
 	// Test placement mode for static
 	await loc.modeSelect.selectOption("gaussian")
-	expect(new URL(page.url()).searchParams.get("placement")).toBe("gaussian")
+	expect(getQueryParam(page, "placement")).toBe("gaussian")
 
 	// Close and reopen to verify persistence
 	await loc.modalOverlay.click()

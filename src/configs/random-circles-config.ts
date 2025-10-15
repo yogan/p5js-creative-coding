@@ -23,7 +23,7 @@ export type RandomCirclesConfig = {
 	speed: number
 }
 
-const DEFAULT_RANDOM_CIRCLES_CONFIG: RandomCirclesConfig = {
+export const DEFAULT_RANDOM_CIRCLES_CONFIG: RandomCirclesConfig = {
 	type: "static",
 	placement: "gaussian",
 	behavior: "perlin",

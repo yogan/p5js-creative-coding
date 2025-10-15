@@ -4,7 +4,7 @@ export interface BouncingBallsConfig {
 	count: number
 }
 
-const DEFAULT_CONFIG: BouncingBallsConfig = {
+export const DEFAULT_BOUNCING_BALLS_CONFIG: BouncingBallsConfig = {
 	count: 8,
 }
 
@@ -15,7 +15,7 @@ export function getBouncingBallsConfigFromURL(): BouncingBallsConfig {
 			"count",
 			2,
 			15,
-			DEFAULT_CONFIG.count,
+			DEFAULT_BOUNCING_BALLS_CONFIG.count,
 		),
 	}
 }

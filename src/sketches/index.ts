@@ -20,6 +20,3 @@ export const allSketches = () =>
 		id: id as SketchId,
 		...sketch,
 	}))
-
-export const sketchesWithConfig = () =>
-	allSketches().filter((sketch) => sketch.hasConfig)

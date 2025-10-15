@@ -13,7 +13,7 @@ export type LandscapeConfig = {
 	camera: LandscapeCamera
 }
 
-const DEFAULT_LANDSCAPE_CONFIG: LandscapeConfig = {
+export const DEFAULT_LANDSCAPE_CONFIG: LandscapeConfig = {
 	mesh: "triangles",
 	heightChangeSpeed: 0.005,
 	roughness: 0.15,

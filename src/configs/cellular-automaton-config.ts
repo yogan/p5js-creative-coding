@@ -13,7 +13,7 @@ export type CellularAutomatonConfig = {
 	start: InitialCells
 }
 
-const DEFAULT_CELLULAR_AUTOMATON_CONFIG: CellularAutomatonConfig = {
+export const DEFAULT_CELLULAR_AUTOMATON_CONFIG: CellularAutomatonConfig = {
 	rule: 30,
 	width: 10,
 	grid: "light",
