@@ -28,7 +28,7 @@ export function getLandscapeConfigFromURL(): LandscapeConfig {
 		mesh: getStringFromParams(urlParams, "mesh", LANDSCAPE_MESH, defaults.mesh),
 		heightChangeSpeed: getNumberFromParams(
 			urlParams,
-			"speed",
+			"heightChangeSpeed",
 			0.001,
 			0.01,
 			defaults.heightChangeSpeed,
