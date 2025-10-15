@@ -6,7 +6,7 @@ import {
 	LandscapeConfigDialog,
 	RandomCirclesConfigDialog,
 } from "./configs"
-import type { SketchId } from "./sketches"
+import { DEFAULT_SKETCH, type SketchId } from "./sketches"
 import {
 	bouncingBalls3D,
 	setBouncingBallsConfig,
@@ -36,7 +36,7 @@ const sketches: Record<SketchId, (p: p5) => void> = {
 }
 
 let currentP5Instance: p5 | null = null
-let currentSketch: SketchId = "koch-island"
+let currentSketch: SketchId = DEFAULT_SKETCH
 
 const sketchContainer = document.getElementById("sketch-container")
 const menuButtons = document.querySelectorAll(".sketch-btn")

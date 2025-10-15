@@ -1,5 +1,9 @@
 import { expect, test } from "@playwright/test"
-import { allSketches, sketchesWithConfig } from "../src/sketches"
+import {
+	allSketches,
+	DEFAULT_SKETCH,
+	sketchesWithConfig,
+} from "../src/sketches"
 import { createPageLocators } from "./page-objects"
 
 test("Menu navigation and button visibility", async ({ page }) => {
@@ -11,6 +15,13 @@ test("Menu navigation and button visibility", async ({ page }) => {
 
 	// Check that the hamburger menu button is always visible
 	await expect(loc.menuButton).toBeVisible()
+
+	// Check that initially the default sketch is highlighted
+	await loc.menuButton.click()
+	await expect(loc.menuDropdown).toBeVisible()
+	await expect(loc.highlightedMenuItem(DEFAULT_SKETCH)).toBeVisible()
+	await loc.menuOverlay.click()
+	await expect(loc.menuDropdown).toBeHidden()
 
 	for (const sketch of allSketches()) {
 		const sketchId = sketch.id

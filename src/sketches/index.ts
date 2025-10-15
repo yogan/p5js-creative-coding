@@ -13,6 +13,8 @@ export const sketches = {
 
 export type SketchId = keyof typeof sketches
 
+export const DEFAULT_SKETCH: SketchId = "koch-island"
+
 export const allSketches = () =>
 	Object.entries(sketches).map(([id, sketch]) => ({
 		id: id as SketchId,
