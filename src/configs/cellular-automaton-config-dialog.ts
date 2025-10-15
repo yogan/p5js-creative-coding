@@ -1,3 +1,4 @@
+import { sketches } from "../sketches"
 import { updateSketchConfig } from "../utils/url-params"
 import { BaseConfigDialog } from "./base-config-dialog"
 import type {
@@ -31,7 +32,7 @@ export class CellularAutomatonConfigDialog extends BaseConfigDialog<CellularAuto
 	protected getModalContent(): string {
 		return `
 			<div class="modal-content">
-				<h3>Configure Cellular Automaton</h3>
+				<h3>Configure ${sketches["cellular-automaton"].name}</h3>
 				<div class="input-group">
 					<div class="input-header">
 						<span class="input-label">Rule</span>

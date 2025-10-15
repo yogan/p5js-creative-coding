@@ -1,3 +1,4 @@
+import { sketches } from "../sketches"
 import {
 	disableOrbitalControls,
 	enableOrbitalControls,
@@ -24,7 +25,7 @@ export class BouncingBallsConfigDialog extends BaseConfigDialog<BouncingBallsCon
 	protected getModalContent(): string {
 		return `
 			<div class="modal-content">
-				<h3>Configure 3D Bouncing Balls</h3>
+				<h3>Configure ${sketches["3d-bouncing-balls"].name}</h3>
 				<div class="input-group">
 					<div class="input-header">
 						<span class="input-label">Number of Balls</span>

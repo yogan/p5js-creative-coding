@@ -1,19 +1,23 @@
-export const sketches = [
-	{ id: "3d-bouncing-balls", name: "3D Bouncing Balls", hasConfig: true },
-	{ id: "dragon-curve", name: "Dragon Curve", hasConfig: false },
-	{
-		id: "dragon-curve-anim",
-		name: "Dragon Curve (animated)",
-		hasConfig: false,
-	},
-	{
-		id: "cellular-automaton",
+export const sketches = {
+	"3d-bouncing-balls": { name: "3D Bouncing Balls", hasConfig: true },
+	"dragon-curve": { name: "Dragon Curve", hasConfig: false },
+	"dragon-curve-anim": { name: "Dragon Curve (animated)", hasConfig: false },
+	"cellular-automaton": {
 		name: "Elementary Cellular Automaton",
 		hasConfig: true,
 	},
-	{ id: "koch-island", name: "Koch Island", hasConfig: false },
-	{ id: "landscape", name: "Landscape", hasConfig: true },
-	{ id: "random-circles", name: "Random Circles", hasConfig: true },
-] as const
+	"koch-island": { name: "Koch Island", hasConfig: false },
+	landscape: { name: "Landscape", hasConfig: true },
+	"random-circles": { name: "Random Circles", hasConfig: true },
+} as const
 
-export type SketchId = (typeof sketches)[number]["id"]
+export type SketchId = keyof typeof sketches
+
+export const allSketches = () =>
+	Object.entries(sketches).map(([id, sketch]) => ({
+		id: id as SketchId,
+		...sketch,
+	}))
+
+export const sketchesWithConfig = () =>
+	allSketches().filter((sketch) => sketch.hasConfig)

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { sketches } from "../src/sketches"
+import { allSketches, sketchesWithConfig } from "../src/sketches"
 import { createPageLocators } from "./page-objects"
 
 test("Menu navigation and button visibility", async ({ page }) => {
@@ -12,7 +12,7 @@ test("Menu navigation and button visibility", async ({ page }) => {
 	// Check that the hamburger menu button is always visible
 	await expect(loc.menuButton).toBeVisible()
 
-	for (const sketch of sketches) {
+	for (const sketch of allSketches()) {
 		const sketchId = sketch.id
 
 		// Open menu
@@ -56,29 +56,31 @@ test("Menu navigation and button visibility", async ({ page }) => {
 	}
 })
 
-sketches
-	.filter((sketch) => sketch.hasConfig)
-	.forEach((sketch) => {
-		test(`Config dialog for ${sketch.name}`, async ({ page }) => {
-			const loc = createPageLocators(page)
+sketchesWithConfig().forEach((sketch) => {
+	test(`Config dialog for ${sketch.name}`, async ({ page }) => {
+		const loc = createPageLocators(page)
 
-			// Navigate directly to the sketch
-			await page.goto(`/?sketch=${sketch.id}`)
+		// Navigate directly to the sketch
+		await page.goto(`/?sketch=${sketch.id}`)
 
-			// Wait for sketch to load and config button to be visible
-			await expect(loc.canvas).toBeVisible()
-			await expect(loc.controlButton).toBeVisible()
+		// Wait for sketch to load and config button to be visible
+		await expect(loc.canvas).toBeVisible()
+		await expect(loc.controlButton).toBeVisible()
 
-			// Click the config button to open dialog
-			await loc.controlButton.click()
+		// Click the config button to open dialog
+		await loc.controlButton.click()
 
-			// Check that the modal overlay is visible
-			await expect(loc.modalOverlay).toBeVisible()
+		// Check that the modal overlay is visible
+		await expect(loc.modalOverlay).toBeVisible()
 
-			// Close the dialog by clicking on the overlay (outside the modal content)
-			await loc.modalOverlay.click()
+		// Check that the modal heading shows the correct sketch name
+		await expect(loc.modalHeading).toBeVisible()
+		await expect(loc.modalHeading).toHaveText(`Configure ${sketch.name}`)
 
-			// Check that dialog is no longer visible
-			await expect(loc.modalOverlay).toBeHidden()
-		})
+		// Close the dialog by clicking on the overlay (outside the modal content)
+		await loc.modalOverlay.click()
+
+		// Check that dialog is no longer visible
+		await expect(loc.modalOverlay).toBeHidden()
 	})
+})

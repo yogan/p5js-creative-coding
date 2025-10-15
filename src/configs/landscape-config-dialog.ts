@@ -1,3 +1,4 @@
+import { sketches } from "../sketches"
 import { updateSketchConfig } from "../utils/url-params"
 import { BaseConfigDialog } from "./base-config-dialog"
 
@@ -25,7 +26,7 @@ export class LandscapeConfigDialog extends BaseConfigDialog<LandscapeConfig> {
 	protected getModalContent(): string {
 		return `
 			<div class="modal-content">
-				<h3>Configure Landscape</h3>
+				<h3>Configure ${sketches.landscape.name}</h3>
 				<div class="input-group">
 					<div class="input-header">
 						<span class="input-label">Mesh Type</span>

@@ -1,3 +1,4 @@
+import { sketches } from "../sketches"
 import { restartRandomCircles } from "../sketches/random-circles"
 import { updateSketchConfig } from "../utils/url-params"
 import { BaseConfigDialog } from "./base-config-dialog"
@@ -37,7 +38,7 @@ export class RandomCirclesConfigDialog extends BaseConfigDialog<RandomCirclesCon
 	protected getModalContent(): string {
 		return `
 			<div class="modal-content">
-				<h3>Configure Random Circles</h3>
+				<h3>Configure ${sketches["random-circles"].name}</h3>
 				<div class="input-group">
 					<div class="input-header">
 						<span class="input-label">Circle Type</span>

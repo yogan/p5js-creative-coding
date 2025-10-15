@@ -4,8 +4,7 @@ import { type SketchId, sketches } from "../sketches"
 export function getSketchFromURL(): SketchId {
 	const urlParams = new URLSearchParams(window.location.search)
 	const sketchId = urlParams.get("sketch") as SketchId
-	const ids = sketches.map((sketch) => sketch.id)
-	return sketchId && ids.includes(sketchId) ? sketchId : "koch-island"
+	return sketchId && sketchId in sketches ? sketchId : "koch-island"
 }
 
 export function updateSketchConfig(sketchId: SketchId, config?: SketchConfig) {

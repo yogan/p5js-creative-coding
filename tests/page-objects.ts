@@ -8,6 +8,7 @@ export const createPageLocators = (page: Page) => ({
 	menuDropdown: page.locator("#menu-dropdown"),
 	menuOverlay: page.locator("#menu-overlay"),
 	modalOverlay: page.locator(".modal-overlay"),
+	modalHeading: page.locator(".modal-overlay .modal-content h3"),
 	menuItem: (id: SketchId) => page.locator(`button[data-sketch="${id}"]`),
 	highlightedMenuItem: (id: SketchId) =>
 		page.locator(`button[data-sketch="${id}"].active`),
