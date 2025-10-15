@@ -6,7 +6,7 @@ import {
 	LandscapeConfigDialog,
 	RandomCirclesConfigDialog,
 } from "./configs"
-import type { SketchName } from "./sketches"
+import type { SketchId } from "./sketches"
 import {
 	bouncingBalls3D,
 	setBouncingBallsConfig,
@@ -25,7 +25,7 @@ import {
 } from "./sketches/random-circles"
 import { getSketchFromURL, updateSketchConfig } from "./utils/url-params"
 
-const sketches: Record<SketchName, (p: p5) => void> = {
+const sketches: Record<SketchId, (p: p5) => void> = {
 	"3d-bouncing-balls": bouncingBalls3D,
 	"dragon-curve": dragonCurve,
 	"dragon-curve-anim": dragonCurveAnim,
@@ -36,7 +36,7 @@ const sketches: Record<SketchName, (p: p5) => void> = {
 }
 
 let currentP5Instance: p5 | null = null
-let currentSketch: SketchName = "koch-island"
+let currentSketch: SketchId = "koch-island"
 
 const sketchContainer = document.getElementById("sketch-container")
 const menuButtons = document.querySelectorAll(".sketch-btn")
@@ -50,32 +50,29 @@ let cellularAutomatonConfig: CellularAutomatonConfigDialog | null = null
 let randomCirclesConfig: RandomCirclesConfigDialog | null = null
 let landscapeConfig: LandscapeConfigDialog | null = null
 
-function loadSketch(sketchName: SketchName) {
+function loadSketch(sketchId: SketchId) {
 	if (!sketchContainer) return
 
-	currentSketch = sketchName
-	const sketchFn = sketches[sketchName]
+	currentSketch = sketchId
+	const sketchFn = sketches[sketchId]
 
 	if (currentP5Instance) currentP5Instance.remove()
 	currentP5Instance = new p5(sketchFn, sketchContainer)
 
 	menuButtons.forEach((btn) => {
-		btn.classList.toggle(
-			"active",
-			btn.getAttribute("data-sketch") === sketchName,
-		)
+		btn.classList.toggle("active", btn.getAttribute("data-sketch") === sketchId)
 	})
 
-	if (sketchName === "3d-bouncing-balls") {
+	if (sketchId === "3d-bouncing-balls") {
 		showConfigDialog(initBouncingBallsConfigDialog())
-	} else if (sketchName === "cellular-automaton") {
+	} else if (sketchId === "cellular-automaton") {
 		showConfigDialog(initCellularAutomatonConfigDialog())
-	} else if (sketchName === "random-circles") {
+	} else if (sketchId === "random-circles") {
 		showConfigDialog(initRandomCirclesConfigDialog())
-	} else if (sketchName === "landscape") {
+	} else if (sketchId === "landscape") {
 		showConfigDialog(initLandscapeConfigDialog())
 	} else {
-		updateSketchConfig(sketchName)
+		updateSketchConfig(sketchId)
 		hideAllConfigDialogs()
 	}
 }
@@ -182,9 +179,9 @@ menuOverlay?.addEventListener("click", (event) => {
 
 menuButtons.forEach((button) => {
 	button.addEventListener("click", () => {
-		const sketchName = button.getAttribute("data-sketch") as SketchName
-		if (sketchName && sketchName !== currentSketch) {
-			loadSketch(sketchName)
+		const sketchId = button.getAttribute("data-sketch") as SketchId
+		if (sketchId && sketchId !== currentSketch) {
+			loadSketch(sketchId)
 			closeMenu()
 		}
 	})

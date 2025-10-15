@@ -1,20 +1,6 @@
 import { expect, test } from "@playwright/test"
-import { sketchNames } from "../src/sketches"
+import { sketches } from "../src/sketches"
 import { createPageLocators } from "./page-objects"
-
-const sketches = {
-	"3d-bouncing-balls": { hasConfig: true },
-	"cellular-automaton": { hasConfig: true },
-	"dragon-curve": { hasConfig: false },
-	"dragon-curve-anim": { hasConfig: false },
-	"koch-island": { hasConfig: false },
-	landscape: { hasConfig: true },
-	"random-circles": { hasConfig: true },
-} as const
-
-const sketchesWithConfigs = Object.entries(sketches)
-	.filter(([, config]) => config.hasConfig)
-	.map(([sketchName]) => sketchName)
 
 test("Menu navigation and button visibility", async ({ page }) => {
 	const loc = createPageLocators(page)
@@ -26,13 +12,15 @@ test("Menu navigation and button visibility", async ({ page }) => {
 	// Check that the hamburger menu button is always visible
 	await expect(loc.menuButton).toBeVisible()
 
-	for (const sketchName of sketchNames) {
+	for (const sketch of sketches) {
+		const sketchId = sketch.id
+
 		// Open menu
 		await loc.menuButton.click()
 		await expect(loc.menuDropdown).toBeVisible()
 
 		// Click on menu entry (button with data-sketch attribute)
-		const menuItem = loc.menuItem(sketchName)
+		const menuItem = loc.menuItem(sketchId)
 		await expect(menuItem).toBeVisible()
 		await menuItem.click()
 
@@ -40,13 +28,13 @@ test("Menu navigation and button visibility", async ({ page }) => {
 		await expect(loc.menuDropdown).toBeHidden()
 
 		// Check that URL has correct sketch parameter
-		expect(new URL(page.url()).searchParams.get("sketch")).toBe(sketchName)
+		expect(new URL(page.url()).searchParams.get("sketch")).toBe(sketchId)
 
 		// Wait for sketch to load
 		await expect(loc.canvas).toBeVisible()
 
 		// Check control button visibility based on sketch config
-		if (sketches[sketchName].hasConfig) {
+		if (sketch.hasConfig) {
 			// Should be visible for sketches with config
 			await expect(loc.controlButton).toBeVisible()
 		} else {
@@ -59,7 +47,7 @@ test("Menu navigation and button visibility", async ({ page }) => {
 		await expect(loc.menuDropdown).toBeVisible()
 
 		// Check that the current sketch is highlighted
-		const highlightedItem = loc.highlightedMenuItem(sketchName)
+		const highlightedItem = loc.highlightedMenuItem(sketchId)
 		await expect(highlightedItem).toBeVisible()
 
 		// Close menu by clicking outside (click on menu overlay)
@@ -68,27 +56,29 @@ test("Menu navigation and button visibility", async ({ page }) => {
 	}
 })
 
-sketchesWithConfigs.forEach((sketchName) => {
-	test(`Config dialog for ${sketchName}`, async ({ page }) => {
-		const loc = createPageLocators(page)
+sketches
+	.filter((sketch) => sketch.hasConfig)
+	.forEach((sketch) => {
+		test(`Config dialog for ${sketch.name}`, async ({ page }) => {
+			const loc = createPageLocators(page)
 
-		// Navigate directly to the sketch
-		await page.goto(`/?sketch=${sketchName}`)
+			// Navigate directly to the sketch
+			await page.goto(`/?sketch=${sketch.id}`)
 
-		// Wait for sketch to load and config button to be visible
-		await expect(loc.canvas).toBeVisible()
-		await expect(loc.controlButton).toBeVisible()
+			// Wait for sketch to load and config button to be visible
+			await expect(loc.canvas).toBeVisible()
+			await expect(loc.controlButton).toBeVisible()
 
-		// Click the config button to open dialog
-		await loc.controlButton.click()
+			// Click the config button to open dialog
+			await loc.controlButton.click()
 
-		// Check that the modal overlay is visible
-		await expect(loc.modalOverlay).toBeVisible()
+			// Check that the modal overlay is visible
+			await expect(loc.modalOverlay).toBeVisible()
 
-		// Close the dialog by clicking on the overlay (outside the modal content)
-		await loc.modalOverlay.click()
+			// Close the dialog by clicking on the overlay (outside the modal content)
+			await loc.modalOverlay.click()
 
-		// Check that dialog is no longer visible
-		await expect(loc.modalOverlay).toBeHidden()
+			// Check that dialog is no longer visible
+			await expect(loc.modalOverlay).toBeHidden()
+		})
 	})
-})

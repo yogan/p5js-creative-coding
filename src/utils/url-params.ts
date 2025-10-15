@@ -1,21 +1,19 @@
 import type { SketchConfig } from "../configs"
-import { type SketchName, sketchNames } from "../sketches"
+import { type SketchId, sketches } from "../sketches"
 
-export function getSketchFromURL(): SketchName {
+export function getSketchFromURL(): SketchId {
 	const urlParams = new URLSearchParams(window.location.search)
-	const sketch = urlParams.get("sketch") as SketchName
-	return sketch && sketchNames.includes(sketch) ? sketch : "koch-island"
+	const sketchId = urlParams.get("sketch") as SketchId
+	const ids = sketches.map((sketch) => sketch.id)
+	return sketchId && ids.includes(sketchId) ? sketchId : "koch-island"
 }
 
-export function updateSketchConfig(
-	sketchName: SketchName,
-	config?: SketchConfig,
-) {
+export function updateSketchConfig(sketchId: SketchId, config?: SketchConfig) {
 	const url = new URL(window.location.href)
 
 	// Clear existing params, then set sketch param
 	url.search = ""
-	url.searchParams.set("sketch", sketchName)
+	url.searchParams.set("sketch", sketchId)
 
 	// Set config parameters for current sketch
 	for (const [key, value] of Object.entries(config ?? {})) {

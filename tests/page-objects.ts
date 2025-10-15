@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test"
+import type { SketchId } from "../src/sketches"
 
 export const createPageLocators = (page: Page) => ({
 	canvas: page.locator("#sketch-container canvas"),
@@ -7,8 +8,7 @@ export const createPageLocators = (page: Page) => ({
 	menuDropdown: page.locator("#menu-dropdown"),
 	menuOverlay: page.locator("#menu-overlay"),
 	modalOverlay: page.locator(".modal-overlay"),
-	menuItem: (sketchName: string) =>
-		page.locator(`button[data-sketch="${sketchName}"]`),
-	highlightedMenuItem: (sketchName: string) =>
-		page.locator(`button[data-sketch="${sketchName}"].active`),
+	menuItem: (id: SketchId) => page.locator(`button[data-sketch="${id}"]`),
+	highlightedMenuItem: (id: SketchId) =>
+		page.locator(`button[data-sketch="${id}"].active`),
 })
