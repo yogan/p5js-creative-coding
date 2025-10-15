@@ -1,9 +1,12 @@
 import p5 from "p5"
-import type { BaseConfigDialog } from "./configs/base-config-dialog"
-import { BouncingBallsConfigDialog } from "./configs/bouncing-balls-config-dialog"
-import { CellularAutomatonConfigDialog } from "./configs/cellular-automaton-config-dialog"
-import { LandscapeConfigDialog } from "./configs/landscape-config-dialog"
-import { RandomCirclesConfigDialog } from "./configs/random-circles-config-dialog"
+import {
+	type BaseConfigDialog,
+	BouncingBallsConfigDialog,
+	CellularAutomatonConfigDialog,
+	LandscapeConfigDialog,
+	RandomCirclesConfigDialog,
+} from "./configs"
+import type { SketchName } from "./sketches"
 import {
 	bouncingBalls3D,
 	setBouncingBallsConfig,
@@ -20,11 +23,7 @@ import {
 	randomCircles,
 	setRandomCirclesConfig,
 } from "./sketches/random-circles"
-import {
-	getSketchFromURL,
-	type SketchName,
-	updateSketchConfig,
-} from "./utils/url-params"
+import { getSketchFromURL, updateSketchConfig } from "./utils/url-params"
 
 const sketches: Record<SketchName, (p: p5) => void> = {
 	"3d-bouncing-balls": bouncingBalls3D,

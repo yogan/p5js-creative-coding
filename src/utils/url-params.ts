@@ -1,25 +1,5 @@
-import type { BouncingBallsConfig } from "../configs/bouncing-balls-config"
-import type { CellularAutomatonConfig } from "../configs/cellular-automaton-config"
-import type { LandscapeConfig } from "../configs/landscape-config"
-import type { RandomCirclesConfig } from "../configs/random-circles-config"
-
-export const sketchNames = [
-	"3d-bouncing-balls",
-	"dragon-curve",
-	"dragon-curve-anim",
-	"cellular-automaton",
-	"koch-island",
-	"landscape",
-	"random-circles",
-] as const
-
-export type SketchName = (typeof sketchNames)[number]
-
-type SketchConfig =
-	| BouncingBallsConfig
-	| CellularAutomatonConfig
-	| LandscapeConfig
-	| RandomCirclesConfig
+import type { SketchConfig } from "../configs"
+import { type SketchName, sketchNames } from "../sketches"
 
 export function getSketchFromURL(): SketchName {
 	const urlParams = new URLSearchParams(window.location.search)

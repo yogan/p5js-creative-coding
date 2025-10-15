@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { sketchNames } from "../src/utils/url-params"
+import { sketchNames } from "../src/sketches"
 import { createPageLocators } from "./page-objects"
 
 const sketches = {
