@@ -114,8 +114,16 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Trigger Coolify deployment
+        # FIXME: remove --insecure once Coolify instance has valid SSL cert
         run: |
-          curl \
+          response=$(curl --fail --silent --show-error \
             --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}' \
             --request GET '${{ secrets.COOLIFY_WEBHOOK }}' \
-            --insecure
+            --insecure \
+            --write-out " (HTTP code: %{http_code})" \
+            --max-time 30)
+          if [[ $? -ne 0 ]]; then
+            echo "❌ Coolify webhook failed"
+            exit 1
+          fi
+          echo "✅ Coolify webhook triggered successfully: $response"
