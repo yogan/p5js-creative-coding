@@ -3,13 +3,8 @@ name: CI/CD Pipeline
 on:
   push:
 
-permissions:
-  contents: read
-  packages: write
-  id-token: write
-
 concurrency:
-  group: 'deployment'
+  group: deployment
   cancel-in-progress: false
 
 jobs:
@@ -24,7 +19,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: 'npm'
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -53,7 +48,7 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
-      - name: Run E2E tests
+      - name: Run Playwright E2E tests
         run: npm run test:e2e
 
       - name: Upload test results
@@ -68,6 +63,10 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: test
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -76,7 +75,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: 'npm'
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -101,7 +100,6 @@ jobs:
           images: ghcr.io/yogan/p5-sketches
           tags: |
             type=ref,event=branch
-            type=ref,event=pr
             type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
 
@@ -117,6 +115,7 @@ jobs:
 
       - name: Trigger Coolify deployment
         run: |
-          curl --request GET '${{ secrets.COOLIFY_WEBHOOK }}' \
+          curl \
             --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}' \
+            --request GET '${{ secrets.COOLIFY_WEBHOOK }}' \
             --insecure
