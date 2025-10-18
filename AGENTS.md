@@ -1,14 +1,14 @@
 # Agent Guidelines for p5.js Creative Coding Project
 
 ## Build/Lint/Test Commands
-- `npm run build` - TypeScript compile and Vite build
-- `npm run lint` - Check code with Biome
-- `npm run lint:fix` - Fix linting issues automatically
-- `npm run format` - Format code with Biome
-- `npm run knip` - Check for unused code or package inconsistencies
-- `npm run typecheck` - TypeScript type checking
-- `npm run test:e2e` - Run Playwright E2E tests
-- `npm run test:e2e:ui` - Run Playwright tests with UI mode
+- `bun run build` - TypeScript compile and Vite build
+- `bun run lint` - Check code with Biome
+- `bun run lint:fix` - Fix linting issues automatically
+- `bun run format` - Format code with Biome
+- `bun run knip` - Check for unused code or package inconsistencies
+- `bun run typecheck` - TypeScript type checking
+- `bun run test:e2e` - Run Playwright E2E tests
+- `bun run test:e2e:ui` - Run Playwright tests with UI mode
 
 ## Forbidden Actions
 - Do NOT start a dev server

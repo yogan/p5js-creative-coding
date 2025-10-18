@@ -18,7 +18,7 @@ export default defineConfig({
 		},
 	],
 	webServer: {
-		command: "npm run build && npm run preview -- --port 9999",
+		command: "bun run build && bun run preview -- --port 9999",
 		url: "http://localhost:9999",
 		reuseExistingServer: !process.env.CI,
 	},

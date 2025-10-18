@@ -1,0 +1,10 @@
+[install]
+# Automatically install peer dependencies
+auto = true
+
+# Use exact versions instead of ranges
+exact = true
+
+[install.cache]
+# Enable install cache for faster installs
+disable = false

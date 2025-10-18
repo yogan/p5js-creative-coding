@@ -4,6 +4,7 @@
 	"description": "Creative coding projects with p5.js and TypeScript",
 	"main": "src/main.ts",
 	"type": "module",
+	"packageManager": "bun@1.3.0",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",

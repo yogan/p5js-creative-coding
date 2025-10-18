@@ -7,24 +7,24 @@ template. Automatically deployed to [p5.zogan.de](https://p5.zogan.de/).
 
 1. **Install dependencies:**
    ```sh
-   npm install
+   bun install
    ```
 
 2. **Start development server:**
    ```sh
-   npm run dev
+   bun run dev
    ```
    Opens browser at `http://localhost:3000` with hot reloading enabled.
 
 3. **Build for production:**
    ```sh
-   npm run build
+   bun run build
    ```
 
 4. **Run Playwright end-to-end tests:**
    ```sh
-   npm run test:e2e      # headless
-   npm run test:e2e:ui   # Playwright UI
+   bun run test:e2e      # headless
+   bun run test:e2e:ui   # Playwright UI
    ```
 
 ## Resources
