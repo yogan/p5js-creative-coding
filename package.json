@@ -16,7 +16,8 @@
 		"knip:fix": "knip --fix",
 		"typecheck": "tsc",
 		"test:e2e": "playwright test",
-		"test:e2e:ui": "playwright test --ui"
+		"test:e2e:ui": "playwright test --ui",
+		"qc": "bun run typecheck && bun run lint && bun run knip && bun run test:e2e"
 	},
 	"dependencies": {
 		"p5": "2.3.0"

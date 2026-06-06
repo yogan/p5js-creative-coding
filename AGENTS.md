@@ -10,6 +10,12 @@
 - `bun run test:e2e` - Run Playwright E2E tests
 - `bun run test:e2e:ui` - Run Playwright tests with UI mode
 
+## Before Every Commit
+
+Always run `bun run qc` and ensure it passes before creating any commit.
+
+`qc` runs in order: TypeScript typecheck → Biome lint → Knip unused-code check → Playwright E2E tests.
+
 ## Forbidden Actions
 - Do NOT start a dev server
 - Do NOT use cURL to test the app, as it's a graphical p5.js project
