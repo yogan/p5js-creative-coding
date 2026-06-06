@@ -19,6 +19,7 @@ import { dragonCurve } from "./sketches/dragon-curve"
 import { dragonCurveAnim } from "./sketches/dragon-curve-anim"
 import { kochIsland } from "./sketches/koch-island"
 import { landscape, setLandscapeConfig } from "./sketches/landscape"
+import { matterPhysics } from "./sketches/matter-physics"
 import {
 	randomCircles,
 	setRandomCirclesConfig,
@@ -33,6 +34,7 @@ const sketches: Record<SketchId, (p: p5) => void> = {
 	"koch-island": kochIsland,
 	landscape: landscape,
 	"random-circles": randomCircles,
+	"matter-physics": matterPhysics,
 }
 
 let currentP5Instance: p5 | null = null

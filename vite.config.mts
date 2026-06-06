@@ -8,8 +8,10 @@ export default defineConfig({
 		chunkSizeWarningLimit: 1200, // p5js is huge, nothing we can do about it
 		rollupOptions: {
 			output: {
-				manualChunks: (id) =>
-					id.includes("node_modules/p5") ? "p5" : undefined,
+				manualChunks: (id) => {
+					if (id.includes("node_modules/p5")) return "p5"
+					if (id.includes("node_modules/matter-js")) return "matter-js"
+				},
 			},
 		},
 	},

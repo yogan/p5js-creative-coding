@@ -20,11 +20,13 @@
 		"qc": "bun run typecheck && bun run lint && bun run knip && bun run test:e2e"
 	},
 	"dependencies": {
+		"matter-js": "0.20.0",
 		"p5": "2.3.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.16",
 		"@playwright/test": "1.60.0",
+		"@types/matter-js": "0.20.2",
 		"@types/node": "25.9.2",
 		"@types/p5": "1.7.7",
 		"knip": "6.16.0",
