@@ -11,12 +11,18 @@
 	</head>
 	<body>
 		<nav class="sketch-menu">
-			<button class="hamburger-btn" id="hamburger-btn" aria-label="Open menu">
+			<button
+				type="button"
+				class="hamburger-btn"
+				id="hamburger-btn"
+				aria-label="Open menu"
+			>
 				<span class="hamburger-line"></span>
 				<span class="hamburger-line"></span>
 				<span class="hamburger-line"></span>
 			</button>
 			<button
+				type="button"
 				class="control-btn"
 				id="control-btn"
 				aria-label="Open config dialog"
@@ -29,7 +35,9 @@
 					fill="none"
 					stroke="currentColor"
 					stroke-width="1.5"
+					aria-hidden="true"
 				>
+					<title>Settings</title>
 					<path
 						stroke-linecap="round"
 						stroke-linejoin="round"
@@ -46,23 +54,41 @@
 
 		<div class="menu-overlay" id="menu-overlay" style="display: none;">
 			<div class="menu-dropdown" id="menu-dropdown">
-				<button class="sketch-btn" data-sketch="3d-bouncing-balls">
+				<button
+					type="button"
+					class="sketch-btn"
+					data-sketch="3d-bouncing-balls"
+				>
 					3D Bouncing Balls
 				</button>
-				<button class="sketch-btn" data-sketch="dragon-curve">
+				<button type="button" class="sketch-btn" data-sketch="dragon-curve">
 					Dragon Curve
 				</button>
-				<button class="sketch-btn" data-sketch="dragon-curve-anim">
+				<button
+					type="button"
+					class="sketch-btn"
+					data-sketch="dragon-curve-anim"
+				>
 					Dragon Curve (animated)
 				</button>
-				<button class="sketch-btn" data-sketch="cellular-automaton">
+				<button
+					type="button"
+					class="sketch-btn"
+					data-sketch="cellular-automaton"
+				>
 					Elementary Cellular Automaton
 				</button>
-				<button class="sketch-btn active" data-sketch="koch-island">
+				<button
+					type="button"
+					class="sketch-btn active"
+					data-sketch="koch-island"
+				>
 					Koch Island
 				</button>
-				<button class="sketch-btn" data-sketch="landscape">Landscape</button>
-				<button class="sketch-btn" data-sketch="random-circles">
+				<button type="button" class="sketch-btn" data-sketch="landscape">
+					Landscape
+				</button>
+				<button type="button" class="sketch-btn" data-sketch="random-circles">
 					Random Circles
 				</button>
 			</div>
