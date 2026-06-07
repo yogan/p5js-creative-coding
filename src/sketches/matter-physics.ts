@@ -26,7 +26,7 @@ export const matterPhysics = (p: p5) => {
 			{
 				restitution: 0.7,
 				friction: 0.05,
-				frictionAir: 0.01,
+				frictionAir: 5 / (r * r),
 			},
 		)
 		colors.set(ball.id, [
