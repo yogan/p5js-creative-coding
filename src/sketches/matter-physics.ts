@@ -5,11 +5,23 @@ export const matterPhysics = (p: p5) => {
 	let engine: Matter.Engine
 	const colors = new Map<number, [number, number, number]>()
 
+	const connectSensor = () => {
+		const ws = new WebSocket("ws://localhost:8765")
+		ws.onmessage = ({ data }) => {
+			const { x, z } = JSON.parse(data as string) as { x: number; z: number }
+			engine.gravity.x = x
+			engine.gravity.y = -z
+		}
+		ws.onclose = () => setTimeout(connectSensor, 3000)
+		ws.onerror = () => ws.close()
+	}
+	connectSensor()
+
 	const addBall = (x?: number, y?: number) => {
 		const r = p.random(10, 35)
 		const ball = Matter.Bodies.circle(
 			x ?? p.random(r, p.width - r),
-			y ?? -r * 2,
+			y ?? p.random(r, p.height - r),
 			r,
 			{
 				restitution: 0.7,
@@ -32,6 +44,9 @@ export const matterPhysics = (p: p5) => {
 		const t = 100
 		Matter.Composite.add(engine.world, [
 			Matter.Bodies.rectangle(p.width / 2, p.height + t / 2, p.width * 3, t, {
+				isStatic: true,
+			}),
+			Matter.Bodies.rectangle(p.width / 2, -t / 2, p.width * 3, t, {
 				isStatic: true,
 			}),
 			Matter.Bodies.rectangle(-t / 2, p.height / 2, t, p.height * 3, {
