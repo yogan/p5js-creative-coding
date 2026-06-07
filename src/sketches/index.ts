@@ -10,6 +10,7 @@ export const sketches = {
 	landscape: { name: "Landscape", hasConfig: true },
 	"random-circles": { name: "Random Circles", hasConfig: true },
 	"matter-physics": { name: "Matter.js Physics", hasConfig: false },
+	"tilt-maze": { name: "Tilt Maze", hasConfig: false },
 } as const
 
 export type SketchId = keyof typeof sketches

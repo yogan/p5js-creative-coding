@@ -24,6 +24,7 @@ import {
 	randomCircles,
 	setRandomCirclesConfig,
 } from "./sketches/random-circles"
+import { tiltMaze } from "./sketches/tilt-maze"
 import { getSketchFromURL, updateSketchConfig } from "./utils/url-params"
 
 const sketches: Record<SketchId, (p: p5) => void> = {
@@ -35,6 +36,7 @@ const sketches: Record<SketchId, (p: p5) => void> = {
 	landscape: landscape,
 	"random-circles": randomCircles,
 	"matter-physics": matterPhysics,
+	"tilt-maze": tiltMaze,
 }
 
 let currentP5Instance: p5 | null = null

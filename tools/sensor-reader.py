@@ -2,6 +2,7 @@
 # requires-python = ">=3.11"
 # dependencies = [
 #   "macimu",
+#   "pybooklid",
 #   "websockets",
 # ]
 # ///
@@ -13,6 +14,7 @@ import asyncio
 import json
 import sys
 from macimu import IMU
+from pybooklid import LidSensor
 import websockets
 
 PORT = 8765
@@ -29,6 +31,7 @@ async def serve() -> None:
         finally:
             clients.discard(ws)
 
+    lid_sensor = LidSensor()
     with IMU() as imu:
         async with websockets.serve(handler, "localhost", PORT):
             print(f"Sensor server listening on ws://localhost:{PORT}", flush=True)
@@ -38,8 +41,12 @@ async def serve() -> None:
                     await asyncio.sleep(0.01)
                     continue
                 if clients:
+                    try:
+                        lid = round(lid_sensor.read_angle(), 1)
+                    except Exception:
+                        lid = 90.0
                     msg = json.dumps(
-                        {"x": round(accel.x, 4), "y": round(accel.y, 4), "z": round(accel.z, 4)}
+                        {"x": round(accel.x, 4), "y": round(accel.y, 4), "z": round(accel.z, 4), "lid": lid}
                     )
                     await asyncio.gather(*[ws.send(msg) for ws in clients.copy()])
                 await asyncio.sleep(INTERVAL)
